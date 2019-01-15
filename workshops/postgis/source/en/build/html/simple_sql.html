@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 6. Simple SQL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="7. Simple SQL Exercises" href="simple_sql_exercises.html" />
+      <link rel="prev" title="5. About our data" href="about_data.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">6. Simple SQL</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="simple_sql_exercises.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="about_data.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">6. Simple SQL</a><ul>
+<li><a class="reference internal" href="#select-queries">6.1. SELECT queries</a></li>
+<li><a class="reference internal" href="#function-list">6.2. Function List</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="simple-sql">
+<span id="id1"></span><h1>6. Simple SQL<a class="headerlink" href="#simple-sql" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="glossary.html#term-sql"><span class="xref std std-term">SQL</span></a>, or “Structured Query Language”, is a means of asking questions of, and updating data in, relational databases. You have already seen SQL when we created our first database.  Recall:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">postgis_full_version</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>But that was a question about the database.  Now that we’ve loaded data into our database, let’s use SQL to ask questions of the data! For example,</p>
+<blockquote>
+<div>“What are the names of all the neighborhoods in New York City?”</div></blockquote>
+<p>Open up the SQL query window in pgAdmin by clicking the SQL button</p>
+<img alt="_images/pgadmin_05.png" src="_images/pgadmin_05.png" />
+<p>then enter the following query in to the query window</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">name</span> <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>and click the <strong>Execute Query</strong> button (the green triangle).</p>
+<img alt="_images/pgadmin_08.png" src="_images/pgadmin_08.png" />
+<p>The query will run for a few (milli)seconds and return the 129 results.</p>
+<img alt="_images/pgadmin_09.png" src="_images/pgadmin_09.png" />
+<p>But what exactly happened here?  To understand, let’s begin with the four “verbs” of SQL,</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">SELECT</span></code>, returns rows in response to a query</li>
+<li><code class="docutils literal notranslate"><span class="pre">INSERT</span></code>, adds new rows to a table</li>
+<li><code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>, alters existing rows in a table</li>
+<li><code class="docutils literal notranslate"><span class="pre">DELETE</span></code>, removes rows from a table</li>
+</ul>
+<p>We will be working almost exclusively with <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> in order to ask questions of tables using spatial functions.</p>
+<div class="section" id="select-queries">
+<h2>6.1. SELECT queries<a class="headerlink" href="#select-queries" title="Permalink to this headline">¶</a></h2>
+<p>A select query is generally of the form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="n">some_columns</span> <span class="n">FROM</span> <span class="n">some_data_source</span> <span class="n">WHERE</span> <span class="n">some_condition</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For a synopsis of all <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> parameters, see the <a class="reference external" href="http://www.postgresql.org/docs/current/interactive/sql-select.html">PostgresSQL documentation</a>.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">some_columns</span></code> are either column names or functions of column values. The <code class="docutils literal notranslate"><span class="pre">some_data_source</span></code> is either a single table, or a composite table created by joining two tables on a key or condition. The <code class="docutils literal notranslate"><span class="pre">some_condition</span></code> is a filter that restricts the number of rows to be returned.</p>
+<blockquote>
+<div>“What are the names of all the neighborhoods in Brooklyn?”</div></blockquote>
+<p>We return to our <code class="docutils literal notranslate"><span class="pre">nyc_neighborhoods</span></code> table with a filter in hand.  The table contains all the neighborhoods in New York, but we only want the ones in Brooklyn.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">name</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">WHERE</span> <span class="n">boroname</span> <span class="o">=</span> <span class="s1">&#39;Brooklyn&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The query will run for even fewer (milli)seconds and return the 23 results.</p>
+<p>Sometimes we will need to apply a function to the results of our query. For example,</p>
+<blockquote>
+<div>“What is the number of letters in the names of all the neighborhoods in Brooklyn?”</div></blockquote>
+<p>Fortunately, PostgreSQL has a string length function, <strong class="command">char_length(string)</strong>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">char_length</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">WHERE</span> <span class="n">boroname</span> <span class="o">=</span> <span class="s1">&#39;Brooklyn&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Often, we are less interested in the individual rows than in a statistic that applies to all of them. So knowing the lengths of the neighborhood names might be less interesting than knowing the average length of the names. Functions that take in multiple rows and return a single result are called “aggregate” functions.</p>
+<p>PostgreSQL has a series of built-in aggregate functions, including the general purpose <strong class="command">avg()</strong> for average values and <strong class="command">stddev()</strong> for standard deviations.</p>
+<blockquote>
+<div>“What is the average number of letters and standard deviation of number of letters in the names of all the neighborhoods in Brooklyn?”</div></blockquote>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">avg</span><span class="p">(</span><span class="k">char_length</span><span class="p">(</span><span class="n">name</span><span class="p">)),</span> <span class="n">stddev</span><span class="p">(</span><span class="k">char_length</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">WHERE</span> <span class="n">boroname</span> <span class="o">=</span> <span class="s1">&#39;Brooklyn&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>         <span class="n">avg</span>         <span class="o">|</span>       <span class="n">stddev</span>
+<span class="o">---------------------+--------------------</span>
+ <span class="mf">11.7391304347826087</span> <span class="o">|</span> <span class="mf">3.9105613559407395</span>
+</pre></div>
+</div>
+<p>The aggregate functions in our last example were applied to every row in the result set. What if we want the summaries to be carried out over smaller groups within the overall result set? For that we add a <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> clause. Aggregate functions often need an added <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> statement to group the result-set by one or more columns.</p>
+<blockquote>
+<div>“What is the average number of letters in the names of all the neighborhoods in New York City, reported by borough?”</div></blockquote>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">boroname</span><span class="p">,</span> <span class="k">avg</span><span class="p">(</span><span class="k">char_length</span><span class="p">(</span><span class="n">name</span><span class="p">)),</span> <span class="n">stddev</span><span class="p">(</span><span class="k">char_length</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">boroname</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We include the <code class="docutils literal notranslate"><span class="pre">boroname</span></code> column in the output result so we can determine which statistic applies to which borough. In an aggregate query, you can only output columns that are either (a) members of the grouping clause or (b) aggregate functions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="n">boroname</span>    <span class="o">|</span>         <span class="n">avg</span>         <span class="o">|</span>       <span class="n">stddev</span>
+<span class="o">---------------+---------------------+--------------------</span>
+ <span class="n">Brooklyn</span>      <span class="o">|</span> <span class="mf">11.7391304347826087</span> <span class="o">|</span> <span class="mf">3.9105613559407395</span>
+ <span class="n">Manhattan</span>     <span class="o">|</span> <span class="mf">11.8214285714285714</span> <span class="o">|</span> <span class="mf">4.3123729948325257</span>
+ <span class="n">The</span> <span class="n">Bronx</span>     <span class="o">|</span> <span class="mf">12.0416666666666667</span> <span class="o">|</span> <span class="mf">3.6651017740975152</span>
+ <span class="n">Queens</span>        <span class="o">|</span> <span class="mf">11.6666666666666667</span> <span class="o">|</span> <span class="mf">5.0057438272815975</span>
+ <span class="n">Staten</span> <span class="n">Island</span> <span class="o">|</span> <span class="mf">12.2916666666666667</span> <span class="o">|</span> <span class="mf">5.2043390480959474</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="function-list">
+<h2>6.2. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/static/functions-aggregate.html#FUNCTIONS-AGGREGATE-TABLE">avg(expression)</a>: PostgreSQL aggregate function that returns the average value of a numeric column.</p>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/static/functions-string.html">char_length(string)</a>: PostgreSQL string function that returns the number of character in a string.</p>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/static/functions-aggregate.html#FUNCTIONS-AGGREGATE-STATISTICS-TABLE">stddev(expression)</a>: PostgreSQL aggregate function that returns the standard deviation of input values.</p>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="about_data.html" title="previous chapter">5. About our data</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="simple_sql_exercises.html" title="next chapter">7. Simple SQL Exercises</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="about_data.html" title="previous chapter">5. About our data</a></p>
+          <p><b>Next:</b> <a href="simple_sql_exercises.html" title="next chapter">7. Simple SQL Exercises</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="simple_sql_exercises.html" title="7. Simple SQL Exercises"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="about_data.html" title="5. About our data"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 38. Software Upgrades</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="39. Appendix A: PostGIS Functions" href="postgis-functions.html" />
+      <link rel="prev" title="37. PostgreSQL Backup and Restore" href="backup.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">38. Software Upgrades</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="postgis-functions.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="backup.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">38. Software Upgrades</a><ul>
+<li><a class="reference internal" href="#upgrading-postgresql">38.1. Upgrading PostgreSQL</a><ul>
+<li><a class="reference internal" href="#minor-postgresql-upgrades">38.1.1. Minor PostgreSQL Upgrades</a></li>
+<li><a class="reference internal" href="#major-postgresql-upgrades">38.1.2. Major PostgreSQL Upgrades</a><ul>
+<li><a class="reference internal" href="#dump-restore">38.1.2.1. Dump/Restore</a></li>
+<li><a class="reference internal" href="#pg-upgrade">38.1.2.2. pg_upgrade</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrading-postgis">38.2. Upgrading PostGIS</a><ul>
+<li><a class="reference internal" href="#minor-patch-postgis-upgrades">38.2.1. Minor/Patch PostGIS Upgrades</a></li>
+<li><a class="reference internal" href="#major-postgis-upgrades">38.2.2. Major PostGIS Upgrades</a><ul>
+<li><a class="reference internal" href="#with-data-in-schemas">38.2.2.1. With Data in Schemas</a></li>
+<li><a class="reference internal" href="#without-data-in-schemas">38.2.2.2. Without Data in Schemas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#postgis-2-0-upgrade-issues">38.3. PostGIS 2.0 Upgrade Issues</a><ul>
+<li><a class="reference internal" href="#function-signatures">38.3.1. Function Signatures</a></li>
+<li><a class="reference internal" href="#default-wkt-and-wkb">38.3.2. Default WKT and WKB</a></li>
+<li><a class="reference internal" href="#default-srid">38.3.3. Default SRID</a></li>
+<li><a class="reference internal" href="#srid-range-limits">38.3.4. SRID Range Limits</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="software-upgrades">
+<span id="upgrades"></span><h1>38. Software Upgrades<a class="headerlink" href="#software-upgrades" title="Permalink to this headline">¶</a></h1>
+<p>Because PostGIS resides within PostgreSQL every PostGIS installation actually consists of two versions of software: the PostgreSQL version and the PostGIS version.  The OpenGeo Suite only ships one combination at a time, so the number of potential combinations is reduced, but as a general principle, each version of PostGIS can be theoretically run within a number of versions of PostgreSQL, and vice versa.</p>
+<p>So, upgrades need to be considered in terms of upgrading each component.</p>
+<div class="section" id="upgrading-postgresql">
+<h2>38.1. Upgrading PostgreSQL<a class="headerlink" href="#upgrading-postgresql" title="Permalink to this headline">¶</a></h2>
+<p>There are two kinds of PostgreSQL upgrade scenarios:</p>
+<ul class="simple">
+<li>A “minor upgrade” when the software version increases at the “patch” level. For example, from 8.4.3 to 8.4.4, or from 9.0.1 to 9.0.3. Increases of more than one patch version are just fine. Minor upgrades fix bugs but do not add any new features or change behaviour.</li>
+<li>A “major upgrade” when the “major” or “minor” versions increase. For example, from 8.4.5 to 9.0.0, or from 9.0.5 to 9.1.1. Major upgrades add new features and change behavior.</li>
+</ul>
+<div class="section" id="minor-postgresql-upgrades">
+<h3>38.1.1. Minor PostgreSQL Upgrades<a class="headerlink" href="#minor-postgresql-upgrades" title="Permalink to this headline">¶</a></h3>
+<p>For “minor upgrades”, no special process is necessary. Simply install the new software, and re-start the server.</p>
+</div>
+<div class="section" id="major-postgresql-upgrades">
+<h3>38.1.2. Major PostgreSQL Upgrades<a class="headerlink" href="#major-postgresql-upgrades" title="Permalink to this headline">¶</a></h3>
+<p>For “major upgrades” there are two ways to carry out the upgrade.</p>
+<div class="section" id="dump-restore">
+<h4>38.1.2.1. Dump/Restore<a class="headerlink" href="#dump-restore" title="Permalink to this headline">¶</a></h4>
+<p>Dumping and restoring involves converting all the data to a platform neutral format (text representations) on dump, and back to native representations on restore, so it can be time consuming and CPU intensive. However, if you are migrating to a new architecture or operating system, it’s a required process. It’s also a time-tested and well-understood upgrade path, so if your database is not too big, there’s no reason not to stick with it.</p>
+<ul class="simple">
+<li>Dump your data <code class="docutils literal notranslate"><span class="pre">pg_dumpall</span></code> from the old database.</li>
+<li>Install the new version of PostgreSQL and the same version of PostGIS you are using in your old database. You need to match the PostGIS version so that the dump file function definitions reference an expected version of the PostGIS library.</li>
+<li>Initialize the new data area using the <code class="docutils literal notranslate"><span class="pre">initdb</span></code> program from the new software.</li>
+<li>Start the new server on the new data area.</li>
+<li>Restore the dump file using <code class="docutils literal notranslate"><span class="pre">pg_restore</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="pg-upgrade">
+<h4>38.1.2.2. pg_upgrade<a class="headerlink" href="#pg-upgrade" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference external" href="http://www.postgresql.org/docs/current/static/pgupgrade.html">pg_upgrade</a> utility allows PostgreSQL data directories to be upgraded without the requirement for a dump/restore step. The utility cannot handle changes to the data files themselves, but handles the more common and frequent changes to system tables that occur in PostgreSQL major upgrades.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The full instructions for running the upgrade process are in the <a class="reference external" href="http://www.postgresql.org/docs/current/static/pgupgrade.html">pg_upgrade</a> web page at the PostgreSQL site.</p>
+</div>
+<p>The <a class="reference external" href="http://www.postgresql.org/docs/current/static/pgupgrade.html">pg_upgrade</a> program expects to have access to both versions of PostgreSQL it is working with, the old and the new version, so you will have to install them both.</p>
+<ul>
+<li><p class="first">Install the new version of PostgreSQL you will be using.</p>
+</li>
+<li><p class="first">Install the same version of PostGIS you are using in the old PostgreSQL into the new PostgreSQL.</p>
+</li>
+<li><p class="first">Initialize the new PostgreSQL data area with the new copy of <code class="docutils literal notranslate"><span class="pre">initdb</span></code>.</p>
+</li>
+<li><p class="first">Ensure both the old and new PostgreSQL servers are turned off.</p>
+</li>
+<li><p class="first">Run <a class="reference external" href="http://www.postgresql.org/docs/current/static/pgupgrade.html">pg_upgrade</a>, making sure to use the binary from the new software installation.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_upgrade</span>
+  <span class="o">--</span><span class="n">old</span><span class="o">-</span><span class="n">datadir</span> <span class="s2">&quot;C:/Program Files/PostgreSQL/8.4/data&quot;</span>
+  <span class="o">--</span><span class="n">new</span><span class="o">-</span><span class="n">datadir</span> <span class="s2">&quot;C:/Program Files/PostgreSQL/9.0/data&quot;</span>
+  <span class="o">--</span><span class="n">old</span><span class="o">-</span><span class="n">bindir</span> <span class="s2">&quot;C:/Program Files/PostgreSQL/8.4/bin&quot;</span>
+  <span class="o">--</span><span class="n">new</span><span class="o">-</span><span class="n">bindir</span> <span class="s2">&quot;C:/Program Files/PostgreSQL/9.0/bin&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">If <a class="reference external" href="http://www.postgresql.org/docs/current/static/pgupgrade.html">pg_upgrade</a> generated any <code class="docutils literal notranslate"><span class="pre">.sql</span></code> files, run them now.</p>
+</li>
+<li><p class="first">Start the new server.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="upgrading-postgis">
+<h2>38.2. Upgrading PostGIS<a class="headerlink" href="#upgrading-postgis" title="Permalink to this headline">¶</a></h2>
+<p>There are two upgrade scenarios for PostGIS too, but they are slightly different from the PostgreSQL scheme:</p>
+<p>There are two kinds of PostGIS upgrade scenarios:</p>
+<ul class="simple">
+<li>A “minor or patch upgrade” is when the software version increases at the “patch” or “minor” level. For example, from 2.0.1 to 2.0.2, or from 2.0.2 to 2.1.0. Patch upgrades fix bugs only and do not add new features. Minor upgrades fix add new features or change behaviour.</li>
+<li>A “major upgrade” is when the “major” version increases. This is extremely rare. For example, from 0.9.4 to 1.0.0, or from 1.5.4 to 2.0.0. Major upgrades change the on-disk storage format for geometries and require a full database dump and restore.</li>
+</ul>
+<div class="section" id="minor-patch-postgis-upgrades">
+<h3>38.2.1. Minor/Patch PostGIS Upgrades<a class="headerlink" href="#minor-patch-postgis-upgrades" title="Permalink to this headline">¶</a></h3>
+<p>PostGIS deals with minor and upgrades through the <code class="docutils literal notranslate"><span class="pre">EXTENSION</span></code> mechanism. If you spatially-enabled your database using <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span> <span class="pre">postgis</span></code>, you can update your database using the same functionality.</p>
+<p>First, install the new software so it is available to the database.</p>
+<p>Then, run the SQL to upgrade your PostGIS extension.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- To upgrade to 2.1.2</span>
+<span class="k">ALTER</span> <span class="n">EXTENSION</span> <span class="n">postgis</span> <span class="k">UPDATE</span> <span class="k">TO</span> <span class="s1">&#39;2.1.2&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="major-postgis-upgrades">
+<h3>38.2.2. Major PostGIS Upgrades<a class="headerlink" href="#major-postgis-upgrades" title="Permalink to this headline">¶</a></h3>
+<p>Major upgrades involve changes to the actual data format for the on-disk storage of geometry and geography data. As such, the data tables need to be re-written. The only way to achieve this is to dump (creating a neutral text-based output) and restore (writing the new table format to disk).</p>
+<p>To upgrade, you will have to dump your data first, as discussed in <a class="reference internal" href="backup.html#backup"><span class="std std-ref">PostgreSQL Backup and Restore</span></a>.</p>
+<div class="section" id="with-data-in-schemas">
+<h4>38.2.2.1. With Data in Schemas<a class="headerlink" href="#with-data-in-schemas" title="Permalink to this headline">¶</a></h4>
+<ul>
+<li><p class="first">Dump your data by schema.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_dump</span>
+   <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">54321</span>
+   <span class="o">--</span><span class="nb">type</span><span class="o">=</span><span class="n">compressed</span>
+   <span class="o">--</span><span class="n">file</span><span class="o">=</span><span class="n">yourschema</span><span class="o">.</span><span class="n">backup</span>
+   <span class="o">--</span><span class="n">schema</span><span class="o">=</span><span class="n">yourschema</span>
+   <span class="n">yourdatabase</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install the new version of the PostGIS software.</p>
+</li>
+<li><p class="first">Create a new blank database, and enable PostGIS in it.</p>
+</li>
+<li><p class="first">Load your data using pg_restore.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_restore</span>
+  <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">54321</span>
+  <span class="o">--</span><span class="nb">type</span><span class="o">=</span><span class="n">compressed</span>
+  <span class="o">--</span><span class="n">dbname</span><span class="o">=</span><span class="n">yournewdatabase</span>
+  <span class="n">yourschema</span><span class="o">.</span><span class="n">backup</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="without-data-in-schemas">
+<h4>38.2.2.2. Without Data in Schemas<a class="headerlink" href="#without-data-in-schemas" title="Permalink to this headline">¶</a></h4>
+<p>In this case you have to dump the whole database, which means the dump file will contain PostGIS function and type signatures, and old ones at that. Before loading that file back into the new database, we strip out all the PostGIS-specific bits using a magic script from the PostGIS distribution.</p>
+<ul>
+<li><p class="first">Dump your whole database, using the “compressed” backup format.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_dump</span>
+   <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">54321</span>
+   <span class="o">--</span><span class="nb">type</span><span class="o">=</span><span class="n">compressed</span>
+   <span class="o">--</span><span class="n">file</span><span class="o">=</span><span class="n">yourdatabase</span><span class="o">.</span><span class="n">backup</span> <span class="n">yourdatabase</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install the new version of the PostGIS software.</p>
+</li>
+<li><p class="first">Filter your database backup using the ./utils/postgis_restore.pl script from the new version of PostGIS.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">postgis_restore</span><span class="o">.</span><span class="n">pl</span> <span class="n">yourdatabase</span><span class="o">.</span><span class="n">backup</span> <span class="o">&gt;</span> <span class="n">yourdatabase</span><span class="o">.</span><span class="n">sql</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a new blank database, and enable PostGIS in it.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- New in PostGIS 2+ / PgSQL 9.1+</span>
+<span class="c1">-- Formal extensions replace hand loading sql files!</span>
+<span class="k">CREATE</span> <span class="n">EXTENSION</span> <span class="n">postgis</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Load the filtered data back into the new databaes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span>
+   <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">54321</span>
+   <span class="o">--</span><span class="n">file</span><span class="o">=</span><span class="n">yourdatabase</span><span class="o">.</span><span class="n">sql</span>
+   <span class="o">--</span><span class="n">dbname</span><span class="o">=</span><span class="n">yournewdatabase</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>You should now have an upgraded database ready to use.</p>
+</div>
+</div>
+</div>
+<div class="section" id="postgis-2-0-upgrade-issues">
+<h2>38.3. PostGIS 2.0 Upgrade Issues<a class="headerlink" href="#postgis-2-0-upgrade-issues" title="Permalink to this headline">¶</a></h2>
+<p>In addition to being a major upgrade, and therefore requiring a dump and restore, PostGIS 2.0 made some major changes to behaviour and functionality, some of which are user facing. If you are upgrading from 1.X to 2.X you’ll want to remain aware of these.</p>
+<div class="section" id="function-signatures">
+<h3>38.3.1. Function Signatures<a class="headerlink" href="#function-signatures" title="Permalink to this headline">¶</a></h3>
+<p>Not only are there new functions, to support new features, but PostGIS 2.0 <strong>removed a large number of old function signatures</strong>. In particular, most of the function variants that are not prefixed by “ST_” have been removed.</p>
+<p>For example, ST_Intersects() exists, but Intersects() no longer exists in PostGIS 2.0.</p>
+<p>For some client applications, upgrading the software to no longer use the old signatures is not an option. For those users, <strong>it is possible to restore the old signatures</strong>, by loading the <code class="docutils literal notranslate"><span class="pre">legacy.sql</span></code> file into your database.</p>
+<p>Loading <code class="docutils literal notranslate"><span class="pre">legacy.sql</span></code> reestablishes all the old function signatures as aliases to the new signatures.</p>
+</div>
+<div class="section" id="default-wkt-and-wkb">
+<h3>38.3.2. Default WKT and WKB<a class="headerlink" href="#default-wkt-and-wkb" title="Permalink to this headline">¶</a></h3>
+<p>Prior to PostGIS 2.0, the default forms of the ST_AsBinary() and ST_AsText() functions were the <a class="reference internal" href="glossary.html#term-ogc"><span class="xref std std-term">OGC</span></a> <a class="reference internal" href="glossary.html#term-sfsql"><span class="xref std std-term">SFSQL</span></a> defined versions, which only supported two dimensions. Running ST_AsBinary() and ST_AsText() on 3-D and 4-D features just caused the extra dimensions to be stripped, and the returns were 2-D.</p>
+<p>For PostGIS 2.0, the ISO SQL/MM definitions of ST_AsBinary() and ST_AsText() are used. For 2-D features, the representations are the same, so no changes will be noticed. For 3-D and 4-D features, however, legal representations in ISO SQL/MM exist, so the dimensions will no longer be stripped, and ISO text and binary results will be returned.</p>
+<p>For well-known text, that means that the type string will include dimensionality information, and there will be extra ordinates, eg:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POINT</span> <span class="n">Z</span> <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">LINESTRING</span> <span class="n">ZM</span> <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For well-known binaries, that means that the type number will be promoted by a multiple of 1000 to indicate the dimensionality.</p>
+<ul class="simple">
+<li>0 implies 2D</li>
+<li>1000 implied 3D with a Z</li>
+<li>2000 implies 3D with an M</li>
+<li>3000 implies 4D</li>
+</ul>
+<p>So, for example</p>
+<ul class="simple">
+<li>A POINT has type number 1, a POINT ZM has type number 3001</li>
+<li>A LINESTRING has type number 2, LINESTRING M has type number 2002.</li>
+</ul>
+</div>
+<div class="section" id="default-srid">
+<h3>38.3.3. Default SRID<a class="headerlink" href="#default-srid" title="Permalink to this headline">¶</a></h3>
+<p>For PostGIS 0.X and 1.X, the SRID assigned to geometries created without specifying an SRID was -1.</p>
+<p>For PostGIS 2.X, the SRID assigned to geometries created without specifying an SRID is 0.</p>
+<p>This is only important to client applications calling the ST_SRID() function and testing the result.</p>
+</div>
+<div class="section" id="srid-range-limits">
+<h3>38.3.4. SRID Range Limits<a class="headerlink" href="#srid-range-limits" title="Permalink to this headline">¶</a></h3>
+<p>In order to fit the SRID number into a limited address range in the PostgreSQL system tables, the range of values PostGIS 2.X supports for SRID numbers is actually smaller than the range supported in 1.X.</p>
+<p>Legal user-defined SRIDs in PostGIS 2.X are from 1 to 998999. The top 10000 SRIDs are retained by PostGIS for internal use.</p>
+</div>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="backup.html" title="previous chapter">37. PostgreSQL Backup and Restore</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="postgis-functions.html" title="next chapter">39. Appendix A: PostGIS Functions</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="backup.html" title="previous chapter">37. PostgreSQL Backup and Restore</a></p>
+          <p><b>Next:</b> <a href="postgis-functions.html" title="next chapter">39. Appendix A: PostGIS Functions</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="postgis-functions.html" title="39. Appendix A: PostGIS Functions"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="backup.html" title="37. PostgreSQL Backup and Restore"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

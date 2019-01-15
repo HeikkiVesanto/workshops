@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 22. Geography</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="23. Geometry Constructing Functions" href="geometry_returning.html" />
+      <link rel="prev" title="21. Projection Exercises with Answers" href="projection_exercise_answers.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">22. Geography</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="geometry_returning.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="projection_exercise_answers.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">22. Geography</a><ul>
+<li><a class="reference internal" href="#using-geography">22.1. Using Geography</a></li>
+<li><a class="reference internal" href="#creating-a-geography-table">22.2. Creating a Geography Table</a></li>
+<li><a class="reference internal" href="#casting-to-geometry">22.3. Casting to Geometry</a></li>
+<li><a class="reference internal" href="#why-not-use-geography">22.4. Why (Not) Use Geography</a></li>
+<li><a class="reference internal" href="#function-list">22.5. Function List</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="geography">
+<span id="id1"></span><h1>22. Geography<a class="headerlink" href="#geography" title="Permalink to this headline">¶</a></h1>
+<p>It is very common to have data in which the coordinate are “geographics” or “latitude/longitude”.</p>
+<p>Unlike coordinates in Mercator, UTM, or Stateplane, geographic coordinates are <strong>not Cartesian coordinates</strong>. Geographic coordinates do not represent a linear distance from an origin as plotted on a plane.  Rather, these <strong>spherical coordinates</strong> describe angular coordinates on a globe. In spherical coordinates a point is specified by the angle of rotation from a reference meridian (longitude), and the angle from the equator (latitude).</p>
+<img alt="_images/cartesian_spherical.jpg" class="inline" src="_images/cartesian_spherical.jpg" />
+<p>You can treat geographic coordinates as approximate Cartesian coordinates and continue to do spatial calculations. However, measurements of distance, length and area will be nonsensical. Since spherical coordinates measure <strong>angular</strong> distance, the units are in “degrees.” Further, the approximate results from indexes and true/false tests like intersects and contains can become terribly wrong. The distance between points get larger as problem areas like the poles or the international dateline are approached.</p>
+<p>For example, here are the coordinates of Los Angeles and Paris.</p>
+<ul class="simple">
+<li>Los Angeles: <code class="docutils literal notranslate"><span class="pre">POINT(-118.4079</span> <span class="pre">33.9434)</span></code></li>
+<li>Paris: <code class="docutils literal notranslate"><span class="pre">POINT(2.3490</span> <span class="pre">48.8533)</span></code></li>
+</ul>
+<p>The following calculates the distance between Los Angeles and Paris using the standard PostGIS Cartesian <strong class="command">ST_Distance(geometry, geometry)</strong>.  Note that the SRID of 4326 declares a geographic spatial reference system.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Distance</span><span class="p">(</span>
+  <span class="n">ST_GeometryFromText</span><span class="p">(</span><span class="s1">&#39;POINT(-118.4079 33.9434)&#39;</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span> <span class="c1">-- Los Angeles (LAX)</span>
+  <span class="n">ST_GeometryFromText</span><span class="p">(</span><span class="s1">&#39;POINT(2.5559 49.0083)&#39;</span><span class="p">,</span> <span class="mi">4326</span><span class="p">)</span>     <span class="c1">-- Paris (CDG)</span>
+  <span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">121.898285970107</span>
+</pre></div>
+</div>
+<p>Aha! 121! But, what does that mean?</p>
+<p>The units for spatial reference 4326 are degrees. So our answer is 121 degrees. But (again), what does that mean?</p>
+<p>On a sphere, the size of one “degree square” is quite variable, becoming smaller as you move away from the equator. Think of the meridians (vertical lines) on the globe getting closer to each other as you go towards the poles. So, a distance of 121 degrees doesn’t <em>mean</em> anything. It is a nonsense number.</p>
+<p>In order to calculate a meaningful distance, we must treat geographic coordinates not as approximate Cartesian coordinates but rather as true spherical coordinates.  We must measure the distances between points as true paths over a sphere – a portion of a great circle.</p>
+<p>Starting with version 1.5, PostGIS provides this functionality through the <code class="docutils literal notranslate"><span class="pre">geography</span></code> type.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Different spatial databases have different approaches for “handling geographics”</p>
+<ul class="last simple">
+<li>Oracle attempts to paper over the differences by transparently doing geographic calculations when the SRID is geographic.</li>
+<li>SQL Server uses two spatial types, “STGeometry” for Cartesian data and “STGeography” for geographics.</li>
+<li>Informix Spatial is a pure Cartesian extension to Informix, while Informix Geodetic is a pure geographic extension.</li>
+<li>Similar to SQL Server, PostGIS uses two types, “geometry” and “geography”.</li>
+</ul>
+</div>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">geography</span></code> instead of <code class="docutils literal notranslate"><span class="pre">geometry</span></code> type, let’s try again to measure the distance between Los Angeles and Paris. Instead of <strong class="command">ST_GeometryFromText(text)</strong>, we will use <strong class="command">ST_GeographyFromText(text)</strong>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Distance</span><span class="p">(</span>
+  <span class="n">ST_GeographyFromText</span><span class="p">(</span><span class="s1">&#39;POINT(-118.4079 33.9434)&#39;</span><span class="p">),</span> <span class="c1">-- Los Angeles (LAX)</span>
+  <span class="n">ST_GeographyFromText</span><span class="p">(</span><span class="s1">&#39;POINT(2.5559 49.0083)&#39;</span><span class="p">)</span>     <span class="c1">-- Paris (CDG)</span>
+  <span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">9124665.26917268</span>
+</pre></div>
+</div>
+<p>A big number! All return values from <code class="docutils literal notranslate"><span class="pre">geography</span></code> calculations are in meters, so our answer is 9124km.</p>
+<p>Older versions of PostGIS supported very basic calculations over the sphere using the <strong class="command">ST_Distance_Spheroid(point, point, measurement)</strong> function. However, <strong class="command">ST_Distance_Spheroid</strong> is substantially limited. The function only works on points and provides no support for indexing across the poles or international dateline.</p>
+<p>The need to support non-point geometries becomes very clear when posing a question like “How close will a flight from Los Angeles to Paris come to Iceland?”</p>
+<img alt="_images/lax_cdg.jpg" src="_images/lax_cdg.jpg" />
+<p>Working with geographic coordinates on a Cartesian plane (the purple line) yields a <em>very</em> wrong answer indeed! Using great circle routes (the red lines) gives the right answer. If we convert our LAX-CDG flight into a line string and calculate the distance to a point in Iceland using <code class="docutils literal notranslate"><span class="pre">geography</span></code> we’ll get the right answer (recall) in meters.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Distance</span><span class="p">(</span>
+  <span class="n">ST_GeographyFromText</span><span class="p">(</span><span class="s1">&#39;LINESTRING(-118.4079 33.9434, 2.5559 49.0083)&#39;</span><span class="p">),</span> <span class="c1">-- LAX-CDG</span>
+  <span class="n">ST_GeographyFromText</span><span class="p">(</span><span class="s1">&#39;POINT(-22.6056 63.9850)&#39;</span><span class="p">)</span>                        <span class="c1">-- Iceland (KEF)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">502454.906643729</span>
+</pre></div>
+</div>
+<p>So the closest approach to Iceland (as measured from its international airport) on the LAX-CDG route is a relatively small 502km.</p>
+<p>The Cartesian approach to handling geographic coordinates breaks down entirely for features that cross the international dateline. The shortest great-circle route from Los Angeles to Tokyo crosses the Pacific Ocean. The shortest Cartesian route crosses the Atlantic and Indian Oceans.</p>
+<img alt="_images/lax_nrt.png" src="_images/lax_nrt.png" />
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Distance</span><span class="p">(</span>
+  <span class="n">ST_GeometryFromText</span><span class="p">(</span><span class="s1">&#39;Point(-118.4079 33.9434)&#39;</span><span class="p">),</span>  <span class="c1">-- LAX</span>
+  <span class="n">ST_GeometryFromText</span><span class="p">(</span><span class="s1">&#39;Point(139.733 35.567)&#39;</span><span class="p">))</span>     <span class="c1">-- NRT (Tokyo/Narita)</span>
+    <span class="k">AS</span> <span class="n">geometry_distance</span><span class="p">,</span>
+<span class="n">ST_Distance</span><span class="p">(</span>
+  <span class="n">ST_GeographyFromText</span><span class="p">(</span><span class="s1">&#39;Point(-118.4079 33.9434)&#39;</span><span class="p">),</span> <span class="c1">-- LAX</span>
+  <span class="n">ST_GeographyFromText</span><span class="p">(</span><span class="s1">&#39;Point(139.733 35.567)&#39;</span><span class="p">))</span>    <span class="c1">-- NRT (Tokyo/Narita)</span>
+    <span class="k">AS</span> <span class="n">geography_distance</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">geometry_distance</span> <span class="o">|</span> <span class="n">geography_distance</span>
+<span class="o">-------------------+--------------------</span>
+  <span class="mf">258.146005837336</span> <span class="o">|</span>   <span class="mf">8833954.76996256</span>
+</pre></div>
+</div>
+<div class="section" id="using-geography">
+<h2>22.1. Using Geography<a class="headerlink" href="#using-geography" title="Permalink to this headline">¶</a></h2>
+<p>In order to load geometry data into a geography table, the geometry first needs to be projected into EPSG:4326 (longitude/latitude), then it needs to be changed into geography.  The <strong class="command">ST_Transform(geometry,srid)</strong> function converts coordinates to geographics and the <strong class="command">Geography(geometry)</strong> function “casts” them from geometry to geography.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">nyc_subway_stations_geog</span> <span class="k">AS</span>
+<span class="k">SELECT</span>
+  <span class="n">Geography</span><span class="p">(</span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">4326</span><span class="p">))</span> <span class="k">AS</span> <span class="n">geog</span><span class="p">,</span>
+  <span class="n">name</span><span class="p">,</span>
+  <span class="n">routes</span>
+<span class="k">FROM</span> <span class="n">nyc_subway_stations</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Building a spatial index on a geography table is exactly the same as for geometry:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">nyc_subway_stations_geog_gix</span>
+<span class="k">ON</span> <span class="n">nyc_subway_stations_geog</span> <span class="k">USING</span> <span class="n">GIST</span> <span class="p">(</span><span class="n">geog</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The difference is under the covers: the geography index will correctly handle queries that cover the poles or the international date-line, while the geometry one will not.</p>
+<p>There are only a small number of native functions for the geography type:</p>
+<ul class="simple">
+<li><strong class="command">ST_AsText(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><strong class="command">ST_GeographyFromText(text)</strong> returns <code class="docutils literal notranslate"><span class="pre">geography</span></code></li>
+<li><strong class="command">ST_AsBinary(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">bytea</span></code></li>
+<li><strong class="command">ST_GeogFromWKB(bytea)</strong> returns <code class="docutils literal notranslate"><span class="pre">geography</span></code></li>
+<li><strong class="command">ST_AsSVG(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><strong class="command">ST_AsGML(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><strong class="command">ST_AsKML(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><strong class="command">ST_AsGeoJson(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><strong class="command">ST_Distance(geography, geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">double</span></code></li>
+<li><strong class="command">ST_DWithin(geography, geography, float8)</strong> returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code></li>
+<li><strong class="command">ST_Area(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">double</span></code></li>
+<li><strong class="command">ST_Length(geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">double</span></code></li>
+<li><strong class="command">ST_Covers(geography, geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code></li>
+<li><strong class="command">ST_CoveredBy(geography, geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code></li>
+<li><strong class="command">ST_Intersects(geography, geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">boolean</span></code></li>
+<li><strong class="command">ST_Buffer(geography, float8)</strong> returns <code class="docutils literal notranslate"><span class="pre">geography</span></code> <a class="footnote-reference" href="#casting-note" id="id2">[1]</a></li>
+<li><strong class="command">ST_Intersection(geography, geography)</strong> returns <code class="docutils literal notranslate"><span class="pre">geography</span></code> <a class="footnote-reference" href="#casting-note" id="id3">[1]</a></li>
+</ul>
+</div>
+<div class="section" id="creating-a-geography-table">
+<h2>22.2. Creating a Geography Table<a class="headerlink" href="#creating-a-geography-table" title="Permalink to this headline">¶</a></h2>
+<p>The SQL for creating a new table with a geography column is much like that for creating a geometry table. However, geography includes the ability to specify the object type directly at the time of table creation. For example:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">airports</span> <span class="p">(</span>
+  <span class="n">code</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+  <span class="n">geog</span> <span class="n">GEOGRAPHY</span><span class="p">(</span><span class="n">Point</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">airports</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;LAX&#39;</span><span class="p">,</span> <span class="s1">&#39;POINT(-118.4079 33.9434)&#39;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">airports</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;CDG&#39;</span><span class="p">,</span> <span class="s1">&#39;POINT(2.5559 49.0083)&#39;</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">airports</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;KEF&#39;</span><span class="p">,</span> <span class="s1">&#39;POINT(-22.6056 63.9850)&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In the table definition, the <code class="docutils literal notranslate"><span class="pre">GEOGRAPHY(Point)</span></code> specifies our airport data type as points. The new geography fields don’t get registered in the <code class="docutils literal notranslate"><span class="pre">geometry_columns</span></code> view. Instead, they are registered in a view called <code class="docutils literal notranslate"><span class="pre">geography_columns</span></code>.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">geography_columns</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>          <span class="n">f_table_name</span>    <span class="o">|</span> <span class="n">f_geography_column</span> <span class="o">|</span> <span class="n">srid</span> <span class="o">|</span>   <span class="nb">type</span>
+<span class="o">--------------------------+--------------------+------+----------</span>
+ <span class="n">nyc_subway_stations_geog</span> <span class="o">|</span> <span class="n">geog</span>               <span class="o">|</span>    <span class="mi">0</span> <span class="o">|</span> <span class="n">Geometry</span>
+ <span class="n">airports</span>                 <span class="o">|</span> <span class="n">geog</span>               <span class="o">|</span> <span class="mi">4326</span> <span class="o">|</span> <span class="n">Point</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some columns were omitted from the above output.</p>
+</div>
+</div>
+<div class="section" id="casting-to-geometry">
+<h2>22.3. Casting to Geometry<a class="headerlink" href="#casting-to-geometry" title="Permalink to this headline">¶</a></h2>
+<p>While the basic functions for geography types can handle many use cases, there are times when you might need access to other functions only supported by the geometry type. Fortunately, you can convert objects back and forth from geography to geometry.</p>
+<p>The PostgreSQL syntax convention for casting is to append <code class="docutils literal notranslate"><span class="pre">::typename</span></code> to the end of the value you wish to cast. So, <code class="docutils literal notranslate"><span class="pre">2::text</span></code> with convert a numeric two to a text string ‘2’. And <code class="docutils literal notranslate"><span class="pre">'POINT(0</span> <span class="pre">0)'::geometry</span></code> will convert the text representation of point into a geometry point.</p>
+<p>The <strong class="command">ST_X(point)</strong> function only supports the geometry type. How can we read the X coordinate from our geographies?</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">code</span><span class="p">,</span> <span class="n">ST_X</span><span class="p">(</span><span class="n">geog</span><span class="p">::</span><span class="n">geometry</span><span class="p">)</span> <span class="k">AS</span> <span class="n">longitude</span> <span class="k">FROM</span> <span class="n">airports</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">code</span> <span class="o">|</span> <span class="n">longitude</span>
+<span class="o">------+-----------</span>
+ <span class="n">LAX</span>  <span class="o">|</span> <span class="o">-</span><span class="mf">118.4079</span>
+ <span class="n">CDG</span>  <span class="o">|</span>    <span class="mf">2.5559</span>
+ <span class="n">KEF</span>  <span class="o">|</span>  <span class="o">-</span><span class="mf">21.8628</span>
+</pre></div>
+</div>
+<p>By appending <code class="docutils literal notranslate"><span class="pre">::geometry</span></code> to our geography value, we convert the object to a geometry with an SRID of 4326. From there we can use as many geometry functions as strike our fancy. But, remember – now that our object is a geometry, the coordinates will be interpretted as Cartesian coordinates, not spherical ones.</p>
+</div>
+<div class="section" id="why-not-use-geography">
+<h2>22.4. Why (Not) Use Geography<a class="headerlink" href="#why-not-use-geography" title="Permalink to this headline">¶</a></h2>
+<p>Geographics are universally accepted coordinates – everyone understands what latitude/longitude mean, but very few people understand what UTM coordinates mean. Why not use geography all the time?</p>
+<ul class="simple">
+<li>First, as noted earlier, there are far fewer functions available (right now) that directly support the geography type. You may spend a lot of time working around geography type limitations.</li>
+<li>Second, the calculations on a sphere are computationally far more expensive than Cartesian calculations. For example, the Cartesian formula for distance (Pythagoras) involves one call to sqrt(). The spherical formula for distance (Haversine) involves two sqrt() calls, an arctan() call, four sin() calls and two cos() calls. Trigonometric functions are very costly, and spherical calculations involve a lot of them.</li>
+</ul>
+<p>The conclusion?</p>
+<p><strong>If your data is geographically compact</strong> (contained within a state, county or city), <strong>use the geometry type with a Cartesian projection</strong> that makes sense with your data. See the <a class="reference external" href="http://spatialreference.org">http://spatialreference.org</a> site and type in the name of your region for a selection of possible reference systems.</p>
+<p><strong>If you need to measure distance with a dataset that is geographically dispersed</strong> (covering much of the world), <strong>use the geography type.</strong> The application complexity you save by working in <code class="docutils literal notranslate"><span class="pre">geography</span></code> will offset any performance issues. And casting to <code class="docutils literal notranslate"><span class="pre">geometry</span></code> can offset most functionality limitations.</p>
+</div>
+<div class="section" id="function-list">
+<h2>22.5. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Distance.html">ST_Distance(geometry, geometry)</a>: For geometry type Returns the 2-dimensional Cartesian minimum distance (based on spatial ref) between two geometries in projected units. For geography type defaults to return spheroidal minimum distance between two geographies in meters.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_GeographyFromText.html">ST_GeographyFromText(text)</a>: Returns a specified geography value from Well-Known Text representation or extended (WKT).</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Transform.html">ST_Transform(geometry, srid)</a>: Returns a new geometry with its coordinates transformed to the SRID referenced by the integer parameter.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_X.html">ST_X(point)</a>: Returns the X coordinate of the point, or NULL if not available. Input must be a point.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="casting-note" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> <p>The buffer and intersection functions are actually wrappers on top of a cast to geometry, and are not carried out natively in spherical coordinates. As a result, they may fail to return correct results for objects with very large extents that cannot be cleanly converted to a planar representation.</p>
+<p class="last">For example, the <strong class="command">ST_Buffer(geography,distance)</strong> function transforms the geography object into a “best” projection, buffers it, and then transforms it back to geographics. If there is no “best” projection (the object is too large), the operation can fail or return a malformed buffer.</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="projection_exercise_answers.html" title="previous chapter">21. Projection Exercises with Answers</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="geometry_returning.html" title="next chapter">23. Geometry Constructing Functions</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="projection_exercise_answers.html" title="previous chapter">21. Projection Exercises with Answers</a></p>
+          <p><b>Next:</b> <a href="geometry_returning.html" title="next chapter">23. Geometry Constructing Functions</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="geometry_returning.html" title="23. Geometry Constructing Functions"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="projection_exercise_answers.html" title="21. Projection Exercises with Answers"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

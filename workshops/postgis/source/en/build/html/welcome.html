@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 1. Welcome</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="2. Introduction" href="introduction.html" />
+      <link rel="prev" title="Introduction to PostGIS" href="index.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">1. Welcome</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="introduction.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="index.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">1. Welcome</a><ul>
+<li><a class="reference internal" href="#about-boundless">1.1. About Boundless</a></li>
+<li><a class="reference internal" href="#workshop-conventions">1.2. Workshop Conventions</a><ul>
+<li><a class="reference internal" href="#directions">1.2.1. Directions</a></li>
+<li><a class="reference internal" href="#code">1.2.2. Code</a></li>
+<li><a class="reference internal" href="#notes">1.2.3. Notes</a></li>
+<li><a class="reference internal" href="#functions">1.2.4. Functions</a></li>
+<li><a class="reference internal" href="#files-tables-and-column-names">1.2.5. Files, Tables and Column Names</a></li>
+<li><a class="reference internal" href="#menus-and-form-elements">1.2.6. Menus and Form elements</a></li>
+<li><a class="reference internal" href="#workflow">1.2.7. Workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="welcome">
+<span id="id1"></span><h1>1. Welcome<a class="headerlink" href="#welcome" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about-boundless">
+<h2>1.1. About Boundless<a class="headerlink" href="#about-boundless" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://boundlessgeo.com/">Boundless</a> is bringing the best practices of open source software to governments and other organizations around the world.</p>
+<ul class="simple">
+<li>We provide enterprises with supported, tested, and integrated open source solutions to help open government.</li>
+<li>We support open source communities by employing key developers for PostGIS, GeoServer, GeoWebCache, GeoExt, and OpenLayers.</li>
+<li>We have a ten-year history of providing successful consulting services and products to clients like MassGIS, TriMet, Landgate, Google, The Work Bank, and the Open Geospatial Consortium.</li>
+<li>We believe open and accessible information empowers people to effect real change. Our goal is to make geospatial information more open: publicly available, accessible on compelling platforms that people want to use.</li>
+<li>We strive to build software that meets and exceeds the desires of clients, because our market success proves the value of our work.</li>
+</ul>
+</div>
+<div class="section" id="workshop-conventions">
+<h2>1.2. Workshop Conventions<a class="headerlink" href="#workshop-conventions" title="Permalink to this headline">¶</a></h2>
+<p>These sections conform to a number of conventions to make it easier to follow the conversation. This section gives a brief overview of what to expect in the way of typographic conventions, as well as a short overview of the structure of each workbook.</p>
+<div class="section" id="directions">
+<h3>1.2.1. Directions<a class="headerlink" href="#directions" title="Permalink to this headline">¶</a></h3>
+<p>Directions for you, the workshop attendee, will be noted by <strong>bold</strong> font.</p>
+<p>For example:</p>
+<blockquote>
+<div>Click <strong>Next</strong> to continue.</div></blockquote>
+</div>
+<div class="section" id="code">
+<h3>1.2.2. Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h3>
+<p>SQL query examples will be displayed in an offset box</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">postgis_full_version</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>These examples can be entered into the query window or command line interface.</p>
+</div>
+<div class="section" id="notes">
+<h3>1.2.3. Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h3>
+<p>Notes are used to provide information that is useful but not critical to the overall understanding of the topic.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you haven’t eaten an apple today, the doctor may be on the way.</p>
+</div>
+</div>
+<div class="section" id="functions">
+<h3>1.2.4. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<p>Where function names are defined in the text, they will be rendered in a <strong class="command">bold</strong> font.</p>
+<p>For example:</p>
+<blockquote>
+<div><strong class="command">ST_Touches(geometry A, geometry B)</strong> returns TRUE if either of the geometries’ boundaries intersect</div></blockquote>
+</div>
+<div class="section" id="files-tables-and-column-names">
+<h3>1.2.5. Files, Tables and Column Names<a class="headerlink" href="#files-tables-and-column-names" title="Permalink to this headline">¶</a></h3>
+<p>File names, paths, table names and column names will be shown in <code class="docutils literal notranslate"><span class="pre">fixed-width</span></code> font.</p>
+<p>For example:</p>
+<blockquote>
+<div>Select the <code class="docutils literal notranslate"><span class="pre">name</span></code> column in the <code class="docutils literal notranslate"><span class="pre">nyc_streets</span></code> table.</div></blockquote>
+</div>
+<div class="section" id="menus-and-form-elements">
+<h3>1.2.6. Menus and Form elements<a class="headerlink" href="#menus-and-form-elements" title="Permalink to this headline">¶</a></h3>
+<p>Menus/submenus and form elements such as fields or check boxes and other on-screen artifacts are displayed in <em>italics</em>.</p>
+<p>For example:</p>
+<blockquote>
+<div>Click on the <em>File &gt; New</em> menu. Check the box that says <em>Confirm</em>.</div></blockquote>
+</div>
+<div class="section" id="workflow">
+<h3>1.2.7. Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h3>
+<p>Sections are designed to be progressive. Each section will start with the assumption that you have completed and understood the previous section in the series and will build on that knowledge. A single section will progress through a handful of ideas and provide working examples wherever possible. At the end of a section, where appropriate, we have included a handful of exercises to allow you to try out the ideas we’ve presented. In some cases the section will include “Things To Try”. These tasks contain more complex problems than the exercises and is designed to challenge participants with advanced knowledge.</p>
+</div>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="index.html" title="previous chapter">Introduction to PostGIS</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="introduction.html" title="next chapter">2. Introduction</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="index.html" title="previous chapter">Introduction to PostGIS</a></p>
+          <p><b>Next:</b> <a href="introduction.html" title="next chapter">2. Introduction</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="introduction.html" title="2. Introduction"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="index.html" title="Introduction to PostGIS"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

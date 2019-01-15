@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 21. Projection Exercises with Answers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="22. Geography" href="geography.html" />
+      <link rel="prev" title="20. Projection Exercises" href="projection_exercises.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">21. Projection Exercises with Answers</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="geography.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="projection_exercises.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">21. Projection Exercises with Answers</a><ul>
+<li><a class="reference internal" href="#exercises-with-answers">21.1. Exercises with Answers</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="projection-exercises-with-answers">
+<span id="projection-exercise-answers"></span><h1>21. Projection Exercises with Answers<a class="headerlink" href="#projection-exercises-with-answers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="exercises-with-answers">
+<h2>21.1. Exercises with Answers<a class="headerlink" href="#exercises-with-answers" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>“What is the length of all streets in New York, as measured in UTM 18?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">Sum</span><span class="p">(</span><span class="n">ST_Length</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span>
+  <span class="k">FROM</span> <span class="n">nyc_streets</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">10418904.7172</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>“What is the WKT definition of SRID 2831?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">srtext</span> <span class="k">FROM</span> <span class="n">spatial_ref_sys</span>
+<span class="k">WHERE</span> <span class="n">SRID</span> <span class="o">=</span> <span class="mi">2831</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Or, via <a class="reference external" href="http://prj2epsg.org/epsg/2831">prj2epsg</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PROJCS</span><span class="p">[</span><span class="s2">&quot;NAD83(HARN) / New York Long Island&quot;</span><span class="p">,</span>
+  <span class="n">GEOGCS</span><span class="p">[</span><span class="s2">&quot;NAD83(HARN)&quot;</span><span class="p">,</span>
+    <span class="n">DATUM</span><span class="p">[</span><span class="s2">&quot;NAD83 (High Accuracy Regional Network)&quot;</span><span class="p">,</span>
+      <span class="n">SPHEROID</span><span class="p">[</span><span class="s2">&quot;GRS 1980&quot;</span><span class="p">,</span> <span class="mf">6378137.0</span><span class="p">,</span> <span class="mf">298.257222101</span><span class="p">,</span>
+        <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;7019&quot;</span><span class="p">]],</span>
+      <span class="n">TOWGS84</span><span class="p">[</span><span class="o">-</span><span class="mf">0.991</span><span class="p">,</span> <span class="mf">1.9072</span><span class="p">,</span> <span class="mf">0.5129</span><span class="p">,</span> <span class="mf">0.0257899075194932</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.009650098960270402</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.011659943232342112</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+      <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;6152&quot;</span><span class="p">]],</span>
+    <span class="n">PRIMEM</span><span class="p">[</span><span class="s2">&quot;Greenwich&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
+      <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;8901&quot;</span><span class="p">]],</span>
+    <span class="n">UNIT</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mf">0.017453292519943295</span><span class="p">],</span>
+    <span class="n">AXIS</span><span class="p">[</span><span class="s2">&quot;Geodetic longitude&quot;</span><span class="p">,</span> <span class="n">EAST</span><span class="p">],</span>
+    <span class="n">AXIS</span><span class="p">[</span><span class="s2">&quot;Geodetic latitude&quot;</span><span class="p">,</span> <span class="n">NORTH</span><span class="p">],</span>
+    <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;4152&quot;</span><span class="p">]],</span>
+  <span class="n">PROJECTION</span><span class="p">[</span><span class="s2">&quot;Lambert Conic Conformal (2SP)&quot;</span><span class="p">,</span>
+    <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;9802&quot;</span><span class="p">]],</span>
+  <span class="n">PARAMETER</span><span class="p">[</span><span class="s2">&quot;central_meridian&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">74.0</span><span class="p">],</span>
+  <span class="n">PARAMETER</span><span class="p">[</span><span class="s2">&quot;latitude_of_origin&quot;</span><span class="p">,</span> <span class="mf">40.166666666666664</span><span class="p">],</span>
+  <span class="n">PARAMETER</span><span class="p">[</span><span class="s2">&quot;standard_parallel_1&quot;</span><span class="p">,</span> <span class="mf">41.03333333333333</span><span class="p">],</span>
+  <span class="n">PARAMETER</span><span class="p">[</span><span class="s2">&quot;false_easting&quot;</span><span class="p">,</span> <span class="mf">300000.0</span><span class="p">],</span>
+  <span class="n">PARAMETER</span><span class="p">[</span><span class="s2">&quot;false_northing&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+  <span class="n">PARAMETER</span><span class="p">[</span><span class="s2">&quot;scale_factor&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+  <span class="n">PARAMETER</span><span class="p">[</span><span class="s2">&quot;standard_parallel_2&quot;</span><span class="p">,</span> <span class="mf">40.666666666666664</span><span class="p">],</span>
+  <span class="n">UNIT</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+  <span class="n">AXIS</span><span class="p">[</span><span class="s2">&quot;Easting&quot;</span><span class="p">,</span> <span class="n">EAST</span><span class="p">],</span>
+  <span class="n">AXIS</span><span class="p">[</span><span class="s2">&quot;Northing&quot;</span><span class="p">,</span> <span class="n">NORTH</span><span class="p">],</span>
+  <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;2831&quot;</span><span class="p">]]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>“What is the length of all streets in New York, as measured in SRID 2831?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">Sum</span><span class="p">(</span><span class="n">ST_Length</span><span class="p">(</span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">2831</span><span class="p">)))</span>
+  <span class="k">FROM</span> <span class="n">nyc_streets</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">10421993.706374</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The difference between the UTM 18 and the State Plane Long Island measurements is (10421993 - 10418904)/10418904, or 0.02%. Calculated on the spheroid using <a class="reference internal" href="geography.html#geography"><span class="std std-ref">Geography</span></a> the total street length is 10421999, which is closer to the State Plane value. This is not surprising, since the State Plane Long Island projection is precisely calibrated for a very small area (New York City) while UTM 18 has to provide reasonable results for a large regional area.</p>
+</div>
+</li>
+<li><p class="first"><strong>“What is the KML representation of the point at ‘Broad St’ subway station?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsKML</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">nyc_subway_stations</span>
+<span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Broad St&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">coordinates</span><span class="o">&gt;</span>
+    <span class="o">-</span><span class="mf">74.010671468873468</span><span class="p">,</span><span class="mf">40.707104815584088</span>
+  <span class="o">&lt;/</span><span class="n">coordinates</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">Point</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Hey! The coordinates are in geographics even though we didn’t call <strong class="command">ST_Transform</strong>, why? Because the KML standard dictates that all coordinates <em>must</em> be in geographics (ESPG:4326, in fact) so the <strong class="command">ST_AsKML</strong> function does the transformation automatically.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="projection_exercises.html" title="previous chapter">20. Projection Exercises</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="geography.html" title="next chapter">22. Geography</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="projection_exercises.html" title="previous chapter">20. Projection Exercises</a></p>
+          <p><b>Next:</b> <a href="geography.html" title="next chapter">22. Geography</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="geography.html" title="22. Geography"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="projection_exercises.html" title="20. Projection Exercises"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

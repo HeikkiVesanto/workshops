@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 9. Geometries</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="10. Geometry Exercises" href="geometries_exercises.html" />
+      <link rel="prev" title="8. Simple SQL Exercise Answers" href="simple_sql_exercise_answers.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">9. Geometries</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="geometries_exercises.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="simple_sql_exercise_answers.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">9. Geometries</a><ul>
+<li><a class="reference internal" href="#introduction">9.1. Introduction</a></li>
+<li><a class="reference internal" href="#metadata-tables">9.2. Metadata Tables</a></li>
+<li><a class="reference internal" href="#representing-real-world-objects">9.3. Representing Real World Objects</a><ul>
+<li><a class="reference internal" href="#points">9.3.1. Points</a></li>
+<li><a class="reference internal" href="#linestrings">9.3.2. Linestrings</a></li>
+<li><a class="reference internal" href="#polygons">9.3.3. Polygons</a></li>
+<li><a class="reference internal" href="#collections">9.3.4. Collections</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#geometry-input-and-output">9.4. Geometry Input and Output</a></li>
+<li><a class="reference internal" href="#casting-from-text">9.5. Casting from Text</a></li>
+<li><a class="reference internal" href="#function-list">9.6. Function List</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="geometries">
+<span id="id1"></span><h1>9. Geometries<a class="headerlink" href="#geometries" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>9.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>In the previous <a class="reference internal" href="loading_data.html#loading-data"><span class="std std-ref">section</span></a>, we loaded a variety of data.  Before we start playing with our data lets have a look at some simpler examples.  In pgAdmin, once again select the <strong>nyc</strong> database and open the SQL query tool.  Paste this example SQL code into the pgAdmin SQL Editor window (removing any text that may be there by default) and then execute.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">geometries</span> <span class="p">(</span><span class="n">name</span> <span class="nb">varchar</span><span class="p">,</span> <span class="n">geom</span> <span class="n">geometry</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">geometries</span> <span class="k">VALUES</span>
+  <span class="p">(</span><span class="s1">&#39;Point&#39;</span><span class="p">,</span> <span class="s1">&#39;POINT(0 0)&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="s1">&#39;Linestring&#39;</span><span class="p">,</span> <span class="s1">&#39;LINESTRING(0 0, 1 1, 2 1, 2 2)&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="s1">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s1">&#39;POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="s1">&#39;PolygonWithHole&#39;</span><span class="p">,</span> <span class="s1">&#39;POLYGON((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="s1">&#39;Collection&#39;</span><span class="p">,</span> <span class="s1">&#39;GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0, 1 0, 1 1, 0 1, 0 0)))&#39;</span><span class="p">);</span>
+
+<span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">geometries</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/start01.png" src="_images/start01.png" />
+<p>The above example CREATEs a table (<strong>geometries</strong>) then INSERTs five geometries: a point, a line, a polygon, a polygon with a hole, and a collection. Finally, the inserted rows are SELECTed and displayed in the Output pane.</p>
+</div>
+<div class="section" id="metadata-tables">
+<h2>9.2. Metadata Tables<a class="headerlink" href="#metadata-tables" title="Permalink to this headline">¶</a></h2>
+<p>In conformance with the Simple Features for SQL (<a class="reference internal" href="glossary.html#term-sfsql"><span class="xref std std-term">SFSQL</span></a>) specification, PostGIS provides two tables to track and report on the geometry types available in a given database.</p>
+<ul class="simple">
+<li>The first table, <code class="docutils literal notranslate"><span class="pre">spatial_ref_sys</span></code>, defines all the spatial reference systems known to the database and will be described in greater detail later.</li>
+<li>The second table (actually, a view), <code class="docutils literal notranslate"><span class="pre">geometry_columns</span></code>, provides a listing of all “features” (defined as an object with geometric attributes), and the basic details of those features.</li>
+</ul>
+<img alt="_images/table01.png" class="inline" src="_images/table01.png" />
+<p>Let’s have a look at the <code class="docutils literal notranslate"><span class="pre">geometry_columns</span></code> table in our database.  Paste this command in the Query Tool as before:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">geometry_columns</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/start08.png" src="_images/start08.png" />
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">f_table_catalog</span></code>, <code class="docutils literal notranslate"><span class="pre">f_table_schema</span></code>, and <code class="docutils literal notranslate"><span class="pre">f_table_name</span></code> provide the fully qualified name of the feature table containing a given geometry.  Because PostgreSQL doesn’t make use of catalogs, <code class="docutils literal notranslate"><span class="pre">f_table_catalog</span></code> will tend to be empty.</li>
+<li><code class="docutils literal notranslate"><span class="pre">f_geometry_column</span></code> is the name of the column that geometry containing column – for feature tables with multiple geometry columns, there will be one record for each.</li>
+<li><code class="docutils literal notranslate"><span class="pre">coord_dimension</span></code> and <code class="docutils literal notranslate"><span class="pre">srid</span></code> define the the dimension of the geometry (2-, 3- or 4-dimensional) and the Spatial Reference system identifier that refers to the <code class="docutils literal notranslate"><span class="pre">spatial_ref_sys</span></code> table respectively.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">type</span></code> column defines the type of geometry as described below; we’ve seen Point and Linestring types so far.</li>
+</ul>
+<p>By querying this table, GIS clients and libraries can determine what to expect when retrieving data and can perform any necessary projection, processing or rendering without needing to inspect each geometry.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Do some or all of your <code class="docutils literal notranslate"><span class="pre">nyc</span></code> tables not have an <code class="docutils literal notranslate"><span class="pre">srid</span></code> of 26918? It’s easy to fix by updating the table</p>
+<div class="last highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">UpdateGeometrySRID</span><span class="p">(</span><span class="s1">&#39;nyc_neighborhoods&#39;</span><span class="p">,</span><span class="s1">&#39;geom&#39;</span><span class="p">,</span><span class="mi">26918</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="representing-real-world-objects">
+<h2>9.3. Representing Real World Objects<a class="headerlink" href="#representing-real-world-objects" title="Permalink to this headline">¶</a></h2>
+<p>The Simple Features for SQL (<a class="reference internal" href="glossary.html#term-sfsql"><span class="xref std std-term">SFSQL</span></a>) specification, the original guiding standard for PostGIS development, defines how a real world object is represented.  By taking a continuous shape and digitizing it at a fixed resolution we achieve a passable representation of the object.  SFSQL only handled 2-dimensional representations.  PostGIS has extended that to include 3- and 4-dimensional representations; more recently the SQL-Multimedia Part 3 (<a class="reference internal" href="glossary.html#term-sql-mm"><span class="xref std std-term">SQL/MM</span></a>) specification has officially defined their own representation.</p>
+<p>Our example table contains a mixture of different geometry types. We can collect general information about each object using functions that read the geometry metadata.</p>
+<ul class="simple">
+<li><strong class="command">ST_GeometryType(geometry)</strong> returns the type of the geometry</li>
+<li><strong class="command">ST_NDims(geometry)</strong> returns the number of dimensions of the geometry</li>
+<li><strong class="command">ST_SRID(geometry)</strong> returns the spatial reference identifier number of the geometry</li>
+</ul>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">ST_GeometryType</span><span class="p">(</span><span class="n">geom</span><span class="p">),</span> <span class="n">ST_NDims</span><span class="p">(</span><span class="n">geom</span><span class="p">),</span> <span class="n">ST_SRID</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="n">name</span>       <span class="o">|</span>    <span class="n">st_geometrytype</span>    <span class="o">|</span> <span class="n">st_ndims</span> <span class="o">|</span> <span class="n">st_srid</span>
+<span class="o">-----------------+-----------------------+----------+---------</span>
+ <span class="n">Point</span>           <span class="o">|</span> <span class="n">ST_Point</span>              <span class="o">|</span>        <span class="mi">2</span> <span class="o">|</span>       <span class="mi">0</span>
+ <span class="n">Polygon</span>         <span class="o">|</span> <span class="n">ST_Polygon</span>            <span class="o">|</span>        <span class="mi">2</span> <span class="o">|</span>       <span class="mi">0</span>
+ <span class="n">PolygonWithHole</span> <span class="o">|</span> <span class="n">ST_Polygon</span>            <span class="o">|</span>        <span class="mi">2</span> <span class="o">|</span>       <span class="mi">0</span>
+ <span class="n">Collection</span>      <span class="o">|</span> <span class="n">ST_GeometryCollection</span> <span class="o">|</span>        <span class="mi">2</span> <span class="o">|</span>       <span class="mi">0</span>
+ <span class="n">Linestring</span>      <span class="o">|</span> <span class="n">ST_LineString</span>         <span class="o">|</span>        <span class="mi">2</span> <span class="o">|</span>       <span class="mi">0</span>
+</pre></div>
+</div>
+<div class="section" id="points">
+<h3>9.3.1. Points<a class="headerlink" href="#points" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/points.png" class="inline align-center" src="_images/points.png" />
+<p>A spatial <strong>point</strong> represents a single location on the Earth.  This point is represented by a single coordinate (including either 2-, 3- or 4-dimensions).  Points are used to represent objects when the exact details, such as shape and size, are not important at the target scale.  For example, cities on a map of the world can be described as points, while a map of a single state might represent cities as polygons.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Point&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POINT</span><span class="p">(</span><span class="mi">0</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Some of the specific spatial functions for working with points are:</p>
+<ul class="simple">
+<li><strong class="command">ST_X(geometry)</strong> returns the X ordinate</li>
+<li><strong class="command">ST_Y(geometry)</strong> returns the Y ordinate</li>
+</ul>
+<p>So, we can read the ordinates from a point like this:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_X</span><span class="p">(</span><span class="n">geom</span><span class="p">),</span> <span class="n">ST_Y</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Point&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The New York City subway stations (<code class="docutils literal notranslate"><span class="pre">nyc_subway_stations</span></code>) table is a data set represented as points. The following SQL query will return the geometry associated with one point (in the <strong class="command">ST_AsText</strong> column).</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">nyc_subway_stations</span>
+  <span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="linestrings">
+<h3>9.3.2. Linestrings<a class="headerlink" href="#linestrings" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/lines.png" class="inline align-center" src="_images/lines.png" />
+<p>A <strong>linestring</strong> is a path between locations.  It takes the form of an ordered series of two or more points.  Roads and rivers are typically represented as linestrings.  A linestring is said to be <strong>closed</strong> if it starts and ends on the same point.  It is said to be <strong>simple</strong> if it does not cross or touch itself (except at its endpoints if it is closed).  A linestring can be both <strong>closed</strong> and <strong>simple</strong>.</p>
+<p>The street network for New York (<code class="docutils literal notranslate"><span class="pre">nyc_streets</span></code>) was loaded earlier in the workshop.  This dataset contains details such as name, and type.  A single real world street may consist of many linestrings, each representing a segment of road with different attributes.</p>
+<p>The following SQL query will return the geometry associated with one linestring (in the <strong class="command">ST_AsText</strong> column).</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Linestring&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LINESTRING</span><span class="p">(</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Some of the specific spatial functions for working with linestrings are:</p>
+<ul class="simple">
+<li><strong class="command">ST_Length(geometry)</strong> returns the length of the linestring</li>
+<li><strong class="command">ST_StartPoint(geometry)</strong> returns the first coordinate as a point</li>
+<li><strong class="command">ST_EndPoint(geometry)</strong> returns the last coordinate as a point</li>
+<li><strong class="command">ST_NPoints(geometry)</strong> returns the number of coordinates in the linestring</li>
+</ul>
+<p>So, the length of our linestring is:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Length</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Linestring&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">3.41421356237309</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="polygons">
+<h3>9.3.3. Polygons<a class="headerlink" href="#polygons" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/polygons.png" class="inline align-center" src="_images/polygons.png" />
+<p>A polygon is a representation of an area.  The outer boundary of the polygon is represented by a ring.  This ring is a linestring that is both closed and simple as defined above.  Holes within the polygon are also represented by rings.</p>
+<p>Polygons are used to represent objects whose size and shape are important.  City limits, parks, building footprints or bodies of water are all commonly represented as polygons when the scale is sufficiently high to see their area.  Roads and rivers can sometimes be represented as polygons.</p>
+<p>The following SQL query will return the geometry associated with one linestring (in the <strong class="command">ST_AsText</strong> column).</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="k">LIKE</span> <span class="s1">&#39;Polygon%&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Rather than using an <code class="docutils literal notranslate"><span class="pre">=</span></code> sign in our <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> clause, we are using the <code class="docutils literal notranslate"><span class="pre">LIKE</span></code> operator to carry out a string matching operation. <strong>You may be used to the ``*`` symbol as a “glob” for pattern matching, but in SQL the ``%`` symbol is used</strong>, along with the <code class="docutils literal notranslate"><span class="pre">LIKE</span></code> operator to tell the system to do globbing.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POLYGON</span><span class="p">((</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">POLYGON</span><span class="p">((</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">),(</span><span class="mi">1</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The first polygon has only one ring. The second one has an interior “hole”. Most graphics systems include the concept of a “polygon”, but GIS systems are relatively unique in allowing polygons to explicitly have holes.</p>
+<img alt="_images/polygons1.png" src="_images/polygons1.png" />
+<p>Some of the specific spatial functions for working with polygons are:</p>
+<ul class="simple">
+<li><strong class="command">ST_Area(geometry)</strong> returns the area of the polygons</li>
+<li><strong class="command">ST_NRings(geometry)</strong> returns the number of rings (usually 1, more of there are holes)</li>
+<li><strong class="command">ST_ExteriorRing(geometry)</strong> returns the outer ring as a linestring</li>
+<li><strong class="command">ST_InteriorRingN(geometry,n)</strong> returns a specified interior ring as a linestring</li>
+<li><strong class="command">ST_Perimeter(geometry)</strong> returns the length of all the rings</li>
+</ul>
+<p>We can calculate the area of our polygons using the area function:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">ST_Area</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="k">LIKE</span> <span class="s1">&#39;Polygon%&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Polygon</span>            <span class="mi">1</span>
+<span class="n">PolygonWithHole</span>    <span class="mi">99</span>
+</pre></div>
+</div>
+<p>Note that the polygon with a hole has an area that is the area of the outer shell (a 10x10 square) minus the area of the hole (a 1x1 square).</p>
+</div>
+<div class="section" id="collections">
+<h3>9.3.4. Collections<a class="headerlink" href="#collections" title="Permalink to this headline">¶</a></h3>
+<p>There are four collection types, which group multiple simple geometries into sets.</p>
+<ul class="simple">
+<li><strong>MultiPoint</strong>, a collection of points</li>
+<li><strong>MultiLineString</strong>, a collection of linestrings</li>
+<li><strong>MultiPolygon</strong>, a collection of polygons</li>
+<li><strong>GeometryCollection</strong>, a heterogeneous collection of any geometry (including other collections)</li>
+</ul>
+<p>Collections are another concept that shows up in GIS software more than in generic graphics software. They are useful for directly modeling real world objects as spatial objects. For example, how to model a lot that is split by a right-of-way? As a <strong>MultiPolygon</strong>, with a part on either side of the right-of-way.</p>
+<img alt="_images/collection2.png" src="_images/collection2.png" />
+<p>Our example collection contains a polygon and a point:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">geometries</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Collection&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GEOMETRYCOLLECTION</span><span class="p">(</span><span class="n">POINT</span><span class="p">(</span><span class="mi">2</span> <span class="mi">0</span><span class="p">),</span><span class="n">POLYGON</span><span class="p">((</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">)))</span>
+</pre></div>
+</div>
+<img alt="_images/collection.png" src="_images/collection.png" />
+<p>Some of the specific spatial functions for working with collections are:</p>
+<ul class="simple">
+<li><strong class="command">ST_NumGeometries(geometry)</strong> returns the number of parts in the collection</li>
+<li><strong class="command">ST_GeometryN(geometry,n)</strong> returns the specified part</li>
+<li><strong class="command">ST_Area(geometry)</strong> returns the total area of all polygonal parts</li>
+<li><strong class="command">ST_Length(geometry)</strong> returns the total length of all linear parts</li>
+</ul>
+</div>
+</div>
+<div class="section" id="geometry-input-and-output">
+<h2>9.4. Geometry Input and Output<a class="headerlink" href="#geometry-input-and-output" title="Permalink to this headline">¶</a></h2>
+<p>Within the database, geometries are stored on disk in a format only used by the PostGIS program. In order for external programs to insert and retrieve useful geometries, they need to be converted into a format that other applications can understand. Fortunately, PostGIS supports emitting and consuming geometries in a large number of formats:</p>
+<ul class="simple">
+<li>Well-known text (<a class="reference internal" href="glossary.html#term-wkt"><span class="xref std std-term">WKT</span></a>)<ul>
+<li><strong class="command">ST_GeomFromText(text, srid)</strong> returns <code class="docutils literal notranslate"><span class="pre">geometry</span></code></li>
+<li><strong class="command">ST_AsText(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+<li><strong class="command">ST_AsEWKT(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</li>
+<li>Well-known binary (<a class="reference internal" href="glossary.html#term-wkb"><span class="xref std std-term">WKB</span></a>)<ul>
+<li><strong class="command">ST_GeomFromWKB(bytea)</strong> returns <code class="docutils literal notranslate"><span class="pre">geometry</span></code></li>
+<li><strong class="command">ST_AsBinary(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">bytea</span></code></li>
+<li><strong class="command">ST_AsEWKB(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">bytea</span></code></li>
+</ul>
+</li>
+<li>Geographic Mark-up Language (<a class="reference internal" href="glossary.html#term-gml"><span class="xref std std-term">GML</span></a>)<ul>
+<li><strong class="command">ST_GeomFromGML(text)</strong> returns <code class="docutils literal notranslate"><span class="pre">geometry</span></code></li>
+<li><strong class="command">ST_AsGML(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</li>
+<li>Keyhole Mark-up Language (<a class="reference internal" href="glossary.html#term-kml"><span class="xref std std-term">KML</span></a>)<ul>
+<li><strong class="command">ST_GeomFromKML(text)</strong> returns <code class="docutils literal notranslate"><span class="pre">geometry</span></code></li>
+<li><strong class="command">ST_AsKML(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</li>
+<li><a class="reference internal" href="glossary.html#term-geojson"><span class="xref std std-term">GeoJSON</span></a><ul>
+<li><strong class="command">ST_AsGeoJSON(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</li>
+<li>Scalable Vector Graphics (<a class="reference internal" href="glossary.html#term-svg"><span class="xref std std-term">SVG</span></a>)<ul>
+<li><strong class="command">ST_AsSVG(geometry)</strong> returns <code class="docutils literal notranslate"><span class="pre">text</span></code></li>
+</ul>
+</li>
+</ul>
+<p>The most common use of a constructor is to turn a text representation of a geometry into an internal representation:</p>
+<p>Note that in addition to a text parameter with a geometry representation, we also have a numeric parameter providing the <a class="reference internal" href="glossary.html#term-srid"><span class="xref std std-term">SRID</span></a> of the geometry.</p>
+<p>The following SQL query shows an example of <a class="reference internal" href="glossary.html#term-wkb"><span class="xref std std-term">WKB</span></a> representation (the call to <strong class="command">encode()</strong> is required to convert the binary output into an ASCII form for printing):</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">encode</span><span class="p">(</span>
+  <span class="n">ST_AsBinary</span><span class="p">(</span><span class="n">ST_GeometryFromText</span><span class="p">(</span><span class="s1">&#39;LINESTRING(0 0,1 0)&#39;</span><span class="p">)),</span>
+  <span class="s1">&#39;hex&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">01020000000200000000000000000000000000000000000000000000000000</span><span class="n">f03f0000000000000000</span>
+</pre></div>
+</div>
+<p>For the purposes of this workshop we will continue to use WKT to ensure you can read and understand the geometries we’re viewing.  However, most actual processes, such as viewing data in a GIS application, transferring data to a web service, or processing data remotely, WKB is the format of choice.</p>
+<p>Since WKT and WKB were defined in the  <a class="reference internal" href="glossary.html#term-sfsql"><span class="xref std std-term">SFSQL</span></a> specification, they do not handle 3- or 4-dimensional geometries.  For these cases PostGIS has defined the Extended Well Known Text (EWKT) and Extended Well Known Binary (EWKB) formats.  These provide the same formatting capabilities of WKT and WKB with the added dimensionality.</p>
+<p>Here is an example of a 3D linestring in WKT:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">ST_GeometryFromText</span><span class="p">(</span><span class="s1">&#39;LINESTRING(0 0 0,1 0 0,1 1 2)&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LINESTRING</span> <span class="n">Z</span> <span class="p">(</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the text representation changes! This is because the text input routine for PostGIS is liberal in what it consumes. It will consume</p>
+<ul class="simple">
+<li>hex-encoded EWKB,</li>
+<li>extended well-known text, and</li>
+<li>ISO standard well-known text.</li>
+</ul>
+<p>On the output side, the <strong class="command">ST_AsText</strong> function is conservative, and only emits ISO standard well-known text.</p>
+<p>In addition to the <strong class="command">ST_GeometryFromText</strong> function, there are many other ways to create geometries from well-known text or similar formatted inputs:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Using ST_GeomFromText with the SRID parameter</span>
+<span class="k">SELECT</span> <span class="n">ST_GeomFromText</span><span class="p">(</span><span class="s1">&#39;POINT(2 2)&#39;</span><span class="p">,</span><span class="mi">4326</span><span class="p">);</span>
+
+<span class="c1">-- Using ST_GeomFromText without the SRID parameter</span>
+<span class="k">SELECT</span> <span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_GeomFromText</span><span class="p">(</span><span class="s1">&#39;POINT(2 2)&#39;</span><span class="p">),</span><span class="mi">4326</span><span class="p">);</span>
+
+<span class="c1">-- Using a ST_Make* function</span>
+<span class="k">SELECT</span> <span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_MakePoint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">4326</span><span class="p">);</span>
+
+<span class="c1">-- Using PostgreSQL casting syntax and ISO WKT</span>
+<span class="k">SELECT</span> <span class="n">ST_SetSRID</span><span class="p">(</span><span class="s1">&#39;POINT(2 2)&#39;</span><span class="p">::</span><span class="n">geometry</span><span class="p">,</span> <span class="mi">4326</span><span class="p">);</span>
+
+<span class="c1">-- Using PostgreSQL casting syntax and extended WKT</span>
+<span class="k">SELECT</span> <span class="s1">&#39;SRID=4326;POINT(2 2)&#39;</span><span class="p">::</span><span class="n">geometry</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>In addition to emitters for the various forms (WKT, WKB, GML, KML, JSON, SVG), PostGIS also has consumers for four (WKT, WKB, GML, KML). Most applications use the WKT or WKB geometry creation functions, but the others work too. Here’s an example that consumes GML and output JSON:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsGeoJSON</span><span class="p">(</span><span class="n">ST_GeomFromGML</span><span class="p">(</span><span class="s1">&#39;&lt;gml:Point&gt;&lt;gml:coordinates&gt;1,1&lt;/gml:coordinates&gt;&lt;/gml:Point&gt;&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+<img alt="_images/represent-07.png" src="_images/represent-07.png" />
+</div>
+<div class="section" id="casting-from-text">
+<h2>9.5. Casting from Text<a class="headerlink" href="#casting-from-text" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="glossary.html#term-wkt"><span class="xref std std-term">WKT</span></a> strings we’ve see so far have been of type ‘text’ and we have been converting them to type ‘geometry’ using PostGIS functions like <strong class="command">ST_GeomFromText()</strong>.</p>
+<p>PostgreSQL includes a short form syntax that allows data to be converted from one type to another, the casting syntax, <cite>oldata::newtype</cite>. So for example, this SQL converts a double into a text string.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">::</span><span class="nb">text</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Less trivially, this SQL converts a <a class="reference internal" href="glossary.html#term-wkt"><span class="xref std std-term">WKT</span></a> string into a geometry:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="s1">&#39;POINT(0 0)&#39;</span><span class="p">::</span><span class="n">geometry</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>One thing to note about using casting to create geometries: unless you specify the SRID, you will get a geometry with an unknown SRID. You can specify the SRID using the “extended” well-known text form, which includes an SRID block at the front:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="s1">&#39;SRID=4326;POINT(0 0)&#39;</span><span class="p">::</span><span class="n">geometry</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>It’s very common to use the casting notation when working with <a class="reference internal" href="glossary.html#term-wkt"><span class="xref std std-term">WKT</span></a>, as well as <cite>geometry</cite> and <cite>geography</cite> columns (see <a class="reference internal" href="geography.html#geography"><span class="std std-ref">Geography</span></a>).</p>
+</div>
+<div class="section" id="function-list">
+<h2>9.6. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Area.html">ST_Area</a>: Returns the area of the surface if it is a polygon or multi-polygon. For “geometry” type area is in SRID units. For “geography” area is in square meters.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsText.html">ST_AsText</a>: Returns the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsBinary.html">ST_AsBinary</a>: Returns the Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_EndPoint.html">ST_EndPoint</a>: Returns the last point of a LINESTRING geometry as a POINT.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsEWKB.html">ST_AsEWKB</a>: Returns the Well-Known Binary (WKB) representation of the geometry with SRID meta data.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsEWKT.html">ST_AsEWKT</a>: Returns the Well-Known Text (WKT) representation of the geometry with SRID meta data.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsGeoJSON.html">ST_AsGeoJSON</a>: Returns the geometry as a GeoJSON element.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsGML.html">ST_AsGML</a>: Returns the geometry as a GML version 2 or 3 element.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsKML.html">ST_AsKML</a>: Returns the geometry as a KML element. Several variants. Default version=2, default precision=15.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsSVG.html">ST_AsSVG</a>: Returns a Geometry in SVG path data given a geometry or geography object.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_ExteriorRing.html">ST_ExteriorRing</a>: Returns a line string representing the exterior ring of the POLYGON geometry. Return NULL if the geometry is not a polygon. Will not work with MULTIPOLYGON</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_GeometryN.html">ST_GeometryN</a>: Returns the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON. Otherwise, return NULL.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_GeomFromGML.html">ST_GeomFromGML</a>: Takes as input GML representation of geometry and outputs a PostGIS geometry object.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_GeomFromKML.html">ST_GeomFromKML</a>: Takes as input KML representation of geometry and outputs a PostGIS geometry object</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_GeomFromText.html">ST_GeomFromText</a>: Returns a specified ST_Geometry value from Well-Known Text representation (WKT).</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_GeomFromWKB.html">ST_GeomFromWKB</a>: Creates a geometry instance from a Well-Known Binary geometry representation (WKB) and optional SRID.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_GeometryType.html">ST_GeometryType</a>: Returns the geometry type of the ST_Geometry value.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_InteriorRingN.html">ST_InteriorRingN</a>: Returns the Nth interior linestring ring of the polygon geometry. Return NULL if the geometry is not a polygon or the given N is out of range.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Length.html">ST_Length</a>: Returns the 2d length of the geometry if it is a linestring or multilinestring. geometry are in units of spatial reference and geography are in meters (default spheroid)</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_NDims.html">ST_NDims</a>: Returns coordinate dimension of the geometry as a small int. Values are: 2,3 or 4.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_NPoints.html">ST_NPoints</a>: Returns the number of points (vertexes) in a geometry.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_NRings.html">ST_NRings</a>: If the geometry is a polygon or multi-polygon returns the number of rings.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_NumGeometries.html">ST_NumGeometries</a>: If geometry is a GEOMETRYCOLLECTION (or MULTI*) returns the number of geometries, otherwise return NULL.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Perimeter.html">ST_Perimeter</a>: Returns the length measurement of the boundary of an ST_Surface or ST_MultiSurface value. (Polygon, Multipolygon)</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_SRID.html">ST_SRID</a>: Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_StartPoint.html">ST_StartPoint</a>: Returns the first point of a LINESTRING geometry as a POINT.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_X.html">ST_X</a>: Returns the X coordinate of the point, or NULL if not available. Input must be a point.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Y.html">ST_Y</a>: Returns the Y coordinate of the point, or NULL if not available. Input must be a point.</p>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="simple_sql_exercise_answers.html" title="previous chapter">8. Simple SQL Exercise Answers</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="geometries_exercises.html" title="next chapter">10. Geometry Exercises</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="simple_sql_exercise_answers.html" title="previous chapter">8. Simple SQL Exercise Answers</a></p>
+          <p><b>Next:</b> <a href="geometries_exercises.html" title="next chapter">10. Geometry Exercises</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="geometries_exercises.html" title="10. Geometry Exercises"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="simple_sql_exercise_answers.html" title="8. Simple SQL Exercise Answers"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

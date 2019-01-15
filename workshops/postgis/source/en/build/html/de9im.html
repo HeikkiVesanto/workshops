@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 28. Dimensionally Extended 9-Intersection Model</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="29. Clustering on Indices" href="clusterindex.html" />
+      <link rel="prev" title="27. Linear Referencing" href="linear_referencing.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">28. Dimensionally Extended 9-Intersection Model</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="clusterindex.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="linear_referencing.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">28. Dimensionally Extended 9-Intersection Model</a><ul>
+<li><a class="reference internal" href="#data-quality-testing">28.1. Data Quality Testing</a><ul>
+<li><a class="reference internal" href="#function-list">28.1.1. Function List</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="dimensionally-extended-9-intersection-model">
+<span id="de9im"></span><h1>28. Dimensionally Extended 9-Intersection Model<a class="headerlink" href="#dimensionally-extended-9-intersection-model" title="Permalink to this headline">¶</a></h1>
+<p>The “<a class="reference external" href="http://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended 9-Intersection Model</a>” (DE9IM) is a framework for modelling how two spatial objects interact.</p>
+<p>First, every spatial object has:</p>
+<ul class="simple">
+<li>An interior</li>
+<li>A boundary</li>
+<li>An exterior</li>
+</ul>
+<p>For polygons, the interior, boundary and exterior are obvious:</p>
+<img alt="_images/de9im1.jpg" class="inline" src="_images/de9im1.jpg" />
+<p>The interior is the part bounded by the rings; the boundary is the rings themselves; the exterior is everything else in the plane.</p>
+<p>For linear features, the interior, boundary and exterior are less well-known:</p>
+<img alt="_images/de9im2.jpg" class="inline" src="_images/de9im2.jpg" />
+<p>The interior is the part of the line bounded by the ends; the boundary is the ends of the linear feature, and the exterior is everything else in the plane.</p>
+<p>For points, things are even stranger: the interior is the point; the boundary is the empty set and the exterior is everything else in the plane.</p>
+<p>Using these definitions of interior, exterior and boundary, the relationships between any pair of spatial features can be characterized using the dimensionality of the nine possible intersections between the interiors/boundaries/exteriors of a pair of objects.</p>
+<img alt="_images/de9im3.jpg" class="inline" src="_images/de9im3.jpg" />
+<p>For the polygons in the example above, the intersection of the interiors is a 2-dimensional area, so that portion of the matrix is filled out with a “2”. The boundaries only intersect at points, which are zero-dimensional, so that portion of the matrix is filled out with a 0.</p>
+<p>When there is no intersection between components, the square the matrix is filled out with an “F”.</p>
+<p>Here’s another example, of a linestring partially entering a polygon:</p>
+<img alt="_images/de9im4.jpg" class="inline" src="_images/de9im4.jpg" />
+<p>The DE9IM matrix for the interaction is this:</p>
+<img alt="_images/de9im5.jpg" class="inline" src="_images/de9im5.jpg" />
+<p>Note that the boundaries of the two objects don’t actually intersect at all (the end point of the line interacts with the interior of the polygon, not the boundary, and vice versa), so the B/B cell is filled in with an “F”.</p>
+<p>While it’s fun to visually fill out DE9IM matrices, it would be nice if a computer could do it, and that’s what the <strong class="command">ST_Relate</strong> function is for.</p>
+<p>The previous example can be simplified using a simple box and line, with the same spatial relationship as our polygon and linestring:</p>
+<img alt="_images/de9im6.jpg" class="inline" src="_images/de9im6.jpg" />
+<p>And we can generate the DE9IM information in SQL:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Relate</span><span class="p">(</span>
+         <span class="s1">&#39;LINESTRING(0 0, 2 0)&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;POLYGON((1 -1, 1 1, 3 1, 3 -1, 1 -1))&#39;</span>
+       <span class="p">);</span>
+</pre></div>
+</div>
+<p>The answer (1010F0212) is the same as we calculated visually, but returned as a 9-character string, with the first row, second row and third row of the table appended together.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">101</span>
+<span class="mi">0</span><span class="n">F0</span>
+<span class="mi">212</span>
+</pre></div>
+</div>
+<p>However, the power of DE9IM matrices is not in generating them, but in using them as a matching key to find geometries with very specific relationships to one another.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">lakes</span> <span class="p">(</span> <span class="n">id</span> <span class="nb">serial</span> <span class="k">primary</span> <span class="k">key</span><span class="p">,</span> <span class="n">geom</span> <span class="n">geometry</span> <span class="p">);</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">docks</span> <span class="p">(</span> <span class="n">id</span> <span class="nb">serial</span> <span class="k">primary</span> <span class="k">key</span><span class="p">,</span> <span class="n">good</span> <span class="nb">boolean</span><span class="p">,</span> <span class="n">geom</span> <span class="n">geometry</span> <span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">lakes</span> <span class="p">(</span> <span class="n">geom</span> <span class="p">)</span>
+  <span class="k">VALUES</span> <span class="p">(</span> <span class="s1">&#39;POLYGON ((100 200, 140 230, 180 310, 280 310, 390 270, 400 210, 320 140, 215 141, 150 170, 100 200))&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">docks</span> <span class="p">(</span> <span class="n">geom</span><span class="p">,</span> <span class="n">good</span> <span class="p">)</span>
+  <span class="k">VALUES</span>
+        <span class="p">(</span><span class="s1">&#39;LINESTRING (170 290, 205 272)&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;LINESTRING (120 215, 176 197)&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;LINESTRING (290 260, 340 250)&#39;</span><span class="p">,</span><span class="k">false</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;LINESTRING (350 300, 400 320)&#39;</span><span class="p">,</span><span class="k">false</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;LINESTRING (370 230, 420 240)&#39;</span><span class="p">,</span><span class="k">false</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;LINESTRING (370 180, 390 160)&#39;</span><span class="p">,</span><span class="k">false</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Suppose we have a data model that includes <strong>Lakes</strong> and <strong>Docks</strong>, and suppose further that Docks must be inside lakes, and must touch the boundary of their containing lake at one end. Can we find all the docks in our database that obey that rule?</p>
+<img alt="_images/de9im7.jpg" class="inline" src="_images/de9im7.jpg" />
+<p>Our legal docks have the following characteristics:</p>
+<ul class="simple">
+<li>Their interiors have a linear (1D) intersection with the lake interior</li>
+<li>Their boundaries have a point (0D) intersection with the lake interior</li>
+<li>Their boundaries <strong>also</strong> have a point (0D) intersection with the lake boundary</li>
+<li>Their interiors have no intersection (F) with the lake exterior</li>
+</ul>
+<p>So their DE9IM matrix looks like this:</p>
+<img alt="_images/de9im8.jpg" class="inline" src="_images/de9im8.jpg" />
+<p>So to find all the legal docks, we would want to find all the docks that intersect lakes (a super-set of <strong>potential</strong> candidates we use for our join key), and then find all the docks in that set which have the legal relate pattern.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">docks</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span> <span class="n">docks</span> <span class="k">JOIN</span> <span class="n">lakes</span> <span class="k">ON</span> <span class="n">ST_Intersects</span><span class="p">(</span><span class="n">docks</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">lakes</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span>
+<span class="k">WHERE</span> <span class="n">ST_Relate</span><span class="p">(</span><span class="n">docks</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">lakes</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="s1">&#39;1FF00F212&#39;</span><span class="p">);</span>
+
+<span class="c1">-- Answer: our two good docks</span>
+</pre></div>
+</div>
+<p>Note the use of the three-parameter version of <strong class="command">ST_Relate</strong>, which returns true if the pattern matches or false if it does not. For a fully-defined pattern like this one, the three-parameter version is not needed – we could have just used a string equality operator.</p>
+<p>However, for looser pattern searches, the three-parameter allows substitution characters in the pattern string:</p>
+<ul class="simple">
+<li>“*” means “any value in this cell is acceptable”</li>
+<li>“T” means “any non-false value (0, 1 or 2) is acceptable”</li>
+</ul>
+<p>So for example, one possible dock we did not include in our example graphic is a dock with a two-dimensional intersection with the lake boundary:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">docks</span> <span class="p">(</span> <span class="n">geom</span><span class="p">,</span> <span class="n">good</span> <span class="p">)</span>
+  <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;LINESTRING (140 230, 150 250, 210 230)&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="_images/de9im9.jpg" class="inline" src="_images/de9im9.jpg" />
+<p>If we are to include this case in our set of “legal” docks, we need to change the relate pattern in our query. In particular, the intersection of the dock interior lake boundary can now be either 1 (our new case) or F (our original case). So we use the “*” catchall in the pattern.</p>
+<img alt="_images/de9im10.jpg" class="inline" src="_images/de9im10.jpg" />
+<p>And the SQL looks like this:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">docks</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span> <span class="n">docks</span> <span class="k">JOIN</span> <span class="n">lakes</span> <span class="k">ON</span> <span class="n">ST_Intersects</span><span class="p">(</span><span class="n">docks</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">lakes</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span>
+<span class="k">WHERE</span> <span class="n">ST_Relate</span><span class="p">(</span><span class="n">docks</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">lakes</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="s1">&#39;1*F00F212&#39;</span><span class="p">);</span>
+
+<span class="c1">-- Answer: our (now) three good docks</span>
+</pre></div>
+</div>
+<p>Confirm that the stricter SQL from the previous example does <em>not</em> return the new dock.</p>
+<div class="section" id="data-quality-testing">
+<h2>28.1. Data Quality Testing<a class="headerlink" href="#data-quality-testing" title="Permalink to this headline">¶</a></h2>
+<p>The TIGER data is carefully quality controlled when it is prepared, so we expect our data to meet strict standards. For example: no census block should overlap any other census block. Can we test for that?</p>
+<img alt="_images/de9im11.jpg" class="inline" src="_images/de9im11.jpg" />
+<p>Sure!</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">gid</span>
+<span class="k">FROM</span> <span class="n">nyc_census_blocks</span> <span class="n">a</span><span class="p">,</span> <span class="n">nyc_census_blocks</span> <span class="n">b</span>
+<span class="k">WHERE</span> <span class="n">ST_Intersects</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">AND</span> <span class="n">ST_Relate</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="s1">&#39;2********&#39;</span><span class="p">)</span>
+  <span class="k">AND</span> <span class="n">a</span><span class="p">.</span><span class="n">gid</span> <span class="o">!=</span> <span class="n">b</span><span class="p">.</span><span class="n">gid</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="c1">-- Answer: 10, there&#39;s some funny business</span>
+</pre></div>
+</div>
+<p>Similarly, we would expect that the roads data is all end-noded. That is, we expect that intersections only occur at the ends of lines, not at the mid-points.</p>
+<img alt="_images/de9im12.jpg" class="inline" src="_images/de9im12.jpg" />
+<p>We can test for that by looking for streets that intersect (so we have a join) but where the intersection between the boundaries is not zero-dimensional (that is, the end points don’t touch):</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">gid</span>
+<span class="k">FROM</span> <span class="n">nyc_streets</span> <span class="n">a</span><span class="p">,</span> <span class="n">nyc_streets</span> <span class="n">b</span>
+<span class="k">WHERE</span> <span class="n">ST_Intersects</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">AND</span> <span class="k">NOT</span> <span class="n">ST_Relate</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="s1">&#39;****0****&#39;</span><span class="p">)</span>
+  <span class="k">AND</span> <span class="n">a</span><span class="p">.</span><span class="n">gid</span> <span class="o">!=</span> <span class="n">b</span><span class="p">.</span><span class="n">gid</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="c1">-- Answer: This happens, so the data is not end-noded.</span>
+</pre></div>
+</div>
+<div class="section" id="function-list">
+<h3>28.1.1. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Relate.html">ST_Relate(geometry A, geometry B)</a>: Returns a text string representing the DE9IM relationship between the geometries.</p>
+</div>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="linear_referencing.html" title="previous chapter">27. Linear Referencing</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="clusterindex.html" title="next chapter">29. Clustering on Indices</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="linear_referencing.html" title="previous chapter">27. Linear Referencing</a></p>
+          <p><b>Next:</b> <a href="clusterindex.html" title="next chapter">29. Clustering on Indices</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="clusterindex.html" title="29. Clustering on Indices"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="linear_referencing.html" title="27. Linear Referencing"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

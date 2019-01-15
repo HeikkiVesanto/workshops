@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 19. Projecting Data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="20. Projection Exercises" href="projection_exercises.html" />
+      <link rel="prev" title="18. Spatial Indexing" href="indexing.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">19. Projecting Data</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="projection_exercises.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="indexing.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">19. Projecting Data</a><ul>
+<li><a class="reference internal" href="#comparing-data">19.1. Comparing Data</a></li>
+<li><a class="reference internal" href="#transforming-data">19.2. Transforming Data</a></li>
+<li><a class="reference internal" href="#function-list">19.3. Function List</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="projecting-data">
+<span id="projection"></span><h1>19. Projecting Data<a class="headerlink" href="#projecting-data" title="Permalink to this headline">¶</a></h1>
+<p>The earth is not flat, and there is no simple way of putting it down on a flat paper map (or computer screen), so people have come up with all sorts of ingenious solutions, each with pros and cons. Some projections preserve area, so all objects have a relative size to each other; other projections preserve angles (conformal) like the Mercator projection; some projections try to find a good intermediate mix with only little distortion on several parameters. Common to all projections is that they transform the (spherical) world onto a flat Cartesian coordinate system, and which projection to choose depends on how you will be using the data.</p>
+<p>We’ve already encountered projections when we <a class="reference internal" href="loading_data.html#loading-data"><span class="std std-ref">loaded our nyc data</span></a>.  (Recall that pesky SRID 26918).  Sometimes, however, you need to transform and re-project between spatial reference systems. PostGIS includes built-in support for changing the projection of data, using the <strong class="command">ST_Transform(geometry, srid)</strong> function. For managing the spatial reference identifiers on geometries, PostGIS provides the <strong class="command">ST_SRID(geometry)</strong> and <strong class="command">ST_SetSRID(geometry, srid)</strong> functions.</p>
+<p>We can confirm the SRID of our data with the <strong class="command">ST_SRID</strong> command:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_SRID</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">nyc_streets</span> <span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">26918</span>
+</pre></div>
+</div>
+<p>And what is definition of “26918”? As we saw in “<a class="reference internal" href="loading_data.html#loading-data"><span class="std std-ref">loading data section</span></a>”, the definition is contained in the <code class="docutils literal notranslate"><span class="pre">spatial_ref_sys</span></code> table. In fact, <strong>two</strong> definitions are there. The “well-known text” (<a class="reference internal" href="glossary.html#term-wkt"><span class="xref std std-term">WKT</span></a>) definition is in the <code class="docutils literal notranslate"><span class="pre">srtext</span></code> column, and there is a second definition in “proj.4” format in the <code class="docutils literal notranslate"><span class="pre">proj4text</span></code> column.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">spatial_ref_sys</span> <span class="k">WHERE</span> <span class="n">srid</span> <span class="o">=</span> <span class="mi">26918</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>In fact, for the internal PostGIS re-projection calculations, it is the contents of the <code class="docutils literal notranslate"><span class="pre">proj4text</span></code> column that are used. For our 26918 projection, here is the proj.4 text:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">proj4text</span> <span class="k">FROM</span> <span class="n">spatial_ref_sys</span> <span class="k">WHERE</span> <span class="n">srid</span> <span class="o">=</span> <span class="mi">26918</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+</span><span class="n">proj</span><span class="o">=</span><span class="n">utm</span> <span class="o">+</span><span class="n">zone</span><span class="o">=</span><span class="mi">18</span> <span class="o">+</span><span class="n">ellps</span><span class="o">=</span><span class="n">GRS80</span> <span class="o">+</span><span class="n">datum</span><span class="o">=</span><span class="n">NAD83</span> <span class="o">+</span><span class="n">units</span><span class="o">=</span><span class="n">m</span> <span class="o">+</span><span class="n">no_defs</span>
+</pre></div>
+</div>
+<p>In practice, both the <code class="docutils literal notranslate"><span class="pre">srtext</span></code> and the <code class="docutils literal notranslate"><span class="pre">proj4text</span></code> columns are important: the <code class="docutils literal notranslate"><span class="pre">srtext</span></code> column is used by external programs like <a class="reference external" href="http://geoserver.org">GeoServer</a>, <a class="reference external" href="udig.refractions.net">uDig</a>, and <a class="reference external" href="http://www.safe.com/">FME</a>  and others; the <code class="docutils literal notranslate"><span class="pre">proj4text</span></code> column is used internally.</p>
+<div class="section" id="comparing-data">
+<h2>19.1. Comparing Data<a class="headerlink" href="#comparing-data" title="Permalink to this headline">¶</a></h2>
+<p>Taken together, a coordinate and an SRID define a location on the globe. Without an SRID, a coordinate is just an abstract notion. A “Cartesian” coordinate plane is defined as a “flat” coordinate system placed on the surface of Earth. Because PostGIS functions work on such a plane, comparison operations require that both geometries be represented in the same SRID.</p>
+<p>If you feed in geometries with differing SRIDs you will just get an error:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Equals</span><span class="p">(</span>
+         <span class="n">ST_GeomFromText</span><span class="p">(</span><span class="s1">&#39;POINT(0 0)&#39;</span><span class="p">,</span> <span class="mi">4326</span><span class="p">),</span>
+         <span class="n">ST_GeomFromText</span><span class="p">(</span><span class="s1">&#39;POINT(0 0)&#39;</span><span class="p">,</span> <span class="mi">26918</span><span class="p">)</span>
+         <span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ERROR</span><span class="p">:</span>  <span class="n">Operation</span> <span class="n">on</span> <span class="n">two</span> <span class="n">geometries</span> <span class="k">with</span> <span class="n">different</span> <span class="n">SRIDs</span>
+<span class="n">CONTEXT</span><span class="p">:</span>  <span class="n">SQL</span> <span class="n">function</span> <span class="s2">&quot;st_equals&quot;</span> <span class="n">statement</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Be careful of getting too happy with using <strong class="command">ST_Transform</strong> for on-the-fly conversion. Spatial indexes are built using SRID of the stored geometries.  If comparison are done in a different SRID, spatial indexes are (often) not used. It is best practice to choose <strong>one SRID</strong> for all the tables in your database. Only use the transformation function when you are reading or writing data to external applications.</p>
+</div>
+</div>
+<div class="section" id="transforming-data">
+<h2>19.2. Transforming Data<a class="headerlink" href="#transforming-data" title="Permalink to this headline">¶</a></h2>
+<p>If we return to our proj4 definition for SRID 26918, we can see that our working projection is UTM (Universal Transverse Mercator) of zone 18, with meters as the unit of measurement.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+</span><span class="n">proj</span><span class="o">=</span><span class="n">utm</span> <span class="o">+</span><span class="n">zone</span><span class="o">=</span><span class="mi">18</span> <span class="o">+</span><span class="n">ellps</span><span class="o">=</span><span class="n">GRS80</span> <span class="o">+</span><span class="n">datum</span><span class="o">=</span><span class="n">NAD83</span> <span class="o">+</span><span class="n">units</span><span class="o">=</span><span class="n">m</span> <span class="o">+</span><span class="n">no_defs</span>
+</pre></div>
+</div>
+<p>Let’s convert some data from our working projection to geographic coordinates – also known as “longitude/latitude”.</p>
+<p>To convert data from one SRID to another, you must first verify that your geometry has a valid SRID. Since we have already confirmed a valid SRID, we next need the SRID of the projection to transform into. In other words, what is the SRID of geographic coordinates?</p>
+<p>The most common SRID for geographic coordinates is 4326, which corresponds to “longitude/latitude on the WGS84 spheroid”. You can see the definition at the spatialreference.org site:</p>
+<blockquote>
+<div><a class="reference external" href="http://spatialreference.org/ref/epsg/4326/">http://spatialreference.org/ref/epsg/4326/</a></div></blockquote>
+<p>You can also pull the definitions from the <code class="docutils literal notranslate"><span class="pre">spatial_ref_sys</span></code> table:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">srtext</span> <span class="k">FROM</span> <span class="n">spatial_ref_sys</span> <span class="k">WHERE</span> <span class="n">srid</span> <span class="o">=</span> <span class="mi">4326</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GEOGCS</span><span class="p">[</span><span class="s2">&quot;WGS 84&quot;</span><span class="p">,</span>
+  <span class="n">DATUM</span><span class="p">[</span><span class="s2">&quot;WGS_1984&quot;</span><span class="p">,</span>
+    <span class="n">SPHEROID</span><span class="p">[</span><span class="s2">&quot;WGS 84&quot;</span><span class="p">,</span><span class="mi">6378137</span><span class="p">,</span><span class="mf">298.257223563</span><span class="p">,</span><span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;7030&quot;</span><span class="p">]],</span>
+    <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;6326&quot;</span><span class="p">]],</span>
+  <span class="n">PRIMEM</span><span class="p">[</span><span class="s2">&quot;Greenwich&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;8901&quot;</span><span class="p">]],</span>
+  <span class="n">UNIT</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span><span class="mf">0.01745329251994328</span><span class="p">,</span><span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;9122&quot;</span><span class="p">]],</span>
+  <span class="n">AUTHORITY</span><span class="p">[</span><span class="s2">&quot;EPSG&quot;</span><span class="p">,</span><span class="s2">&quot;4326&quot;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>Let’s convert the coordinates of the ‘Broad St’ subway station into geographics:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">4326</span><span class="p">))</span>
+<span class="k">FROM</span> <span class="n">nyc_subway_stations</span>
+<span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Broad St&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POINT</span><span class="p">(</span><span class="o">-</span><span class="mf">74.0106714688735</span> <span class="mf">40.7071048155841</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you load data or create a new geometry without specifying an SRID, the SRID value will be 0.  Recall in <a class="reference internal" href="geometries.html#geometries"><span class="std std-ref">Geometries</span></a>, that when we created our <code class="docutils literal notranslate"><span class="pre">geometries</span></code> table we didn’t specify an SRID. If we query our database, we should expect all the <code class="docutils literal notranslate"><span class="pre">nyc_</span></code> tables to have an SRID of 26918, while  the <code class="docutils literal notranslate"><span class="pre">geometries</span></code> table defaulted to an SRID of 0.</p>
+<p>To view a table’s SRID assignment, query the database’s <code class="docutils literal notranslate"><span class="pre">geometry_columns</span></code> table.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">f_table_name</span> <span class="k">AS</span> <span class="n">name</span><span class="p">,</span> <span class="n">srid</span>
+<span class="k">FROM</span> <span class="n">geometry_columns</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>        <span class="n">name</span>         <span class="o">|</span> <span class="n">srid</span>
+<span class="o">---------------------+-------</span>
+ <span class="n">nyc_census_blocks</span>   <span class="o">|</span> <span class="mi">26918</span>
+ <span class="n">nyc_neighborhoods</span>   <span class="o">|</span> <span class="mi">26918</span>
+ <span class="n">nyc_streets</span>         <span class="o">|</span> <span class="mi">26918</span>
+ <span class="n">nyc_subway_stations</span> <span class="o">|</span> <span class="mi">26918</span>
+ <span class="n">geometries</span>          <span class="o">|</span>     <span class="mi">0</span>
+</pre></div>
+</div>
+<p>However, if you know what the SRID of the coordinates is supposed to be, you can set it post-facto, using <strong class="command">ST_SetSRID</strong> on the geometry. Then you will be able to transform the geometry into other systems.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span>
+ <span class="n">ST_Transform</span><span class="p">(</span>
+   <span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">26918</span><span class="p">),</span>
+ <span class="mi">4326</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="k">FROM</span> <span class="n">geometries</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="function-list">
+<h2>19.3. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsText.html">ST_AsText</a>: Returns the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_SetSRID.html">ST_SetSRID(geometry, srid)</a>: Sets the SRID on a geometry to a particular integer value.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_SRID.html">ST_SRID(geometry)</a>: Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Transform.html">ST_Transform(geometry, srid)</a>: Returns a new geometry with its coordinates transformed to the SRID referenced by the integer parameter.</p>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="indexing.html" title="previous chapter">18. Spatial Indexing</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="projection_exercises.html" title="next chapter">20. Projection Exercises</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="indexing.html" title="previous chapter">18. Spatial Indexing</a></p>
+          <p><b>Next:</b> <a href="projection_exercises.html" title="next chapter">20. Projection Exercises</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="projection_exercises.html" title="20. Projection Exercises"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="indexing.html" title="18. Spatial Indexing"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

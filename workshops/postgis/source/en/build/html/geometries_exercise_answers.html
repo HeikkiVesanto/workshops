@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 11. Geometry Exercise Answers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="12. Spatial Relationships" href="spatial_relationships.html" />
+      <link rel="prev" title="10. Geometry Exercises" href="geometries_exercises.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">11. Geometry Exercise Answers</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="spatial_relationships.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="geometries_exercises.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">11. Geometry Exercise Answers</a><ul>
+<li><a class="reference internal" href="#exercises-with-answers">11.1. Exercises with answers</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="geometry-exercise-answers">
+<span id="geometries-exercise-answers"></span><h1>11. Geometry Exercise Answers<a class="headerlink" href="#geometry-exercise-answers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="exercises-with-answers">
+<h2>11.1. Exercises with answers<a class="headerlink" href="#exercises-with-answers" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>“What is the area of the ‘West Village’ neighborhood?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Area</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;West Village&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1044614.5296486</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The area is given in square meters. To get an area in hectares, divide by 10000. To get an area in acres, divide by 4047.</p>
+</div>
+</li>
+<li><p class="first"><strong>“What is the area of Manhattan in acres?”</strong> (Hint: both <code class="docutils literal notranslate"><span class="pre">nyc_census_blocks</span></code> and <code class="docutils literal notranslate"><span class="pre">nyc_neighborhoods</span></code> have a <code class="docutils literal notranslate"><span class="pre">boroname</span></code> in them.)</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">Sum</span><span class="p">(</span><span class="n">ST_Area</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="o">/</span> <span class="mi">4047</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">WHERE</span> <span class="n">boroname</span> <span class="o">=</span> <span class="s1">&#39;Manhattan&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">13965.3201224118</span>
+</pre></div>
+</div>
+<p>or…</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">Sum</span><span class="p">(</span><span class="n">ST_Area</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="o">/</span> <span class="mi">4047</span>
+  <span class="k">FROM</span> <span class="n">nyc_census_blocks</span>
+  <span class="k">WHERE</span> <span class="n">boroname</span> <span class="o">=</span> <span class="s1">&#39;Manhattan&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">14601.3987215548</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>“How many census blocks in New York City have a hole in them?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">Count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">nyc_census_blocks</span>
+  <span class="k">WHERE</span> <span class="n">ST_NumInteriorRings</span><span class="p">(</span><span class="n">ST_GeometryN</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The ST_NRings() functions might be tempting, but it also counts the exterior rings of multi-polygons as well as interior rings.  In order to run ST_NumInteriorRings() we need to convert the MultiPolygon geometries of the blocks into simple polygons, so we extract the first polygon from each collection using ST_GeometryN(). Yuck!</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">43</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>“What is the total length of streets (in kilometers) in New York City?”</strong> (Hint: The units of measurement of the spatial data are meters, there are 1000 meters in a kilometer.)</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">Sum</span><span class="p">(</span><span class="n">ST_Length</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="o">/</span> <span class="mi">1000</span>
+  <span class="k">FROM</span> <span class="n">nyc_streets</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">10418.9047172</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>“How long is ‘Columbus Cir’ (Columbus Circle)?</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Length</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">nyc_streets</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Columbus Cir&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">308.34199</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>“What is the JSON representation of the boundary of the ‘West Village’?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsGeoJSON</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;West Village&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;MultiPolygon&quot;</span><span class="p">,</span><span class="s2">&quot;coordinates&quot;</span><span class="p">:</span>
+ <span class="p">[[[[</span><span class="mf">583263.2776595836</span><span class="p">,</span><span class="mf">4509242.6260239873</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">583276.81990686338</span><span class="p">,</span><span class="mf">4509378.825446927</span><span class="p">],</span> <span class="o">...</span>
+    <span class="p">[</span><span class="mf">583263.2776595836</span><span class="p">,</span><span class="mf">4509242.6260239873</span><span class="p">]]]]}</span>
+</pre></div>
+</div>
+<p>The geometry type is “MultiPolygon”, interesting!</p>
+</li>
+<li><p class="first"><strong>“How many polygons are in the ‘West Village’ multipolygon?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_NumGeometries</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+  <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;West Village&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is not uncommon to find single-element MultiPolygons in spatial tables. Using MultiPolygons allows a table with only one geometry type to store both single- and multi-geometries without using mixed types.</p>
+</div>
+</li>
+<li><p class="first"><strong>“What is the length of streets in New York City, summarized by type?”</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">type</span><span class="p">,</span> <span class="k">Sum</span><span class="p">(</span><span class="n">ST_Length</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="k">AS</span> <span class="k">length</span>
+<span class="k">FROM</span> <span class="n">nyc_streets</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="k">type</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="k">length</span> <span class="k">DESC</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                       <span class="nb">type</span>                       <span class="o">|</span>      <span class="n">length</span>
+<span class="o">--------------------------------------------------+------------------</span>
+ <span class="n">residential</span>                                      <span class="o">|</span> <span class="mf">8629870.33786606</span>
+ <span class="n">motorway</span>                                         <span class="o">|</span> <span class="mf">403622.478126363</span>
+ <span class="n">tertiary</span>                                         <span class="o">|</span> <span class="mf">360394.879051303</span>
+ <span class="n">motorway_link</span>                                    <span class="o">|</span> <span class="mf">294261.419479668</span>
+ <span class="n">secondary</span>                                        <span class="o">|</span> <span class="mf">276264.303897926</span>
+ <span class="n">unclassified</span>                                     <span class="o">|</span> <span class="mf">166936.371604458</span>
+ <span class="n">primary</span>                                          <span class="o">|</span> <span class="mf">135034.233017947</span>
+ <span class="n">footway</span>                                          <span class="o">|</span> <span class="mf">71798.4878378096</span>
+ <span class="n">service</span>                                          <span class="o">|</span>  <span class="mf">28337.635038596</span>
+ <span class="n">trunk</span>                                            <span class="o">|</span> <span class="mf">20353.5819826076</span>
+ <span class="n">cycleway</span>                                         <span class="o">|</span> <span class="mf">8863.75144825929</span>
+ <span class="n">pedestrian</span>                                       <span class="o">|</span> <span class="mf">4867.05032825026</span>
+ <span class="n">construction</span>                                     <span class="o">|</span> <span class="mf">4803.08162103562</span>
+ <span class="n">residential</span><span class="p">;</span> <span class="n">motorway_link</span>                       <span class="o">|</span> <span class="mf">3661.57506293745</span>
+ <span class="n">trunk_link</span>                                       <span class="o">|</span> <span class="mf">3202.18981240201</span>
+ <span class="n">primary_link</span>                                     <span class="o">|</span> <span class="mf">2492.57457083536</span>
+ <span class="n">living_street</span>                                    <span class="o">|</span> <span class="mf">1894.63905457332</span>
+ <span class="n">primary</span><span class="p">;</span> <span class="n">residential</span><span class="p">;</span> <span class="n">motorway_link</span><span class="p">;</span> <span class="n">residential</span> <span class="o">|</span> <span class="mf">1367.76576941335</span>
+ <span class="n">undefined</span>                                        <span class="o">|</span>  <span class="mf">380.53861910346</span>
+ <span class="n">steps</span>                                            <span class="o">|</span> <span class="mf">282.745221342127</span>
+ <span class="n">motorway_link</span><span class="p">;</span> <span class="n">residential</span>                       <span class="o">|</span>  <span class="mf">215.07778911517</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">ORDER</span> <span class="pre">BY</span> <span class="pre">length</span> <span class="pre">DESC</span></code> clause sorts the result by length in descending order. The result is that most prevalent types are first in the list.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="geometries_exercises.html" title="previous chapter">10. Geometry Exercises</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="spatial_relationships.html" title="next chapter">12. Spatial Relationships</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="geometries_exercises.html" title="previous chapter">10. Geometry Exercises</a></p>
+          <p><b>Next:</b> <a href="spatial_relationships.html" title="next chapter">12. Spatial Relationships</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="spatial_relationships.html" title="12. Spatial Relationships"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="geometries_exercises.html" title="10. Geometry Exercises"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

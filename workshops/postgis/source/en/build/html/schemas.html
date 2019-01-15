@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 36. PostgreSQL Schemas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="37. PostgreSQL Backup and Restore" href="backup.html" />
+      <link rel="prev" title="35. PostgreSQL Security" href="security.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">36. PostgreSQL Schemas</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="backup.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="security.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">36. PostgreSQL Schemas</a><ul>
+<li><a class="reference internal" href="#why-use-schemas">36.1. Why use Schemas?</a></li>
+<li><a class="reference internal" href="#creating-a-data-schema">36.2. Creating a Data Schema</a></li>
+<li><a class="reference internal" href="#creating-a-user-schema">36.3. Creating a User Schema</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="postgresql-schemas">
+<span id="schemas"></span><h1>36. PostgreSQL Schemas<a class="headerlink" href="#postgresql-schemas" title="Permalink to this headline">¶</a></h1>
+<p>Production databases inevitably have a large number of tables and views, and managing them all in one schema can become unwieldy quickly. Fortunately, <a class="reference external" href="http://www.postgresql.org/">PostgreSQL</a> includes the concept of a “_Schema”.</p>
+<p>Schemas are like folders, and can hold tables, views, functions, sequences and other relations.  Every database starts out with one schema, the <code class="docutils literal notranslate"><span class="pre">public</span></code> schema.</p>
+<img alt="_images/schemas.jpg" src="_images/schemas.jpg" />
+<p>Inside that schema, the default install of PostGIS creates the <code class="docutils literal notranslate"><span class="pre">geometry_columns</span></code>, <code class="docutils literal notranslate"><span class="pre">geography_columns</span></code> and <code class="docutils literal notranslate"><span class="pre">spatial_ref_sys</span></code> metadata relations, as well as all the types and functions used by PostGIS. So users of PostGIS always need access to the public schema.</p>
+<p>In the public schema you can also see all the tables we have created so far in the workshop.</p>
+<div class="section" id="why-use-schemas">
+<h2>36.1. Why use Schemas?<a class="headerlink" href="#why-use-schemas" title="Permalink to this headline">¶</a></h2>
+<p>There are two very good reasons for using schemas:</p>
+<ul class="simple">
+<li>Data that is managed in a schema is easier to apply bulk actions to.<ul>
+<li>It’s easier to back-up data that’s in a separate schema: so volatile data can have a different back-up schedule from non-volatile data.</li>
+<li>It’s easier to restore data that’s in a separate schema: so application-oriented schemas can be separately restored and backed up for time travel and recovery.</li>
+<li>It’s easier to manage application differences when the application data is in a schema: so a new version of software can work off a table structure in a new schema, and cut-over involves a simple change to the schema name.</li>
+</ul>
+</li>
+<li>Users can be restricted in their work to single schemas to allow isolation of analytical and test tables from production tables.</li>
+</ul>
+<p>So for production purposes, keeping your application data separate in schemas improves management; and for user purposes, keeping your users in separate schemas keeps them from treading on each other.</p>
+</div>
+<div class="section" id="creating-a-data-schema">
+<h2>36.2. Creating a Data Schema<a class="headerlink" href="#creating-a-data-schema" title="Permalink to this headline">¶</a></h2>
+<p>Let’s create a new schema and move a table into it.  First, create a new schema in the database:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">SCHEMA</span> <span class="n">census</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Next, we will move the <code class="docutils literal notranslate"><span class="pre">nyc_census_blocks</span></code> table to the <code class="docutils literal notranslate"><span class="pre">census</span></code> schema:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">nyc_census_blocks</span> <span class="k">SET</span> <span class="k">SCHEMA</span> <span class="n">census</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>If you’re using the <strong class="command">psql</strong> command-line program, you’ll notice that <code class="docutils literal notranslate"><span class="pre">nyc_census_blocks</span></code> has disappeared from your table listing now! If you’re using PgAdmin, you might have to refresh your view to see the new schema and the table inside it.</p>
+<p>You can access tables inside schemas in two ways:</p>
+<ul class="simple">
+<li>by referencing them using <code class="docutils literal notranslate"><span class="pre">schema.table</span></code> notation</li>
+<li>by adding the schema to your <code class="docutils literal notranslate"><span class="pre">search_path</span></code></li>
+</ul>
+<p>Explicit referencing is easy, but it gets tiring to type after a while:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">census</span><span class="p">.</span><span class="n">nyc_census_blocks</span> <span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Manipulating the <code class="docutils literal notranslate"><span class="pre">search_path</span></code> is a nice way to provide access to tables in multiple schemas without lots of extra typing.</p>
+<p>You can set the <code class="docutils literal notranslate"><span class="pre">search_path</span></code> at run time using the <code class="docutils literal notranslate"><span class="pre">SET</span></code> command:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SET</span> <span class="n">search_path</span> <span class="o">=</span> <span class="n">census</span><span class="p">,</span> <span class="k">public</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This ensures that all references to relations and functions are searched in both the <code class="docutils literal notranslate"><span class="pre">census</span></code> and the <code class="docutils literal notranslate"><span class="pre">public</span></code> schemas. Remember that all the PostGIS functions and types are in <code class="docutils literal notranslate"><span class="pre">public</span></code> so we don’t want to drop that from the search path.</p>
+<p>Setting the search path every time you connect can get tiring too, but fortunately it’s possible to permanently set the search path for a user:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span> <span class="k">USER</span> <span class="n">postgres</span> <span class="k">SET</span> <span class="n">search_path</span> <span class="o">=</span> <span class="n">census</span><span class="p">,</span> <span class="k">public</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Now the postgres user will always have the <code class="docutils literal notranslate"><span class="pre">census</span></code> schema in their search path.</p>
+</div>
+<div class="section" id="creating-a-user-schema">
+<h2>36.3. Creating a User Schema<a class="headerlink" href="#creating-a-user-schema" title="Permalink to this headline">¶</a></h2>
+<p>Users like to create tables, and PostGIS users do so particularly: analysis operations with SQL demand temporary tables for visualization or interim results, so spatial SQL tends to require that users have CREATE privileges more than ordinary database workloads.</p>
+<p>By default, every role in Oracle is given a personal schema. This is a nice practice to use for PostgreSQL users too, and is easy to replicate using PostgreSQL roles, schemas, and search paths.</p>
+<p>Create a new user with table creation privileges (see <a class="reference internal" href="security.html#security"><span class="std std-ref">PostgreSQL Security</span></a> for information about the <code class="docutils literal notranslate"><span class="pre">postgis_writer</span></code> role), then create a schema with that user as the authorization:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">USER</span> <span class="n">myuser</span> <span class="k">WITH</span> <span class="k">ROLE</span> <span class="n">postgis_writer</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">SCHEMA</span> <span class="n">myuser</span> <span class="k">AUTHORIZATION</span> <span class="n">myuser</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>If you log in as that user, you’ll find the default <code class="docutils literal notranslate"><span class="pre">search_path</span></code> for PostgreSQL is actually this:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">show</span> <span class="n">search_path</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">search_path</span>
+<span class="o">----------------</span>
+ <span class="s2">&quot;$user&quot;</span><span class="p">,</span><span class="n">public</span>
+</pre></div>
+</div>
+<p>The first schema on the search path us the user’s named schema! So now the following conditions exist:</p>
+<ul class="simple">
+<li>The user exists, with the ability to create spatial tables.</li>
+<li>The user’s named schema exists, and the user owns it.</li>
+<li>The user’s search path has the user schema first, so new tables are automatically created there, and queries automatically search there first.</li>
+</ul>
+<p>That’s all there is to it, the user’s default work area is now nicely separated from any tables in other schemas.</p>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="security.html" title="previous chapter">35. PostgreSQL Security</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="backup.html" title="next chapter">37. PostgreSQL Backup and Restore</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="security.html" title="previous chapter">35. PostgreSQL Security</a></p>
+          <p><b>Next:</b> <a href="backup.html" title="next chapter">37. PostgreSQL Backup and Restore</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="backup.html" title="37. PostgreSQL Backup and Restore"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="security.html" title="35. PostgreSQL Security"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

@@ -3,88 +3,32 @@
 Loading spatial data
 ====================
 
-Supported by a wide variety of libraries and applications, PostGIS provides many options for loading data.  This section will focus on the basics -- loading shapefiles using the PostGIS shapefile loading tool.  
+Supported by a wide variety of libraries and applications, PostGIS provides many options for loading data.  This section will focus on the basics -- loading shapefiles using ogr2ogr.  
 
-#. First, return to the Start menu, and click on the **pgShapeLoader** application. The GUI shapefile importer will launch.
+#. First, return to the Start menu, and search for **cmd** and launch *cmd.exe*. This is the windows command prompt.
 
-   .. image:: ./screenshots/pgshapeloader_01.png
+#. In this guide I will assume you have installed QGIS using the OSGeo4W 64 bit installer (https://trac.osgeo.org/osgeo4w/).
+
+#. Change Directroy into the same folder that contains ogr2ogr. Type: ``cd C:\OSGeo4W64\bin`` and hit return.
+
+#. Test it is working. Type: *ogr2ogr* and hit return. You should recieve the following error: **FAILURE: no target datasource provided**
+
+   .. image:: ./screenshots/ogr2ogr.jpg
      :class: inline
 
-#. Fill in the connection details for the *PostGIS Connection* section and click on the **OK** button. The loader will test the connection and report back in the log window.
+#. The data can be downloaded from a GitHub repo: https://github.com/HeikkiVesanto/postgis_course_data
 
-   .. list-table::
+#. Download the data and unzip the file. Then run the following commands, making sure the modify them to include a full path to where **nyc_postgis_data.gpkg** is located on your computer. Make sure there are no spaces in the file path.
 
-     * - **Username**
-       - ``postgres``
-     * - **Password**
-       - ``postgres``
-     * - **Server Host**
-       - ``localhost`` ``5432``
-     * - **Database**
-       - ``nyc``
-
-   .. image:: ./screenshots/pgshapeloader_02.png
-     :class: inline
-
-
-#. Next, open the *Add File* browser and navigate to the data directory, file:`\\postgis-workshop\\data`. Select the :file:`nyc_census_blocks.shp` file. 
-
-#. Change the SRID value for the file to **26918**. Note that the schema, table and column name are already filled in using the shapefile, but you can optionally change them (**Don't!** There are steps later in the workshop that expect the default names.) Click out of the fields after you are done editing, to ensure that the changes were entered.
-
-   .. image:: ./screenshots/pgshapeloader_01a.png
-     :class: inline
- 
-#. Fill in the details for the *Configuration* section.
-
-   .. list-table::
-
-     * - **Destination Schema**
-       - ``public``
-     * - **SRID**
-       - ``26918``
-     * - **Destination Table**
-       - ``nyc_census_blocks``
-     * - **Geometry Column**
-       - ``geom``
-
-#. Click the **Options** button to review the loading options. The loader will use the fast "COPY" mode and create a spatial index by default after loading the data.
-
-   .. image:: ./screenshots/pgshapeloader_03.png
-     :class: inline
-
-#. Finally, click the **Import** button and watch the import process. It may take a few minutes to load, but this is the largest file in our test set.
-
-#. Repeat the import process for the remaining shapefiles in the data directory. You can load multiple files in one import by adding multiple files before pressing the **Import** button:
-
-   * ``nyc_streets.shp``
-   * ``nyc_neighborhoods.shp``
-   * ``nyc_subway_stations.shp``
-   * ``nyc_homicides.shp``
-   
-   .. tip:: Use the :guilabel:`Rm` checkbox to remove ``nyc_census_blocks`` since it has already been imported.
+   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_census_blocks``
+   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_census_sociodata``
+   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_neighborhoods``
+   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_streets``
+   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_subway_stations``
  
 #. When all the files are loaded, click the "Refresh" button in pgAdmin to update the tree view. You should see your four tables show up in the **Databases > nyc > Schemas > public > Tables** section of the tree.
 
    .. image:: ./screenshots/refresh.png
- 
- 
-Shapefiles? What's that?
-------------------------
-
-You may be asking yourself -- "What's this shapefile thing?"  A "shapefile" commonly refers to a collection of files with ``.shp``, ``.shx``, ``.dbf``, and other extensions on a common prefix name (e.g., nyc_census_blocks). The actual shapefile relates specifically to files with the ``.shp`` extension. However, the ``.shp`` file alone is incomplete for distribution without the required supporting files.
-
-Mandatory files:
-
-* ``.shp``—shape format; the feature geometry itself
-* ``.shx``—shape index format; a positional index of the feature geometry 
-* ``.dbf``—attribute format; columnar attributes for each shape, in dBase III
-    
-Optional files include:
-
-* ``.prj``—projection format; the coordinate system and projection information, a plain text file describing the projection using well-known text format
-
-The pgShapeLoader makes shape data usable in PostGIS by converting it from binary data into a series of SQL commands that are then run in the database to load the data. 
-
 
 SRID 26918? What's with that?
 -----------------------------

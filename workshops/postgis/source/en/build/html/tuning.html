@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 34. Tuning PostgreSQL for Spatial</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="35. PostgreSQL Security" href="security.html" />
+      <link rel="prev" title="33. Advanced Geometry Constructions" href="advanced_geometry_construction.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">34. Tuning PostgreSQL for Spatial</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="security.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="advanced_geometry_construction.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">34. Tuning PostgreSQL for Spatial</a><ul>
+<li><a class="reference internal" href="#shared-buffers">34.1. shared_buffers</a></li>
+<li><a class="reference internal" href="#work-mem">34.2. work_mem</a></li>
+<li><a class="reference internal" href="#maintenance-work-mem">34.3. maintenance_work_mem</a></li>
+<li><a class="reference internal" href="#wal-buffers">34.4. wal_buffers</a></li>
+<li><a class="reference internal" href="#checkpoint-segments">34.5. checkpoint_segments</a></li>
+<li><a class="reference internal" href="#random-page-cost">34.6. random_page_cost</a></li>
+<li><a class="reference internal" href="#seq-page-cost">34.7. seq_page_cost</a></li>
+<li><a class="reference internal" href="#reload-configuration">34.8. Reload configuration</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="tuning-postgresql-for-spatial">
+<span id="tuning"></span><h1>34. Tuning PostgreSQL for Spatial<a class="headerlink" href="#tuning-postgresql-for-spatial" title="Permalink to this headline">¶</a></h1>
+<p>PostgreSQL is a very versatile database system, capable of running efficiently in very low-resource environments and environments shared with a variety of other applications.  In order to ensure it will run properly for many different environments, the default configuration is very conservative and not terribly appropriate for a high-performance production database.  Add the fact that geospatial databases have different usage patterns, and the data tend to consist of fewer, much larger records than non-geospatial databases, and you can see that the default configuration will not be totally appropriate for our purposes.</p>
+<p>All of these configuration parameters can edited in the database configuration file. On Windows, this is <code class="file docutils literal notranslate"><span class="pre">C:\ProgramData\Boundless\OpenGeo\pgsql\9.3\postgresql.conf</span></code>.  This is a regular text file and can be edited using Notepad or any other text editor.  The changes will not take effect until the server is restarted.</p>
+<img alt="_images/conf01.png" src="_images/conf01.png" />
+<p>An easier way of editing this configuration is by using the built-in “Backend Configuration Editor”.  In pgAdmin, go to <em>File &gt; Open postgresql.conf…</em>.  It will ask for the location of the file, and navigate to <code class="file docutils literal notranslate"><span class="pre">C:\ProgramData\Boundless\OpenGeo\pgsql\9.3\</span></code> and then select <code class="file docutils literal notranslate"><span class="pre">postgresql.conf</span></code>.</p>
+<img alt="_images/conf02.png" src="_images/conf02.png" />
+<img alt="_images/conf03.png" src="_images/conf03.png" />
+<p>This section describes some of the configuration parameters that should be adjusted for a production-ready geospatial database.  For each section, find the appropriate item in the list, double-click on the line to edit the configuration.  Change the <em>Value</em> to the recommended value as described, make sure the item is <em>Enabled</em>, the click <strong>OK</strong>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These values are recommendations only; each environment will differ and testing is required to determine the optimal configuration.  But this section should get you off to a good start.</p>
+</div>
+<div class="section" id="shared-buffers">
+<h2>34.1. shared_buffers<a class="headerlink" href="#shared-buffers" title="Permalink to this headline">¶</a></h2>
+<p>Sets the amount of memory the database server uses for shared memory buffers.  These are shared amongst the back-end processes, as the name suggests.  The default values are typically woefully inadequate for production databases.</p>
+<blockquote>
+<div><p><em>Default value</em>: typically 32MB</p>
+<p><em>Recommended value</em>: 75% of database memory (500MB)</p>
+</div></blockquote>
+<img alt="_images/conf04.png" src="_images/conf04.png" />
+</div>
+<div class="section" id="work-mem">
+<h2>34.2. work_mem<a class="headerlink" href="#work-mem" title="Permalink to this headline">¶</a></h2>
+<p>Defines the amount of memory that internal sorting operations and hash tables can consume before the database switches to on-disk files.  This value defines the available memory for each operation; complex queries may have several sort or hash operations running in parallel, and each connected session may be executing a query.</p>
+<p>As such you must consider how many connections and the complexity of expected queries before increasing this value.  The benefit to increasing is that the processing of more of these operations, including ORDER BY, and DISTINCT clauses, merge and hash joins, hash-based aggregation and hash-based processing of subqueries, can be accomplished without incurring disk writes.</p>
+<blockquote>
+<div><p><em>Default value</em>: 1MB</p>
+<p><em>Recommended value</em>: 16MB</p>
+</div></blockquote>
+<img alt="_images/conf05.png" src="_images/conf05.png" />
+</div>
+<div class="section" id="maintenance-work-mem">
+<h2>34.3. maintenance_work_mem<a class="headerlink" href="#maintenance-work-mem" title="Permalink to this headline">¶</a></h2>
+<p>Defines the amount of memory used for maintenance operations, including vacuuming, index and foreign key creation.  As these operations are not terribly common, the default value may be acceptable.  This parameter can alternately be increased for a single session before the execution of a number of <strong class="command">CREATE INDEX</strong> or <strong class="command">VACUUM</strong> calls as shown below.</p>
+<blockquote>
+<div><div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SET</span> <span class="n">maintenance_work_mem</span> <span class="k">TO</span> <span class="s1">&#39;128MB&#39;</span><span class="p">;</span>
+<span class="k">VACUUM</span> <span class="k">ANALYZE</span><span class="p">;</span>
+<span class="k">SET</span> <span class="n">maintenance_work_mem</span> <span class="k">TO</span> <span class="s1">&#39;16MB&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><em>Default value</em>: 16MB</p>
+<p><em>Recommended value</em>: 128MB</p>
+</div></blockquote>
+<img alt="_images/conf06.png" src="_images/conf06.png" />
+</div>
+<div class="section" id="wal-buffers">
+<h2>34.4. wal_buffers<a class="headerlink" href="#wal-buffers" title="Permalink to this headline">¶</a></h2>
+<p>Sets the amount of memory used for write-ahead log (WAL) data.  Write-ahead logs provide a high-performance mechanism for insuring data-integrity.  During each change command, the effects of the changes are written first to the WAL files and flushed to disk.  Only once the WAL files have been flushed will the changes be written to the data files themselves.  This allows the data files to be written to disk in an optimal and asynchronous manner while ensuring that, in the event of a crash, all data changes can be recovered from the WAL.</p>
+<p>The size of this buffer only needs to be large enough to hold WAL data for a single typical transaction.  While the default value is often sufficient for most data, geospatial data tends to be much larger.  Therefore, it is recommended to increase the size of this parameter.</p>
+<blockquote>
+<div><p><em>Default value</em>: 64kB</p>
+<p><em>Recommended value</em>: 1MB</p>
+</div></blockquote>
+<img alt="_images/conf07.png" src="_images/conf07.png" />
+</div>
+<div class="section" id="checkpoint-segments">
+<h2>34.5. checkpoint_segments<a class="headerlink" href="#checkpoint-segments" title="Permalink to this headline">¶</a></h2>
+<p>This value sets the maximum number of log file segments (typically 16MB) that can be filled between automatic WAL checkpoints.  A WAL checkpoint is a point in the sequence of WAL transactions at which it is guaranteed that the data files have been updated with all information before the checkpoint.  At this time all dirty data pages are flushed to disk and a checkpoint record is written to the log file.  This allows the crash recovery process to find the latest checkpoint record and apply all following log segments to complete the data recovery.</p>
+<p>Because the checkpoint process requires the flushing of all dirty data pages to disk, it creates a significant I/O load.  The same argument from above applies; geospatial data is large enough to unbalance non-geospatial optimizations.  Increasing this value will prevent excessive checkpoints, though it may cause the server to restart more slowly in the event of a crash.</p>
+<blockquote>
+<div><p><em>Default value</em>: 3</p>
+<p><em>Recommended value</em>: 6</p>
+</div></blockquote>
+<img alt="_images/conf08.png" src="_images/conf08.png" />
+</div>
+<div class="section" id="random-page-cost">
+<h2>34.6. random_page_cost<a class="headerlink" href="#random-page-cost" title="Permalink to this headline">¶</a></h2>
+<p>This is a unit-less value that represents the cost of a random page access from disk.  This value is relative to a number of other cost parameters including sequential page access, and CPU operation costs.  While there is no magic bullet for this value, the default is generally conservative.  This value can be set on a per-session basis using the <code class="docutils literal notranslate"><span class="pre">SET</span> <span class="pre">random_page_cost</span> <span class="pre">TO</span> <span class="pre">2.0</span></code> command.</p>
+<blockquote>
+<div><p><em>Default value</em>: 4.0</p>
+<p><em>Recommended value</em>: 2.0</p>
+</div></blockquote>
+<img alt="_images/conf09.png" src="_images/conf09.png" />
+</div>
+<div class="section" id="seq-page-cost">
+<h2>34.7. seq_page_cost<a class="headerlink" href="#seq-page-cost" title="Permalink to this headline">¶</a></h2>
+<p>This is the parameter that controls the cost of a sequential page access.  This value does not generally require adjustment but the difference between this value and <code class="docutils literal notranslate"><span class="pre">random_page_cost</span></code> greatly affects the choices made by the query planner.  This value can also be set on a per-session basis.</p>
+<blockquote>
+<div><p><em>Default value</em>: 1.0</p>
+<p><em>Recommended value</em>: 1.0</p>
+</div></blockquote>
+<img alt="_images/conf10.png" src="_images/conf10.png" />
+</div>
+<div class="section" id="reload-configuration">
+<h2>34.8. Reload configuration<a class="headerlink" href="#reload-configuration" title="Permalink to this headline">¶</a></h2>
+<p>After these changes are made, save changes and reload the configuration. The easiest way to do this is to restart the PostgreSQL service.</p>
+<ul class="simple">
+<li>In pgAdmin, right-click the server <strong>PostGIS (localhost:5432)</strong> and select <em>Disconnect</em>.</li>
+<li>In Windows Services (<code class="docutils literal notranslate"><span class="pre">services.msc</span></code>) right-click <strong>OpenGeo PostgreSQL</strong> and select <em>Restart</em>.</li>
+<li>Back in pgAdmin, click the server again select <em>Disconnect</em>.</li>
+</ul>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="advanced_geometry_construction.html" title="previous chapter">33. Advanced Geometry Constructions</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="security.html" title="next chapter">35. PostgreSQL Security</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="advanced_geometry_construction.html" title="previous chapter">33. Advanced Geometry Constructions</a></p>
+          <p><b>Next:</b> <a href="security.html" title="next chapter">35. PostgreSQL Security</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="security.html" title="35. PostgreSQL Security"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="advanced_geometry_construction.html" title="33. Advanced Geometry Constructions"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

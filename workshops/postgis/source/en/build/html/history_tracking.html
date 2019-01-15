@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 32. Tracking Edit History using Triggers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="33. Advanced Geometry Constructions" href="advanced_geometry_construction.html" />
+      <link rel="prev" title="31. Nearest-Neighbour Searching" href="knn.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">32. Tracking Edit History using Triggers</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="advanced_geometry_construction.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="knn.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">32. Tracking Edit History using Triggers</a><ul>
+<li><a class="reference internal" href="#building-the-history-table">32.1. Building the History Table</a></li>
+<li><a class="reference internal" href="#editing-the-table">32.2. Editing the Table</a><ul>
+<li><a class="reference internal" href="#sql-edits">32.2.1. SQL Edits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#querying-the-history-table">32.3. Querying the History Table</a></li>
+<li><a class="reference internal" href="#see-also">32.4. See Also</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="tracking-edit-history-using-triggers">
+<span id="history-tracking"></span><h1>32. Tracking Edit History using Triggers<a class="headerlink" href="#tracking-edit-history-using-triggers" title="Permalink to this headline">¶</a></h1>
+<p>A common requirement for production databases is the ability to track history: how has the data changed between two dates, who made the changes, and where did they occur? Some GIS systems track changes by including change management in the client interface, but that adds a lot of complexity to editing tools.</p>
+<p>Using the database and the trigger system, it’s possible to add history tracking to any table, while maintaining simple “direct edit” access to the primary table.</p>
+<p>History tracking works by keeping a history table that records, for every edit:</p>
+<ul class="simple">
+<li>If a record was created, when it was added and by whom.</li>
+<li>If a record was deleted, when it was deleted and by whom.</li>
+<li>If a record was updated, adding a deletion record (for the old state) and a creation record (for the new state).</li>
+</ul>
+<div class="section" id="building-the-history-table">
+<h2>32.1. Building the History Table<a class="headerlink" href="#building-the-history-table" title="Permalink to this headline">¶</a></h2>
+<p>Using this information it is possible to reconstruct the state of the edit table at any point in time. In this example, we will add history tracking to our <strong>nyc_streets</strong> table.</p>
+<ul>
+<li><p class="first">First, add a new <strong>nyc_streets_history</strong> table. This is the table we will use to store all the historical edit information. In addition to all the fields from <strong>nyc_streets</strong>, we add five more fields.</p>
+<ul class="simple">
+<li><strong>hid</strong> the primary key for the history table</li>
+<li><strong>created</strong> the date/time the history record was created</li>
+<li><strong>created_by</strong> the database user that caused the record to be created</li>
+<li><strong>deleted</strong> the date/time the history record was marked as deleted</li>
+<li><strong>deleted_by</strong> the database user that caused the record to be marked as deleted</li>
+</ul>
+<p>Note that we don’t actually delete any records in the history table, we just mark the time they ceased to be part of the current state of the edit table.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">nyc_streets_history</span> <span class="p">(</span>
+  <span class="n">hid</span> <span class="nb">SERIAL</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+  <span class="n">gid</span> <span class="nb">INTEGER</span><span class="p">,</span>
+  <span class="n">id</span> <span class="n">FLOAT8</span><span class="p">,</span>
+  <span class="n">name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span>
+  <span class="n">oneway</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+  <span class="k">type</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
+  <span class="n">geom</span> <span class="n">GEOMETRY</span><span class="p">(</span><span class="n">MultiLinestring</span><span class="p">,</span><span class="mi">26918</span><span class="p">),</span>
+  <span class="n">created</span> <span class="k">TIMESTAMP</span><span class="p">,</span>
+  <span class="n">created_by</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+  <span class="n">deleted</span> <span class="k">TIMESTAMP</span><span class="p">,</span>
+  <span class="n">deleted_by</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Next, we import the current state of the active table, <strong>nyc_streets</strong> into the history table, so we have a starting point to trace history from. Note that we fill in the creation time and creation user, but leave the deletion records NULL.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">nyc_streets_history</span>
+  <span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">oneway</span><span class="p">,</span> <span class="k">type</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">created</span><span class="p">,</span> <span class="n">created_by</span><span class="p">)</span>
+   <span class="k">SELECT</span> <span class="n">gid</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">oneway</span><span class="p">,</span> <span class="k">type</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">now</span><span class="p">(),</span> <span class="k">current_user</span>
+   <span class="k">FROM</span> <span class="n">nyc_streets</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Now we need three triggers on the active table, for INSERT, DELETE and UPDATE actions. First we create the trigger functions, then bind them to the table as triggers.</p>
+<p>For an insert, we just add a new record into the history table with the creation time/user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CREATE OR REPLACE FUNCTION nyc_streets_insert() RETURNS trigger AS
+$$
+  BEGIN
+    INSERT INTO nyc_streets_history
+      (gid, id, name, oneway, type, geom, created, created_by)
+    VALUES
+      (NEW.gid, NEW.id, NEW.name, NEW.oneway, NEW.type, NEW.geom,
+       current_timestamp, current_user);
+    RETURN NEW;
+  END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER nyc_streets_insert_trigger
+AFTER INSERT ON nyc_streets
+  FOR EACH ROW EXECUTE PROCEDURE nyc_streets_insert();
+</pre></div>
+</div>
+<p>For a deletion, we just mark the currently active history record (the one with a NULL deletion time) as deleted:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CREATE OR REPLACE FUNCTION nyc_streets_delete() RETURNS trigger AS
+$$
+  BEGIN
+    UPDATE nyc_streets_history
+      SET deleted = current_timestamp, deleted_by = current_user
+      WHERE deleted IS NULL and gid = OLD.gid;
+    RETURN NULL;
+  END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER nyc_streets_delete_trigger
+AFTER DELETE ON nyc_streets
+  FOR EACH ROW EXECUTE PROCEDURE nyc_streets_delete();
+</pre></div>
+</div>
+<p>For an update, we first mark the active history record as deleted, then insert a new record for the updated state:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CREATE OR REPLACE FUNCTION nyc_streets_update() RETURNS trigger AS
+$$
+  BEGIN
+
+    UPDATE nyc_streets_history
+      SET deleted = current_timestamp, deleted_by = current_user
+      WHERE deleted IS NULL and gid = OLD.gid;
+
+    INSERT INTO nyc_streets_history
+      (gid, id, name, oneway, type, geom, created, created_by)
+    VALUES
+      (NEW.gid, NEW.id, NEW.name, NEW.oneway, NEW.type, NEW.geom,
+       current_timestamp, current_user);
+
+    RETURN NEW;
+
+  END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER nyc_streets_update_trigger
+AFTER UPDATE ON nyc_streets
+  FOR EACH ROW EXECUTE PROCEDURE nyc_streets_update();
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="editing-the-table">
+<h2>32.2. Editing the Table<a class="headerlink" href="#editing-the-table" title="Permalink to this headline">¶</a></h2>
+<p>Now that the history table is enabled, we can make edits on the main table and watch the log entries appear in the history table.</p>
+<p>Note the power of this database-backed approach to history: <strong>no matter what tool is used to make the edits, whether the SQL command line, a web-based JDBC tool, or a desktop tool like QGIS, the history is consistently tracked.</strong></p>
+<div class="section" id="sql-edits">
+<h3>32.2.1. SQL Edits<a class="headerlink" href="#sql-edits" title="Permalink to this headline">¶</a></h3>
+<p>Let’s turn the two streets named “Cumberland Walk” to the more stylish “Cumberland Wynde”:</p>
+<p>Updating the two streets will cause the original streets to be marked as deleted in the history table, with a deletion time of now, and two new streets with the new name added, with an addition time of now. You can inspect the historical records:</p>
+</div>
+</div>
+<div class="section" id="querying-the-history-table">
+<h2>32.3. Querying the History Table<a class="headerlink" href="#querying-the-history-table" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have a history table, what use is it? It’s useful for time travel! To travel to a particular time <strong>T</strong>, you need to construct a query that includes:</p>
+<ul class="simple">
+<li>All records created before T, and not yet deleted; and also</li>
+<li>All records created before T, but deleted <strong>after</strong> T.</li>
+</ul>
+<p>We can use this logic to create a query, or a view, of the state of the data in the past. Since presumably all your test edits have happened in the past couple minutes, let’s create a view of the history table that shows the state of the table 10 minutes ago, <strong>before you started editing</strong> (so, the original data).</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- State of history 10 minutes ago</span>
+<span class="c1">-- Records must have been created at least 10 minute ago and</span>
+<span class="c1">-- either be visible now (deleted is null) or deleted in the last hour</span>
+
+<span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">VIEW</span> <span class="n">nyc_streets_ten_min_ago</span> <span class="k">AS</span>
+  <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">nyc_streets_history</span>
+    <span class="k">WHERE</span> <span class="n">created</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="s1">&#39;10min&#39;</span><span class="p">::</span><span class="nb">interval</span><span class="p">)</span>
+    <span class="k">AND</span> <span class="p">(</span> <span class="n">deleted</span> <span class="k">IS</span> <span class="k">NULL</span> <span class="k">OR</span> <span class="n">deleted</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="s1">&#39;10min&#39;</span><span class="p">::</span><span class="nb">interval</span><span class="p">)</span> <span class="p">);</span>
+</pre></div>
+</div>
+<p>We can also create views that show just what a particular used has added, for example:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">VIEW</span> <span class="n">nyc_streets_postgres</span> <span class="k">AS</span>
+  <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">nyc_streets_history</span>
+    <span class="k">WHERE</span> <span class="n">created_by</span> <span class="o">=</span> <span class="s1">&#39;postgres&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="see-also">
+<h2>32.4. See Also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://qgis.org">QGIS open source GIS</a></li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/plpgsql-trigger.html">PostgreSQL Triggers</a></li>
+</ul>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="knn.html" title="previous chapter">31. Nearest-Neighbour Searching</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="advanced_geometry_construction.html" title="next chapter">33. Advanced Geometry Constructions</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="knn.html" title="previous chapter">31. Nearest-Neighbour Searching</a></p>
+          <p><b>Next:</b> <a href="advanced_geometry_construction.html" title="next chapter">33. Advanced Geometry Constructions</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="advanced_geometry_construction.html" title="33. Advanced Geometry Constructions"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="knn.html" title="31. Nearest-Neighbour Searching"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 25. Validity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="26. Equality" href="equality.html" />
+      <link rel="prev" title="24. More Spatial Joins" href="joins_advanced.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">25. Validity</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="equality.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="joins_advanced.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">25. Validity</a><ul>
+<li><a class="reference internal" href="#what-is-validity">25.1. What is Validity</a></li>
+<li><a class="reference internal" href="#detecting-validity">25.2. Detecting Validity</a></li>
+<li><a class="reference internal" href="#repairing-invalidity">25.3. Repairing Invalidity</a><ul>
+<li><a class="reference internal" href="#st-makevalid">25.3.1. ST_MakeValid</a></li>
+<li><a class="reference internal" href="#st-buffer">25.3.2. ST_Buffer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="validity">
+<span id="id1"></span><h1>25. Validity<a class="headerlink" href="#validity" title="Permalink to this headline">¶</a></h1>
+<p>In 90% of the cases the answer to the question, “why is my query giving me a ‘TopologyException’ error” is “one or more of the inputs are invalid”.  Which begs the question: what does it mean to be invalid, and why should we care?</p>
+<div class="section" id="what-is-validity">
+<h2>25.1. What is Validity<a class="headerlink" href="#what-is-validity" title="Permalink to this headline">¶</a></h2>
+<p>Validity is most important for polygons, which define bounded areas and require a good deal of structure. Lines are very simple and cannot be invalid, nor can points.</p>
+<p>Some of the rules of polygon validity feel obvious, and others feel arbitrary (and in fact, are arbitrary).</p>
+<ul class="simple">
+<li>Polygon rings must close.</li>
+<li>Rings that define holes should be inside rings that define exterior boundaries.</li>
+<li>Rings may not self-intersect (they may neither touch nor cross one another).</li>
+<li>Rings may not touch other rings, except at a point.</li>
+</ul>
+<p>The last two rules are in the arbitrary category. There are other ways to define polygons that are equally self-consistent but the rules above are the ones used by the <a class="reference internal" href="glossary.html#term-ogc"><span class="xref std std-term">OGC</span></a> <a class="reference internal" href="glossary.html#term-sfsql"><span class="xref std std-term">SFSQL</span></a> standard that PostGIS conforms to.</p>
+<p>The reason the rules are important is because algorithms for geometry calculations depend on consistent structure in the inputs. It is possible to build algorithms that have no structural assumptions, but those routines tend to be very slow, because the first step in any structure-free routine is to <em>analyze the inputs and build structure into them</em>.</p>
+<p>Here’s an example of why structure matters. This polygon is invalid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POLYGON</span><span class="p">((</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>You can see the invalidity a little more clearly in this diagram:</p>
+<img alt="_images/figure_eight.png" src="_images/figure_eight.png" />
+<p>The outer ring is actually a figure-eight, with a self-intersection in the middle. Note that the graphic routines successfully render the polygon fill, so that visually it is appears to be an “area”: two one-unit squares, so a total area of two units of area.</p>
+<p>Let’s see what the database thinks the area of our polygon is:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_Area</span><span class="p">(</span><span class="n">ST_GeometryFromText</span><span class="p">(</span>
+         <span class="s1">&#39;POLYGON((0 0, 0 1, 1 1, 2 1, 2 2, 1 2, 1 1, 1 0, 0 0))&#39;</span>
+       <span class="p">));</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">st_area</span>
+<span class="o">---------</span>
+       <span class="mi">0</span>
+</pre></div>
+</div>
+<p>What’s going on here? The algorithm that calculates area assumes that rings to not self-intersect. A well-behaved ring will always have the area that is bounded (the interior) on one side of the bounding line (it doesn’t matter which side, just that it is on <em>one</em> side). However, in our (poorly behaved) figure-eight, the bounded area is to the right of the line for one lobe and to the left for the other. This causes the areas calculated for each lobe to cancel out (one comes out as 1, the other as -1) hence the “zero area” result.</p>
+</div>
+<div class="section" id="detecting-validity">
+<h2>25.2. Detecting Validity<a class="headerlink" href="#detecting-validity" title="Permalink to this headline">¶</a></h2>
+<p>In the previous example we had one polygon that we <strong>knew</strong> was invalid. How do we detect invalidity in a table with millions of geometries? With the <strong class="command">ST_IsValid(geometry)</strong> function. Used against our figure-eight, we get a quick answer:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_IsValid</span><span class="p">(</span><span class="n">ST_GeometryFromText</span><span class="p">(</span>
+         <span class="s1">&#39;POLYGON((0 0, 0 1, 1 1, 2 1, 2 2, 1 2, 1 1, 1 0, 0 0))&#39;</span>
+       <span class="p">));</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span>
+</pre></div>
+</div>
+<p>Now we know that the feature is invalid, but we don’t know why. We can use the <strong class="command">ST_IsValidReason(geometry)</strong> function to find out the source of the invalidity:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_IsValidReason</span><span class="p">(</span><span class="n">ST_GeometryFromText</span><span class="p">(</span>
+         <span class="s1">&#39;POLYGON((0 0, 0 1, 1 1, 2 1, 2 2, 1 2, 1 1, 1 0, 0 0))&#39;</span>
+       <span class="p">));</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Self</span><span class="o">-</span><span class="n">intersection</span><span class="p">[</span><span class="mi">1</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Note that in addition to the reason (self-intersection) the location of the invalidity (coordinate (1 1)) is also returned.</p>
+<p>We can use the <strong class="command">ST_IsValid(geometry)</strong> function to test our tables too:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Find all the invalid polygons and what their problem is</span>
+<span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">boroname</span><span class="p">,</span> <span class="n">ST_IsValidReason</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+<span class="k">WHERE</span> <span class="k">NOT</span> <span class="n">ST_IsValid</span><span class="p">(</span><span class="n">geom</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>          <span class="n">name</span>           <span class="o">|</span>   <span class="n">boroname</span>    <span class="o">|</span>                     <span class="n">st_isvalidreason</span>
+<span class="o">-------------------------+---------------+-----------------------------------------------------------</span>
+ <span class="n">Howard</span> <span class="n">Beach</span>            <span class="o">|</span> <span class="n">Queens</span>        <span class="o">|</span> <span class="n">Self</span><span class="o">-</span><span class="n">intersection</span><span class="p">[</span><span class="mf">597264.083368305</span> <span class="mf">4499924.54228856</span><span class="p">]</span>
+ <span class="n">Corona</span>                  <span class="o">|</span> <span class="n">Queens</span>        <span class="o">|</span> <span class="n">Self</span><span class="o">-</span><span class="n">intersection</span><span class="p">[</span><span class="mf">595483.058764138</span> <span class="mf">4513817.95350787</span><span class="p">]</span>
+ <span class="n">Steinway</span>                <span class="o">|</span> <span class="n">Queens</span>        <span class="o">|</span> <span class="n">Self</span><span class="o">-</span><span class="n">intersection</span><span class="p">[</span><span class="mf">593545.572199759</span> <span class="mf">4514735.20870587</span><span class="p">]</span>
+ <span class="n">Red</span> <span class="n">Hook</span>                <span class="o">|</span> <span class="n">Brooklyn</span>      <span class="o">|</span> <span class="n">Self</span><span class="o">-</span><span class="n">intersection</span><span class="p">[</span><span class="mf">584306.820375986</span> <span class="mf">4502360.51774956</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="repairing-invalidity">
+<h2>25.3. Repairing Invalidity<a class="headerlink" href="#repairing-invalidity" title="Permalink to this headline">¶</a></h2>
+<p>First the bad news: there is no 100% guaranteed way to fix invalid geometries. The worst case scenario is identifying them with the <strong class="command">ST_IsValid(geometry)</strong> function, moving them to a side table, exporting that table, and repairing them externally.</p>
+<p>Here’s an example of SQL to move invalid geometries out of the main table into a side table suitable for dumping to an external cleaning process.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Side table of invalids</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">nyc_neighborhoods_invalid</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+<span class="k">WHERE</span> <span class="k">NOT</span> <span class="n">ST_IsValid</span><span class="p">(</span><span class="n">geom</span><span class="p">);</span>
+
+<span class="c1">-- Remove them from the main table</span>
+<span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+<span class="k">WHERE</span> <span class="k">NOT</span> <span class="n">ST_IsValid</span><span class="p">(</span><span class="n">geom</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>A good tool for visually repairing invalid geometry is OpenJump (<a class="reference external" href="http://openjump.org">http://openjump.org</a>) which includes a validation routine under <strong>Tools-&gt;QA-&gt;Validate Selected Layers</strong>.</p>
+<p>Now the good news: a large proportion of invalidities <strong>can be fixed inside the database</strong> using either:</p>
+<ul class="simple">
+<li>the <strong class="command">ST_MakeValid</strong> function or,</li>
+<li>the <strong class="command">ST_Buffer</strong> function.</li>
+</ul>
+<div class="section" id="st-makevalid">
+<h3>25.3.1. ST_MakeValid<a class="headerlink" href="#st-makevalid" title="Permalink to this headline">¶</a></h3>
+<p><strong class="command">ST_MakeValid</strong> attempts to repair invalidities without only minimal alterations to the input geometries. No vertices are dropped or moved, the structure of the object is simply re-arranged. This is a good thing for clean, but invalid data, and a bad thing for messy and invalid data.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Fix the invalid figure-8 polygon</span>
+<span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">ST_MakeValid</span><span class="p">(</span>
+         <span class="s1">&#39;POLYGON((0 0, 0 1, 1 1, 2 1, 2 2, 1 2, 1 1, 1 0, 0 0))&#39;</span>
+       <span class="p">));</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MULTIPOLYGON</span><span class="p">(</span>
+  <span class="p">((</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="mi">0</span><span class="p">)),</span>
+  <span class="p">((</span><span class="mi">1</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span> <span class="mi">2</span><span class="p">,</span><span class="mi">2</span> <span class="mi">2</span><span class="p">,</span><span class="mi">2</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span> <span class="mi">1</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong class="command">ST_MakeValid</strong> successfully converts the figure-8 into a multi-polygon that represents the same area.</p>
+</div>
+<div class="section" id="st-buffer">
+<h3>25.3.2. ST_Buffer<a class="headerlink" href="#st-buffer" title="Permalink to this headline">¶</a></h3>
+<p>Cleaning using the buffer trick takes advantage of the way buffers are built: a buffered geometry is a brand new geometry, constructed by offsetting lines from the original geometry. If you offset the original lines by <strong>nothing</strong> (zero) then the new geometry will be structurally identical to the original one, but because it is built using the <a class="reference internal" href="glossary.html#term-ogc"><span class="xref std std-term">OGC</span></a> topology rules, it will be valid.</p>
+<p>For example, here’s a classic invalidity – the “banana polygon” – a single ring that encloses an area but bends around to touch itself, leaving a “hole” which is not actually a hole.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POLYGON</span><span class="p">((</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<img alt="_images/banana.png" class="inline" src="_images/banana.png" />
+<p>Running the zero-offset buffer on the polygon returns a valid <a class="reference internal" href="glossary.html#term-ogc"><span class="xref std std-term">OGC</span></a> polygon, consisting of an outer and inner ring that touch at one point.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span>
+         <span class="n">ST_Buffer</span><span class="p">(</span>
+           <span class="n">ST_GeometryFromText</span><span class="p">(</span><span class="s1">&#39;POLYGON((0 0, 2 0, 1 1, 2 2, 3 1, 2 0, 4 0, 4 4, 0 4, 0 0))&#39;</span><span class="p">),</span>
+           <span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+         <span class="p">)</span>
+       <span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">POLYGON</span><span class="p">((</span><span class="mi">0</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="mi">4</span><span class="p">,</span><span class="mi">4</span> <span class="mi">4</span><span class="p">,</span><span class="mi">4</span> <span class="mi">0</span><span class="p">,</span><span class="mi">2</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="mi">0</span><span class="p">),(</span><span class="mi">2</span> <span class="mi">0</span><span class="p">,</span><span class="mi">3</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The “banana polygon” (or “inverted shell”) is a case where the <a class="reference internal" href="glossary.html#term-ogc"><span class="xref std std-term">OGC</span></a> topology model for valid geometry and the model used internally by ESRI differ. The ESRI model considers rings that touch to be invalid, and prefers the banana form for this kind of shape. The OGC model is the reverse. Neither is “correct”, they are just different ways to model the same situation.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="joins_advanced.html" title="previous chapter">24. More Spatial Joins</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="equality.html" title="next chapter">26. Equality</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="joins_advanced.html" title="previous chapter">24. More Spatial Joins</a></p>
+          <p><b>Next:</b> <a href="equality.html" title="next chapter">26. Equality</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="equality.html" title="26. Equality"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="joins_advanced.html" title="24. More Spatial Joins"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

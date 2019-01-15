@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="#" />
+      <link rel="next" title="1. Welcome" href="welcome.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="#">Introduction to PostGIS</a>
+  
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="welcome.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">Introduction to PostGIS</a><ul>
+<li><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li><a class="reference internal" href="#workshop-materials">Workshop Materials</a></li>
+<li><a class="reference internal" href="#workshop-modules">Workshop Modules</a></li>
+<li><a class="reference internal" href="#links-to-have-on-hand">Links to have on hand</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="introduction-to-postgis">
+<h1>Introduction to PostGIS<a class="headerlink" href="#introduction-to-postgis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">This workshop uses a <a class="reference external" href="http://training-files.boundlessgeo.com/postgis/postgis-workshop.zip">data bundle</a>. Download and extract this data bundle to a convenient location.</p>
+</li>
+<li><p class="first">This workshop uses the following software:</p>
+<ul class="simple">
+<li><strong class="command">PostgreSQL</strong> database, along with <strong class="command">PgAdmin</strong> application, and command line tool <strong class="command">psql</strong>.</li>
+<li><strong class="command">PostGIS</strong> extension, along with <strong class="command">pgShapeLoader</strong> application.</li>
+</ul>
+<p>The boundless distributions of <strong>Boundless Server</strong> and <strong>Boundless Desktop</strong> include the software required above. You can download the latest distribution through <a class="reference external" href="http://connect.boundlessgeo.com">Boundless Connect</a>. Boundless Server and Boundless Desktop are available in the <a class="reference external" href="http://connect.boundlessgeo.com/Downloads">Downloads</a> area.</p>
+<p>For alternate distributions please see the <a class="reference external" href="http://postgis.net/install/">PostGIS Installation</a> page.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="workshop-materials">
+<h2>Workshop Materials<a class="headerlink" href="#workshop-materials" title="Permalink to this headline">¶</a></h2>
+<p>Inside the data bundle, you will find:</p>
+<dl class="docutils">
+<dt><strong>workshop/</strong></dt>
+<dd>a directory containing this HTML workshop</dd>
+<dt><strong>data/</strong></dt>
+<dd>a directory containing the shapefiles we will be loading</dd>
+</dl>
+<p>All the data in the package is public domain and freely redistributable. All the software in the package is open source, and freely redistributable. This workshop is licensed as Creative Commons “<a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/us/">share alike with attribution</a>”, and is freely redistributable under the terms of that license.</p>
+</div>
+<div class="section" id="workshop-modules">
+<h2>Workshop Modules<a class="headerlink" href="#workshop-modules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="welcome.html">1. Welcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">2. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creating_db.html">3. Creating a Spatial Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loading_data.html">4. Loading spatial data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about_data.html">5. About our data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_sql.html">6. Simple SQL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_sql_exercises.html">7. Simple SQL Exercises</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_sql_exercise_answers.html">8. Simple SQL Exercise Answers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometries.html">9. Geometries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometries_exercises.html">10. Geometry Exercises</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometries_exercise_answers.html">11. Geometry Exercise Answers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatial_relationships.html">12. Spatial Relationships</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatial_relationships_exercises.html">13. Spatial Relationships Exercises</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatial_relationships_exercise_answers.html">14. Spatial Relationships Exercise Answers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="joins.html">15. Spatial Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="joins_exercises.html">16. Spatial Joins Exercises</a></li>
+<li class="toctree-l1"><a class="reference internal" href="joins_exercise_answers.html">17. Spatial Joins Exercises with Answers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indexing.html">18. Spatial Indexing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projection.html">19. Projecting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projection_exercises.html">20. Projection Exercises</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projection_exercise_answers.html">21. Projection Exercises with Answers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geography.html">22. Geography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry_returning.html">23. Geometry Constructing Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="joins_advanced.html">24. More Spatial Joins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validity.html">25. Validity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="equality.html">26. Equality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linear_referencing.html">27. Linear Referencing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="de9im.html">28. Dimensionally Extended 9-Intersection Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clusterindex.html">29. Clustering on Indices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3d.html">30. 3-D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="knn.html">31. Nearest-Neighbour Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history_tracking.html">32. Tracking Edit History using Triggers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_geometry_construction.html">33. Advanced Geometry Constructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tuning.html">34. Tuning PostgreSQL for Spatial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security.html">35. PostgreSQL Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schemas.html">36. PostgreSQL Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backup.html">37. PostgreSQL Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrades.html">38. Software Upgrades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgis-functions.html">39. Appendix A: PostGIS Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">40. Appendix B: Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">41. Appendix C: License</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="links-to-have-on-hand">
+<h2>Links to have on hand<a class="headerlink" href="#links-to-have-on-hand" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>PostGIS - <a class="reference external" href="http://postgis.net/">http://postgis.net/</a><ul>
+<li>Docs - <a class="reference external" href="http://postgis.net/docs/">http://postgis.net/docs/</a></li>
+</ul>
+</li>
+<li>PostgreSQL - <a class="reference external" href="http://www.postgresql.org/">http://www.postgresql.org/</a><ul>
+<li>Docs - <a class="reference external" href="http://www.postgresql.org/docs/">http://www.postgresql.org/docs/</a></li>
+<li>Downloads - <a class="reference external" href="http://www.postgresql.org/download/">http://www.postgresql.org/download/</a></li>
+<li>JDBC Driver - <a class="reference external" href="http://jdbc.postgresql.org/">http://jdbc.postgresql.org/</a></li>
+<li>.Net Driver - <a class="reference external" href="http://npgsql.projects.postgresql.org/">http://npgsql.projects.postgresql.org/</a></li>
+<li>Python Driver - <a class="reference external" href="http://www.pygresql.org/">http://www.pygresql.org/</a></li>
+<li>C/C++ Driver - <a class="reference external" href="http://www.postgresql.org/docs/10/static/libpq.html">http://www.postgresql.org/docs/10/static/libpq.html</a></li>
+</ul>
+</li>
+<li>PgAdmin III - <a class="reference external" href="http://www.pgadmin.org/">http://www.pgadmin.org/</a></li>
+<li>Open Source Desktop Clients<ul>
+<li>QGIS - <a class="reference external" href="http://qgis.org/">http://qgis.org/</a></li>
+<li>OpenJUMP - <a class="reference external" href="http://openjump.org/">http://openjump.org/</a></li>
+<li>uDig - <a class="reference external" href="http://udig.refractions.net/">http://udig.refractions.net/</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="right"><strong>Next</strong>: <a href="welcome.html" title="next chapter">1. Welcome</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p><b>Next:</b> <a href="welcome.html" title="next chapter">1. Welcome</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="welcome.html" title="1. Welcome"
+       accesskey="N">next</a></li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

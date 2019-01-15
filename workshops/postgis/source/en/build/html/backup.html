@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 37. PostgreSQL Backup and Restore</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="38. Software Upgrades" href="upgrades.html" />
+      <link rel="prev" title="36. PostgreSQL Schemas" href="schemas.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">37. PostgreSQL Backup and Restore</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="upgrades.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="schemas.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">37. PostgreSQL Backup and Restore</a><ul>
+<li><a class="reference internal" href="#laying-out-your-data">37.1. Laying Out your Data</a></li>
+<li><a class="reference internal" href="#basic-backup-and-restore">37.2. Basic Backup and Restore</a><ul>
+<li><a class="reference internal" href="#backing-up-users">37.2.1. Backing Up Users</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#online-backup-and-restore">37.3. Online Backup and Restore</a><ul>
+<li><a class="reference internal" href="#how-it-works">37.3.1. How it Works</a></li>
+<li><a class="reference internal" href="#archiving-the-wal-files">37.3.2. Archiving the WAL Files</a></li>
+<li><a class="reference internal" href="#taking-the-base-backup">37.3.3. Taking the Base Backup</a></li>
+<li><a class="reference internal" href="#restoring-from-the-archive">37.3.4. Restoring from the Archive</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#links">37.4. Links</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="postgresql-backup-and-restore">
+<span id="backup"></span><h1>37. PostgreSQL Backup and Restore<a class="headerlink" href="#postgresql-backup-and-restore" title="Permalink to this headline">¶</a></h1>
+<p>There are lots of ways to backup a PostgreSQL database, and the one you choose will depend a great deal on how you are using the database.</p>
+<ul class="simple">
+<li>For relatively static databases, the basic pg_dump/pg_restore tools can be used to take periodic snapshots of the data.</li>
+<li>For frequently changing data, using an “online backup” scheme allows continuous archiving of updates to a secure location.</li>
+</ul>
+<p>Online backup is the basis for replication and stand-by systems for <a class="reference external" href="http://www.postgresql.org/docs/current/static/high-availability.html">high availability</a>, particularly for versions of PostgreSQL &gt;= 9.0.</p>
+<div class="section" id="laying-out-your-data">
+<h2>37.1. Laying Out your Data<a class="headerlink" href="#laying-out-your-data" title="Permalink to this headline">¶</a></h2>
+<p>As discussed in <a class="reference internal" href="schemas.html#schemas"><span class="std std-ref">PostgreSQL Schemas</span></a>, ensuring that production data is always stored in separate schemas is a very important <strong>best practice</strong> in managing data. There are two reasons:</p>
+<ul class="simple">
+<li>Backing up and restoring data in schemas is much simpler than managing lists of tables to be backed up individually.</li>
+<li>Keeping data tables out of the “public” schema allows far easier upgrades, as discussed in <a class="reference internal" href="upgrades.html#upgrades"><span class="std std-ref">Software Upgrades</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="basic-backup-and-restore">
+<h2>37.2. Basic Backup and Restore<a class="headerlink" href="#basic-backup-and-restore" title="Permalink to this headline">¶</a></h2>
+<p>Backing up a full database is easy using the <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgdump.html">pg_dump</a> utility. The utility is a command-line tool, which makes it easy to automate with scripting, and it can also be invoke via a GUI in the PgAdmin utility.</p>
+<p>To backup our <code class="docutils literal notranslate"><span class="pre">nyc</span></code> database, we can use the GUI, just right-click the database you want to backup:</p>
+<img alt="_images/backup1.jpg" src="_images/backup1.jpg" />
+<p>Enter the name of the backup file you want to create.</p>
+<img alt="_images/backup2.jpg" src="_images/backup2.jpg" />
+<p>Note that there are three backup format options: compress, tar and plain.</p>
+<ul class="simple">
+<li><strong>Plain</strong> is just a textual SQL file. This is the simplest format and in many ways the most flexible, since it can be editing or altered easily and then loaded back into a database, allowing offline changes to things like ownership or other global information.</li>
+<li><strong>Tar</strong> using a UNIX archive format to hold components of the dump in separate files. Using the tar format allows the <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgrestore.html">pg_restore</a> utility to selectively restore parts of the dump.</li>
+<li><strong>Compress</strong> is like the Tar format, but compresses the internal components individually, allowing them to be selectively restored without decompressing the entire archive.</li>
+</ul>
+<p>We’ll check the Compress option and go, saving out a backup file.</p>
+<p>The same operation can be done with the command line like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_dump</span> <span class="o">--</span><span class="n">file</span><span class="o">=</span><span class="n">nyc</span><span class="o">.</span><span class="n">backup</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">c</span> <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">54321</span> <span class="o">--</span><span class="n">username</span><span class="o">=</span><span class="n">postgres</span> <span class="n">nyc</span>
+</pre></div>
+</div>
+<p>Because the backup file is in Compress format, we can view the contents using the <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgrestore.html">pg_restore</a> command to list the manifest. In the PgAdmin GUI, “View” is an option in the panel.</p>
+<img alt="_images/backup3.jpg" src="_images/backup3.jpg" />
+<p>When you look at the manifest, one of the things you might notice is that there are a lot of “FUNCTION” signatures in there.</p>
+<img alt="_images/backup4.jpg" src="_images/backup4.jpg" />
+<p>That’s because the <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgdump.html">pg_dump</a> utility dumps <strong>every</strong> non-system object in the database, and that includes the PostGIS function definitions.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">PostgreSQL 9.1+ includes an “EXTENSION” feature that allows add-on packages like PostGIS to be installed as registered system components and therefore excluded from <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgdump.html">pg_dump</a> output. PostGIS 2.0 and higher support installation using this extension system.</p>
+</div>
+<p>We can see the same manifest from the command-line using <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgrestore.html">pg_restore</a> directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_restore</span> <span class="o">--</span><span class="nb">list</span> <span class="n">nyc</span><span class="o">.</span><span class="n">backup</span>
+</pre></div>
+</div>
+<p>The problem with a dump file full of PostGIS function signatures is that we really wanted a dump of our data, not our system functions.</p>
+<p>Since every object is in the dump file, we can restore to a blank database and get full functionality. In doing so, we are expecting that system we are restoring to has exactly the same version of PostGIS as the one we dumped from (since the function signature definitions reference a particular version of the PostGIS shared library).</p>
+<p>From the command-line the restore looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">createdb</span> <span class="o">--</span><span class="n">port</span> <span class="mi">54321</span> <span class="n">nyc2</span>
+<span class="n">pg_restore</span> <span class="o">--</span><span class="n">dbname</span><span class="o">=</span><span class="n">nyc2</span> <span class="o">--</span><span class="n">port</span> <span class="mi">54321</span> <span class="o">--</span><span class="n">username</span><span class="o">=</span><span class="n">postgres</span> <span class="n">nyc</span><span class="o">.</span><span class="n">backup</span>
+</pre></div>
+</div>
+<p>Dumping just data, without function signatures, is where having data in schemas is handy, because there is a command-line flag to only dump a particular schema:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_dump</span> <span class="o">--</span><span class="n">port</span><span class="o">=</span><span class="mi">54321</span> <span class="o">-</span><span class="nb">format</span><span class="o">=</span><span class="n">c</span> <span class="o">--</span><span class="n">schema</span><span class="o">=</span><span class="n">census</span> <span class="o">--</span><span class="n">file</span><span class="o">=</span><span class="n">census</span><span class="o">.</span><span class="n">backup</span>
+</pre></div>
+</div>
+<p>Now when we list the contents of the dump, we see just the data tables we wanted:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_restore</span> <span class="o">--</span><span class="nb">list</span> <span class="n">census</span><span class="o">.</span><span class="n">backup</span>
+
+<span class="p">;</span>
+<span class="p">;</span> <span class="n">Archive</span> <span class="n">created</span> <span class="n">at</span> <span class="n">Thu</span> <span class="n">Aug</span>  <span class="mi">9</span> <span class="mi">11</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">49</span> <span class="mi">2012</span>
+<span class="p">;</span>     <span class="n">dbname</span><span class="p">:</span> <span class="n">nyc</span>
+<span class="p">;</span>     <span class="n">TOC</span> <span class="n">Entries</span><span class="p">:</span> <span class="mi">11</span>
+<span class="p">;</span>     <span class="n">Compression</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
+<span class="p">;</span>     <span class="n">Dump</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">1.11</span><span class="o">-</span><span class="mi">0</span>
+<span class="p">;</span>     <span class="n">Format</span><span class="p">:</span> <span class="n">CUSTOM</span>
+<span class="p">;</span>     <span class="n">Integer</span><span class="p">:</span> <span class="mi">4</span> <span class="nb">bytes</span>
+<span class="p">;</span>     <span class="n">Offset</span><span class="p">:</span> <span class="mi">8</span> <span class="nb">bytes</span>
+<span class="p">;</span>     <span class="n">Dumped</span> <span class="kn">from</span> <span class="nn">database</span> <span class="n">version</span><span class="p">:</span> <span class="mf">8.4</span><span class="o">.</span><span class="mi">9</span>
+<span class="p">;</span>     <span class="n">Dumped</span> <span class="n">by</span> <span class="n">pg_dump</span> <span class="n">version</span><span class="p">:</span> <span class="mf">8.4</span><span class="o">.</span><span class="mi">9</span>
+<span class="p">;</span>
+<span class="p">;</span>
+<span class="p">;</span> <span class="n">Selected</span> <span class="n">TOC</span> <span class="n">Entries</span><span class="p">:</span>
+<span class="p">;</span>
+<span class="mi">6</span><span class="p">;</span> <span class="mi">2615</span> <span class="mi">20091</span> <span class="n">SCHEMA</span> <span class="o">-</span> <span class="n">census</span> <span class="n">postgres</span>
+<span class="mi">146</span><span class="p">;</span> <span class="mi">1259</span> <span class="mi">19845</span> <span class="n">TABLE</span> <span class="n">census</span> <span class="n">nyc_census_blocks</span> <span class="n">postgres</span>
+<span class="mi">145</span><span class="p">;</span> <span class="mi">1259</span> <span class="mi">19843</span> <span class="n">SEQUENCE</span> <span class="n">census</span> <span class="n">nyc_census_blocks_gid_seq</span> <span class="n">postgres</span>
+<span class="mi">2691</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="n">SEQUENCE</span> <span class="n">OWNED</span> <span class="n">BY</span> <span class="n">census</span> <span class="n">nyc_census_blocks_gid_seq</span> <span class="n">postgres</span>
+<span class="mi">2692</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="n">SEQUENCE</span> <span class="n">SET</span> <span class="n">census</span> <span class="n">nyc_census_blocks_gid_seq</span> <span class="n">postgres</span>
+<span class="mi">2681</span><span class="p">;</span> <span class="mi">2604</span> <span class="mi">19848</span> <span class="n">DEFAULT</span> <span class="n">census</span> <span class="n">gid</span> <span class="n">postgres</span>
+<span class="mi">2688</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">19845</span> <span class="n">TABLE</span> <span class="n">DATA</span> <span class="n">census</span> <span class="n">nyc_census_blocks</span> <span class="n">postgres</span>
+<span class="mi">2686</span><span class="p">;</span> <span class="mi">2606</span> <span class="mi">19853</span> <span class="n">CONSTRAINT</span> <span class="n">census</span> <span class="n">nyc_census_blocks_pkey</span> <span class="n">postgres</span>
+<span class="mi">2687</span><span class="p">;</span> <span class="mi">1259</span> <span class="mi">20078</span> <span class="n">INDEX</span> <span class="n">census</span> <span class="n">nyc_census_blocks_geom_gist</span> <span class="n">postgres</span>
+</pre></div>
+</div>
+<p>Having just the data tables is handy, because it means we can store to a database with any version of PostGIS installed, as we talk about in <a class="reference internal" href="upgrades.html#upgrades"><span class="std std-ref">Software Upgrades</span></a>.</p>
+<div class="section" id="backing-up-users">
+<h3>37.2.1. Backing Up Users<a class="headerlink" href="#backing-up-users" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgdump.html">pg_dump</a> utility operates a database at a time (or a schema or table at a time, if you restrict it). However, information about users is is stored across an entire cluster, it’s not stored in any one database!</p>
+<p>To backup your user information, use the <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pg-dumpall.html">pg_dumpall</a> utility, with the “–globals-only” flag.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pg_dumpall</span> <span class="o">--</span><span class="nb">globals</span><span class="o">-</span><span class="n">only</span> <span class="o">--</span><span class="n">port</span> <span class="mi">54321</span>
+</pre></div>
+</div>
+<p>You can also use <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pg-dumpall.html">pg_dumpall</a> in its default mode to backup an entire cluster, but be aware that, as with <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgdump.html">pg_dump</a>, you will end up backing up the PostGIS function signatures, so the dump will have to be restored against an identical software installation, it can’t be used as part of an upgrade process.</p>
+</div>
+</div>
+<div class="section" id="online-backup-and-restore">
+<h2>37.3. Online Backup and Restore<a class="headerlink" href="#online-backup-and-restore" title="Permalink to this headline">¶</a></h2>
+<p>Online backup and restore allows an administrator to keep an extremely up-to-date set of backup files without the overhead of repeatedly dumping the entire database. If the database is under frequent insert and update load, then online backup might be preferable to basic backup.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The best way to learn about online backup is to read the relevant sections of the PostgreSQL manual on <a class="reference external" href="http://www.postgresql.org/docs/current/static/continuous-archiving.html">continuous archiving and point-in-time recovery</a>. This section of the PostGIS workshop will just provide a brief snapshot of online backup set-up.</p>
+</div>
+<div class="section" id="how-it-works">
+<h3>37.3.1. How it Works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h3>
+<p>Rather than continually write to the main data tables, PostgreSQL stores changes initially in “write-ahead logs” (WAL). Taken together, these logs are a complete record of all changes made to a database.  Online backup consists of taking a copy of the database main data table, then taking a copy of each WAL that is generated from then on.</p>
+<img alt="_images/backup5.jpg" src="_images/backup5.jpg" />
+<p>When it is time to recover to a new database, the system starts on the main data copy, then replays all the WAL files into the database. The end result is a restored database in the same state as the original at the time of the last WAL received.</p>
+<p>Because WAL are being written anyways, and transferring copies to an archive server is computationally cheap, online backup is an effective means of keeping a very up-to-date backup of a system without resorting to intensive regular full dumps.</p>
+</div>
+<div class="section" id="archiving-the-wal-files">
+<h3>37.3.2. Archiving the WAL Files<a class="headerlink" href="#archiving-the-wal-files" title="Permalink to this headline">¶</a></h3>
+<p>The first thing to do in setting up online backup is to create an archiving method. PostgreSQL archiving methods are the ultimate in flexibility: the PostgreSQL backend simply calls a script specified in the <code class="docutils literal notranslate"><span class="pre">archive_command</span></code> configuration parameter.</p>
+<p>That means archiving can be as simple as copying the file to a network-mounted drive, and as complex as encrypting and emailing the files to the remote archive. Any process you can script you can use to archive the files.</p>
+<p>To turn on archiving we will edit <code class="docutils literal notranslate"><span class="pre">postgresql.conf</span></code>, first turning on WAL archiving:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wal_level</span> <span class="o">=</span> <span class="n">archive</span>
+<span class="n">archive_mode</span> <span class="o">=</span> <span class="n">on</span>
+</pre></div>
+</div>
+<p>And then setting the <code class="docutils literal notranslate"><span class="pre">archive_command</span></code> to copy our archive files to a safe location (changing the destination paths as appropriate):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unix</span>
+<span class="n">archive_command</span> <span class="o">=</span> <span class="s1">&#39;test ! -f /archivedir/</span><span class="si">%f</span><span class="s1"> &amp;&amp; cp %p /archivedir/</span><span class="si">%f</span><span class="s1">&#39;</span>
+
+<span class="c1"># Windows</span>
+<span class="n">archive_command</span> <span class="o">=</span> <span class="s1">&#39;copy &quot;%p&quot; &quot;C:</span><span class="se">\\</span><span class="s1">archivedir</span><span class="se">\\</span><span class="si">%f</span><span class="s1">&quot;&#39;</span>
+</pre></div>
+</div>
+<p>It is important that the archive command not over-write existing files, so the unix command includes an initial test to ensure that the files aren’t already there. It is also important that the command returns a non-zero status if the copy process fails.</p>
+<p>Once the changes are made you can re-start PostgreSQL to make them effective.</p>
+</div>
+<div class="section" id="taking-the-base-backup">
+<h3>37.3.3. Taking the Base Backup<a class="headerlink" href="#taking-the-base-backup" title="Permalink to this headline">¶</a></h3>
+<p>Once the archiving process is in place, you need to take a base back-up.</p>
+<p>Put the database into backup mode (this doesn’t do anything to alter operation of queries or data updates, it just forces a checkpoint and writes a label file indicating when the backup was taken).</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">pg_start_backup</span><span class="p">(</span><span class="s1">&#39;/archivedir/basebackup.tgz&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>For the label, using the path to the backup file is a good practice, as it helps you track down where the backup was stored.</p>
+<p>Copy the database to an archival location:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Unix
+tar cvfz /archivedir/basebackup.tgz ${PGDATA}
+</pre></div>
+</div>
+<p>Then tell the database the backup process is complete.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">pg_stop_backup</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>All these steps can of course be scripted for regular base backups.</p>
+</div>
+<div class="section" id="restoring-from-the-archive">
+<h3>37.3.4. Restoring from the Archive<a class="headerlink" href="#restoring-from-the-archive" title="Permalink to this headline">¶</a></h3>
+<p>These steps are taking from the PostgreSQL manual on <a class="reference external" href="http://www.postgresql.org/docs/current/static/continuous-archiving.html">continuous archiving and point-in-time recovery</a>.</p>
+<ul class="simple">
+<li>Stop the server, if it’s running.</li>
+<li>If you have the space to do so, copy the whole cluster data directory and any tablespaces to a temporary location in case you need them later. Note that this precaution will require that you have enough free space on your system to hold two copies of your existing database. If you do not have enough space, you should at least save the contents of the cluster’s pg_xlog subdirectory, as it might contain logs which were not archived before the system went down.</li>
+<li>Remove all existing files and subdirectories under the cluster data directory and under the root directories of any tablespaces you are using.</li>
+<li>Restore the database files from your file system backup. Be sure that they are restored with the right ownership (the database system user, not root!) and with the right permissions. If you are using tablespaces, you should verify that the symbolic links in pg_tblspc/ were correctly restored.</li>
+<li>Remove any files present in pg_xlog/; these came from the file system backup and are therefore probably obsolete rather than current. If you didn’t archive pg_xlog/ at all, then recreate it with proper permissions, being careful to ensure that you re-establish it as a symbolic link if you had it set up that way before.</li>
+<li>If you have unarchived WAL segment files that you saved in step 2, copy them into pg_xlog/. (It is best to copy them, not move them, so you still have the unmodified files if a problem occurs and you have to start over.)</li>
+<li>Create a recovery command file recovery.conf in the cluster data directory (see Chapter 26). You might also want to temporarily modify pg_hba.conf to prevent ordinary users from connecting until you are sure the recovery was successful.</li>
+<li>Start the server. The server will go into recovery mode and proceed to read through the archived WAL files it needs. Should the recovery be terminated because of an external error, the server can simply be restarted and it will continue recovery. Upon completion of the recovery process, the server will rename recovery.conf to recovery.done (to prevent accidentally re-entering recovery mode later) and then commence normal database operations.</li>
+<li>Inspect the contents of the database to ensure you have recovered to the desired state. If not, return to step 1. If all is well, allow your users to connect by restoring pg_hba.conf to normal.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="links">
+<h2>37.4. Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgdump.html">pg_dump</a></li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pg-dumpall.html">pg_dumpall</a></li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/app-pgrestore.html">pg_restore</a></li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/high-availability.html">PostgreSQL High Availability</a></li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/continuous-archiving.html">PostgreSQL High Availability Continuous Archiving and PITR</a></li>
+</ul>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="schemas.html" title="previous chapter">36. PostgreSQL Schemas</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="upgrades.html" title="next chapter">38. Software Upgrades</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="schemas.html" title="previous chapter">36. PostgreSQL Schemas</a></p>
+          <p><b>Next:</b> <a href="upgrades.html" title="next chapter">38. Software Upgrades</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="upgrades.html" title="38. Software Upgrades"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="schemas.html" title="36. PostgreSQL Schemas"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

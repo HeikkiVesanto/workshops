@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 5. About our data</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="6. Simple SQL" href="simple_sql.html" />
+      <link rel="prev" title="4. Loading spatial data" href="loading_data.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">5. About our data</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="simple_sql.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="loading_data.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">5. About our data</a><ul>
+<li><a class="reference internal" href="#nyc-census-blocks">5.1. nyc_census_blocks</a></li>
+<li><a class="reference internal" href="#nyc-neighborhoods">5.2. nyc_neighborhoods</a></li>
+<li><a class="reference internal" href="#nyc-streets">5.3. nyc_streets</a></li>
+<li><a class="reference internal" href="#nyc-subway-stations">5.4. nyc_subway_stations</a></li>
+<li><a class="reference internal" href="#nyc-census-sociodata">5.5. nyc_census_sociodata</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="about-our-data">
+<span id="about-data"></span><h1>5. About our data<a class="headerlink" href="#about-our-data" title="Permalink to this headline">¶</a></h1>
+<p>The data for this workshop is four shapefiles for New York City, and one attribute table of sociodemographic variables.  We’ve loaded our shapefiles as PostGIS tables and will add sociodemographic data later in the workshop.</p>
+<p>The following describes the number of records and table attributes for each of our datasets.  These attribute values and relationships are fundamental to our future analysis.</p>
+<p>To explore the nature of your tables in pgAdmin, right-click a highlighted table and select <strong>Properties</strong>.  You will find a summary of table properties, including a list of table attributes within the <strong>Columns</strong> tab.</p>
+<div class="section" id="nyc-census-blocks">
+<h2>5.1. nyc_census_blocks<a class="headerlink" href="#nyc-census-blocks" title="Permalink to this headline">¶</a></h2>
+<p>A census block is the smallest geography for which census data is reported. All higher level census geographies (block groups, tracts, metro areas, counties, etc) can be built from unions of census blocks. We have attached some demographic data to our collection of blocks.</p>
+<p>Number of records: 36592</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>blkid</strong></td>
+<td>A 15-digit code that uniquely identifies every census <strong>block</strong>. Eg: 360050001009000</td>
+</tr>
+<tr class="row-even"><td><strong>popn_total</strong></td>
+<td>Total number of people in the census block</td>
+</tr>
+<tr class="row-odd"><td><strong>popn_white</strong></td>
+<td>Number of people self-identifying as “White” in the block</td>
+</tr>
+<tr class="row-even"><td><strong>popn_black</strong></td>
+<td>Number of people self-identifying as “Black” in the block</td>
+</tr>
+<tr class="row-odd"><td><strong>popn_nativ</strong></td>
+<td>Number of people self-identifying as “Native American” in the block</td>
+</tr>
+<tr class="row-even"><td><strong>popn_asian</strong></td>
+<td>Number of people self-identifying as “Asian” in the block</td>
+</tr>
+<tr class="row-odd"><td><strong>popn_other</strong></td>
+<td>Number of people self-identifying with other categories in the block</td>
+</tr>
+<tr class="row-even"><td><strong>boroname</strong></td>
+<td>Name of the New York borough. Manhattan, The Bronx, Brooklyn, Staten Island, Queens</td>
+</tr>
+<tr class="row-odd"><td><strong>geom</strong></td>
+<td>Polygon boundary of the block</td>
+</tr>
+</tbody>
+</table>
+<div class="figure" id="id1">
+<img alt="_images/nyc_census_blocks.png" src="_images/nyc_census_blocks.png" />
+<p class="caption"><span class="caption-text"><em>Black population as a percentage of Total Population</em></span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To get census data into GIS, you need to join two pieces of information: the actual data (text), and the boundary files (spatial).  There are many options for getting the data, including downloading data and boundaries from the Census Bureau’s <a class="reference external" href="http://factfinder.census.gov">American FactFinder</a>.</p>
+</div>
+</div>
+<div class="section" id="nyc-neighborhoods">
+<h2>5.2. nyc_neighborhoods<a class="headerlink" href="#nyc-neighborhoods" title="Permalink to this headline">¶</a></h2>
+<p>New York has a rich history of neighborhood names and extent.  Neighborhoods are social constructs that do not follow lines laid down by the government. For example, the Brooklyn neighborhoods of Carroll Gardens, Red Hook, and Cobble Hill were once collectively known as “South Brooklyn.” And now, depending on which real estate agent you talk to, the same four blocks in the-neighborhood-formerly-known-as-Red-Hook can be referred to as Columbia Heights, Carroll Gardens West, or Red Hook!</p>
+<p>Number of records: 129</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>name</strong></td>
+<td>Name of the neighborhood</td>
+</tr>
+<tr class="row-even"><td><strong>boroname</strong></td>
+<td>Name of the New York borough. Manhattan, The Bronx, Brooklyn, Staten Island, Queens</td>
+</tr>
+<tr class="row-odd"><td><strong>geom</strong></td>
+<td>Polygon boundary of the neighborhood</td>
+</tr>
+</tbody>
+</table>
+<div class="figure" id="id2">
+<img alt="_images/nyc_neighborhoods.png" src="_images/nyc_neighborhoods.png" />
+<p class="caption"><span class="caption-text"><em>The neighborhoods of New York City</em></span></p>
+</div>
+</div>
+<div class="section" id="nyc-streets">
+<h2>5.3. nyc_streets<a class="headerlink" href="#nyc-streets" title="Permalink to this headline">¶</a></h2>
+<p>The street centerlines form the transportation network of the city. These streets have been flagged with types in order to distinguish between such thoroughfares as back alleys, arterial streets, freeways, and smaller streets. Desirable areas to live might be on residential streets rather than next to a freeway.</p>
+<p>Number of records: 19091</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>name</strong></td>
+<td>Name of the street</td>
+</tr>
+<tr class="row-even"><td><strong>oneway</strong></td>
+<td>Is the street one-way? “yes” = yes, “” = no</td>
+</tr>
+<tr class="row-odd"><td><strong>type</strong></td>
+<td>Road type (primary, secondary, residential, motorway)</td>
+</tr>
+<tr class="row-even"><td><strong>geom</strong></td>
+<td>Linear centerline of the street</td>
+</tr>
+</tbody>
+</table>
+<div class="figure" id="id3">
+<img alt="_images/nyc_streets.png" src="_images/nyc_streets.png" />
+<p class="caption"><span class="caption-text"><em>The streets of New York City. Major roads are in red.</em></span></p>
+</div>
+</div>
+<div class="section" id="nyc-subway-stations">
+<h2>5.4. nyc_subway_stations<a class="headerlink" href="#nyc-subway-stations" title="Permalink to this headline">¶</a></h2>
+<p>The subway stations link the upper world where people live to the invisible network of subways beneath. As portals to the public transportation system, station locations help determine how easy it is for different people to enter the subway system.</p>
+<p>Number of records: 491</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>name</strong></td>
+<td>Name of the station</td>
+</tr>
+<tr class="row-even"><td><strong>borough</strong></td>
+<td>Name of the New York borough. Manhattan, The Bronx, Brooklyn, Staten Island, Queens</td>
+</tr>
+<tr class="row-odd"><td><strong>routes</strong></td>
+<td>Subway lines that run through this station</td>
+</tr>
+<tr class="row-even"><td><strong>transfers</strong></td>
+<td>Lines you can transfer to via this station</td>
+</tr>
+<tr class="row-odd"><td><strong>express</strong></td>
+<td>Stations where express trains stop, “express” = yes, “” = no</td>
+</tr>
+<tr class="row-even"><td><strong>geom</strong></td>
+<td>Point location of the station</td>
+</tr>
+</tbody>
+</table>
+<div class="figure" id="id4">
+<img alt="_images/nyc_subway_stations.png" src="_images/nyc_subway_stations.png" />
+<p class="caption"><span class="caption-text"><em>Point locations for New York City subway stations</em></span></p>
+</div>
+</div>
+<div class="section" id="nyc-census-sociodata">
+<h2>5.5. nyc_census_sociodata<a class="headerlink" href="#nyc-census-sociodata" title="Permalink to this headline">¶</a></h2>
+<p>There is a rich collection of social-economic data collected during the census process, but only at the larger geography level of census tract.  Census blocks combine to form census tracts (and block groups). We have collected some social-economic at a census tract level to answer some of these more interesting questions about New York City.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">nyc_census_sociodata</span></code> is a data table.  We will need to connect it to Census geographies before conducting any spatial analysis.</p>
+</div>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>tractid</strong></td>
+<td>An 11-digit code that uniquely identifies every census <strong>tract</strong>. (“36005000100”)</td>
+</tr>
+<tr class="row-even"><td><strong>transit_total</strong></td>
+<td>Number of workers in the tract</td>
+</tr>
+<tr class="row-odd"><td><strong>transit_private</strong></td>
+<td>Number of workers in the tract who use private automobiles / motorcycles</td>
+</tr>
+<tr class="row-even"><td><strong>transit_public</strong></td>
+<td>Number of workers in the tract who take public transit</td>
+</tr>
+<tr class="row-odd"><td><strong>transit_walk</strong></td>
+<td>Number of workers in the tract who walk</td>
+</tr>
+<tr class="row-even"><td><strong>transit_other</strong></td>
+<td>Number of workers in the tract who use other forms like walking / biking</td>
+</tr>
+<tr class="row-odd"><td><strong>transit_none</strong></td>
+<td>Number of workers in the tract who work from home</td>
+</tr>
+<tr class="row-even"><td><strong>transit_time_mins</strong></td>
+<td>Total number of minutes spent in transit by all workers in the tract (minutes)</td>
+</tr>
+<tr class="row-odd"><td><strong>family_count</strong></td>
+<td>Number of families in the tract</td>
+</tr>
+<tr class="row-even"><td><strong>family_income_median</strong></td>
+<td>Median family income in the tract (dollars)</td>
+</tr>
+<tr class="row-odd"><td><strong>family_income_mean</strong></td>
+<td>Average family income in the tract (dollars)</td>
+</tr>
+<tr class="row-even"><td><strong>family_income_aggregate</strong></td>
+<td>Total income of all families in the tract (dollars)</td>
+</tr>
+<tr class="row-odd"><td><strong>edu_total</strong></td>
+<td>Number of people with educational history</td>
+</tr>
+<tr class="row-even"><td><strong>edu_no_highschool_dipl</strong></td>
+<td>Number of people with no high school diploma</td>
+</tr>
+<tr class="row-odd"><td><strong>edu_highschool_dipl</strong></td>
+<td>Number of people with high school diploma and no further education</td>
+</tr>
+<tr class="row-even"><td><strong>edu_college_dipl</strong></td>
+<td>Number of people with college diploma and no further education</td>
+</tr>
+<tr class="row-odd"><td><strong>edu_graduate_dipl</strong></td>
+<td>Number of people with graduate school diploma</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="loading_data.html" title="previous chapter">4. Loading spatial data</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="simple_sql.html" title="next chapter">6. Simple SQL</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="loading_data.html" title="previous chapter">4. Loading spatial data</a></p>
+          <p><b>Next:</b> <a href="simple_sql.html" title="next chapter">6. Simple SQL</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="simple_sql.html" title="6. Simple SQL"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="loading_data.html" title="4. Loading spatial data"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

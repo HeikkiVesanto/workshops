@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 35. PostgreSQL Security</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="36. PostgreSQL Schemas" href="schemas.html" />
+      <link rel="prev" title="34. Tuning PostgreSQL for Spatial" href="tuning.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">35. PostgreSQL Security</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="schemas.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="tuning.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">35. PostgreSQL Security</a><ul>
+<li><a class="reference internal" href="#users-and-roles">35.1. Users and Roles</a><ul>
+<li><a class="reference internal" href="#creating-roles">35.1.1. Creating Roles</a></li>
+<li><a class="reference internal" href="#read-only-users">35.1.2. Read-only Users</a></li>
+<li><a class="reference internal" href="#read-write-users">35.1.3. Read/write Users</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#encryption">35.2. Encryption</a><ul>
+<li><a class="reference internal" href="#id1">35.2.1. SSL Connections</a></li>
+<li><a class="reference internal" href="#data-encryption">35.2.2. Data Encryption</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authentication">35.3. Authentication</a></li>
+<li><a class="reference internal" href="#links">35.4. Links</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="postgresql-security">
+<span id="security"></span><h1>35. PostgreSQL Security<a class="headerlink" href="#postgresql-security" title="Permalink to this headline">¶</a></h1>
+<p>PostgreSQL has a rich and flexible permissions system, with the ability to parcel out particular privileges to particular <a class="reference external" href="http://www.postgresql.org/docs/current/static/user-manag.html">roles</a>, and provide users with the powers of one or more of those <a class="reference external" href="http://www.postgresql.org/docs/current/static/user-manag.html">roles</a>.</p>
+<p>In addition, the PostgreSQL server can use multiple different systems to authenticate users. This means that the database can use the same authentication infrastructure as other architecture components, simplifying password management.</p>
+<div class="section" id="users-and-roles">
+<h2>35.1. Users and Roles<a class="headerlink" href="#users-and-roles" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter we will create two useful production users:</p>
+<ul class="simple">
+<li>A read-only user for use in a publishing application.</li>
+<li>A read/write user for use by a developer in building a software or analyzing data.</li>
+</ul>
+<p>Rather than creating users and granting them the necessary powers, we will create two roles with the right powers and then create two users and add them to the appropriate roles. That way we can easily reuse the roles when we create further users.</p>
+<div class="section" id="creating-roles">
+<h3>35.1.1. Creating Roles<a class="headerlink" href="#creating-roles" title="Permalink to this headline">¶</a></h3>
+<p>A role is a user and a user is a role. The only difference is that a “user” can be said to be a role with the “login” privilege.</p>
+<p>So functionally, the two SQL statements below are the same, they both create a “role with the login privilege”, which is to say, a “user”.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">ROLE</span> <span class="n">mrbean</span> <span class="n">LOGIN</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">mrbean</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="read-only-users">
+<h3>35.1.2. Read-only Users<a class="headerlink" href="#read-only-users" title="Permalink to this headline">¶</a></h3>
+<p>Our read-only user will be for a web application to use to query the <code class="docutils literal notranslate"><span class="pre">nyc_streets</span></code> table.</p>
+<p>The application will have specific access to the <code class="docutils literal notranslate"><span class="pre">nyc_streets</span></code> table, but will inherit the necessary system access for PostGIS operations from the <code class="docutils literal notranslate"><span class="pre">postgis_reader</span></code> role.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- A user account for the web app</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">app1</span><span class="p">;</span>
+<span class="c1">-- Web app needs access to specific data tables</span>
+<span class="k">GRANT</span> <span class="k">SELECT</span> <span class="k">ON</span> <span class="n">nyc_streets</span> <span class="k">TO</span> <span class="n">app1</span><span class="p">;</span>
+
+<span class="c1">-- A generic role for access to PostGIS functionality</span>
+<span class="k">CREATE</span> <span class="k">ROLE</span> <span class="n">postgis_reader</span> <span class="n">INHERIT</span><span class="p">;</span>
+<span class="c1">-- Give that role to the web app</span>
+<span class="k">GRANT</span> <span class="n">postgis_reader</span> <span class="k">TO</span> <span class="n">app1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Now, when we login as app1, we can select rows from the <code class="docutils literal notranslate"><span class="pre">nyc_streets</span></code> table. However, we cannot run an <strong class="command">ST_Transform</strong> call! Why not?</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- This works!</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">nyc_streets</span> <span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="c1">-- This doesn&#39;t work!</span>
+<span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">4326</span><span class="p">))</span>
+  <span class="k">FROM</span> <span class="n">nyc_streets</span> <span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ERROR</span><span class="p">:</span>  <span class="n">permission</span> <span class="n">denied</span> <span class="k">for</span> <span class="n">relation</span> <span class="n">spatial_ref_sys</span>
+<span class="n">CONTEXT</span><span class="p">:</span>  <span class="n">SQL</span> <span class="n">statement</span> <span class="s2">&quot;SELECT proj4text FROM spatial_ref_sys WHERE srid = 4326 LIMIT 1&quot;</span>
+</pre></div>
+</div>
+<p>The answer is contained in the error statement. Though our <code class="docutils literal notranslate"><span class="pre">app1</span></code> user can view the contents of the <code class="docutils literal notranslate"><span class="pre">nyc_streets</span></code> table fine, it cannot view the contents of <code class="docutils literal notranslate"><span class="pre">spatial_ref_sys</span></code>, so the call to <strong class="command">ST_Transform</strong> fails.</p>
+<p>So, we need to also grant the <code class="docutils literal notranslate"><span class="pre">postgis_reader</span></code> role read access to all the PostGIS metadata tables:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">GRANT</span> <span class="k">SELECT</span> <span class="k">ON</span> <span class="n">geometry_columns</span> <span class="k">TO</span> <span class="n">postgis_reader</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">SELECT</span> <span class="k">ON</span> <span class="n">geography_columns</span> <span class="k">TO</span> <span class="n">postgis_reader</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">SELECT</span> <span class="k">ON</span> <span class="n">spatial_ref_sys</span> <span class="k">TO</span> <span class="n">postgis_reader</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Now we have a nice generic <code class="docutils literal notranslate"><span class="pre">postgis_reader</span></code> role we can apply to any user that need to read from PostGIS tables.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- This works now!</span>
+<span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">4326</span><span class="p">))</span>
+  <span class="k">FROM</span> <span class="n">nyc_streets</span> <span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="read-write-users">
+<h3>35.1.3. Read/write Users<a class="headerlink" href="#read-write-users" title="Permalink to this headline">¶</a></h3>
+<p>There are two kinds of read/write scenarios we need to consider:</p>
+<ul class="simple">
+<li>Web applications and others that need to write to existing data tables.</li>
+<li>Developers or analysts that need to create new tables and geometry columns as part of their work.</li>
+</ul>
+<p>For web applications that require write access to data tables, we just need to grant extra permissions to the tables themselves, and we can continue to use the <code class="docutils literal notranslate"><span class="pre">postgis_reader</span></code> role.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Add insert/update/delete abilities to our web application</span>
+<span class="k">GRANT</span> <span class="k">INSERT</span><span class="p">,</span><span class="k">UPDATE</span><span class="p">,</span><span class="k">DELETE</span> <span class="k">ON</span> <span class="n">nyc_streets</span> <span class="k">TO</span> <span class="n">app1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>These kinds of permissions would be required for a read/write WFS service, for example.</p>
+<p>For developers and analysts, a little more access is needed to the main PostGIS metadata tables.  We will need a <code class="docutils literal notranslate"><span class="pre">postgis_writer</span></code> role that can edit the PostGIS metadata tables!</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Make a postgis writer role</span>
+<span class="k">CREATE</span> <span class="k">ROLE</span> <span class="n">postgis_writer</span><span class="p">;</span>
+
+<span class="c1">-- Start by giving it the postgis_reader powers</span>
+<span class="k">GRANT</span> <span class="n">postgis_reader</span> <span class="k">TO</span> <span class="n">postgis_writer</span><span class="p">;</span>
+
+<span class="c1">-- Add insert/update/delete powers for the PostGIS tables</span>
+<span class="k">GRANT</span> <span class="k">INSERT</span><span class="p">,</span><span class="k">UPDATE</span><span class="p">,</span><span class="k">DELETE</span> <span class="k">ON</span> <span class="n">spatial_ref_sys</span> <span class="k">TO</span> <span class="n">postgis_writer</span><span class="p">;</span>
+
+<span class="c1">-- Make app1 a PostGIS writer to see if it works!</span>
+<span class="k">GRANT</span> <span class="n">postgis_writer</span> <span class="k">TO</span> <span class="n">app1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Now try the table creation SQL above as the app1 user and see how it goes!</p>
+</div>
+</div>
+<div class="section" id="encryption">
+<h2>35.2. Encryption<a class="headerlink" href="#encryption" title="Permalink to this headline">¶</a></h2>
+<p>PostgreSQL provides a lot of <a class="reference external" href="http://www.postgresql.org/docs/current/static/encryption-options.html">encryption facilities</a>, many of them optional, some of them on by default.</p>
+<ul class="simple">
+<li>By default, all passwords are MD5 encrypted. The client/server handshake double encrypts the MD5 password to prevent re-use of the hash by anyone who intercepts the password.</li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/libpq-ssl.html">SSL connections</a> are optionally available between the client and server, to encrypt all data and login information. SSL certificate authentication is also available when SSL connections are used.</li>
+<li>Columns inside the database can be encrypted using the <a class="reference external" href="http://www.postgresql.org/docs/current/static/pgcrypto.html">pgcrypto</a> module, which includes hashing algorithms, direct ciphers (blowfish, aes) and both public key and symmetric PGP encryption.</li>
+</ul>
+<div class="section" id="id1">
+<h3>35.2.1. SSL Connections<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>In order to use SSL connections, both your client and server must support SSL. Your version of PostgreSQL may have SSL support built, but not enabled. If so, we have to carry out a few steps to turn it on first.</p>
+<ul>
+<li><p class="first">First, turn shut down PostgreSQL, since activating SSL will require a restart.</p>
+</li>
+<li><p class="first">Next, we acquire or generate an SSL certificate and key. The certificate will need to have no passphrase on it, or the database server won’t be able to start up. You can generate a self-signed key as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new certificate, filling out the certification info as prompted</span>
+<span class="n">openssl</span> <span class="n">req</span> <span class="o">-</span><span class="n">new</span> <span class="o">-</span><span class="n">text</span> <span class="o">-</span><span class="n">out</span> <span class="n">server</span><span class="o">.</span><span class="n">req</span>
+
+<span class="c1"># Strip the passphrase from the certificate</span>
+<span class="n">openssl</span> <span class="n">rsa</span> <span class="o">-</span><span class="ow">in</span> <span class="n">privkey</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">out</span> <span class="n">server</span><span class="o">.</span><span class="n">key</span>
+
+<span class="c1"># Convert the certificate into a self-signed cert</span>
+<span class="n">openssl</span> <span class="n">req</span> <span class="o">-</span><span class="n">x509</span> <span class="o">-</span><span class="ow">in</span> <span class="n">server</span><span class="o">.</span><span class="n">req</span> <span class="o">-</span><span class="n">text</span> <span class="o">-</span><span class="n">key</span> <span class="n">server</span><span class="o">.</span><span class="n">key</span> <span class="o">-</span><span class="n">out</span> <span class="n">server</span><span class="o">.</span><span class="n">crt</span>
+
+<span class="c1"># Set the permission of the key to private read/write</span>
+<span class="n">chmod</span> <span class="n">og</span><span class="o">-</span><span class="n">rwx</span> <span class="n">server</span><span class="o">.</span><span class="n">key</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Copy the <code class="docutils literal notranslate"><span class="pre">server.crt</span></code> and <code class="docutils literal notranslate"><span class="pre">server.key</span></code> into the PostgreSQL data directory.</p>
+</li>
+<li><p class="first">Enable SSL support in the <code class="docutils literal notranslate"><span class="pre">postgresql.conf</span></code> file by turning the “ssl” parameter to “on”. In pgAdmin, go to <em>File &gt; Open …</em>, and navigate to <code class="docutils literal notranslate"><span class="pre">C:\Documents</span> <span class="pre">and</span> <span class="pre">Settings\%USER\.opengeo\pgdata\%USER&quot;\postgresql.conf</span></code></p>
+<img alt="_images/ssl_conf.jpg" src="_images/ssl_conf.jpg" />
+</li>
+<li><p class="first">Now re-start PostgreSQL. The server is now ready for SSL operation.</p>
+</li>
+</ul>
+<p>With the server enabled for SSL, creating an encrypted connection is easy. In PgAdmin, create a new server connection (File &gt; Add Server…), and set the SSL parameter to “require”.</p>
+<img alt="_images/ssl_create.jpg" src="_images/ssl_create.jpg" />
+<p>Once you connect with the new connection, you can see in its properties that it is using an SSL connection.</p>
+<img alt="_images/ssl_props.jpg" src="_images/ssl_props.jpg" />
+<p>Since the default SSL connection mode is “prefer”, you don’t even need to specify an SSL preference when connecting. A connection with the command line <code class="docutils literal notranslate"><span class="pre">psql</span></code> terminal will pick up the SSL option and use it by default:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="p">(</span><span class="mf">8.4</span><span class="o">.</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">SSL</span> <span class="n">connection</span> <span class="p">(</span><span class="n">cipher</span><span class="p">:</span> <span class="n">DHE</span><span class="o">-</span><span class="n">RSA</span><span class="o">-</span><span class="n">AES256</span><span class="o">-</span><span class="n">SHA</span><span class="p">,</span> <span class="n">bits</span><span class="p">:</span> <span class="mi">256</span><span class="p">)</span>
+<span class="n">Type</span> <span class="s2">&quot;help&quot;</span> <span class="k">for</span> <span class="n">help</span><span class="o">.</span>
+
+<span class="n">postgres</span><span class="o">=</span><span class="c1">#</span>
+</pre></div>
+</div>
+<p>Note how the terminal reports the SSL status of the connection.</p>
+</div>
+<div class="section" id="data-encryption">
+<h3>35.2.2. Data Encryption<a class="headerlink" href="#data-encryption" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="http://www.postgresql.org/docs/current/static/pgcrypto.html">pgcrypto</a> module has a huge range of encryption options, so we will only demonstrate the simplest use case: encrypting a column of data using a symmetric cipher.</p>
+<ul>
+<li><p class="first">First, enable pgcrypto by loading the contrib SQL file, either in PgAdmin or psql.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pgsql</span><span class="o">/</span><span class="mf">8.4</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="n">contrib</span><span class="o">/</span><span class="n">pgcrypto</span><span class="o">.</span><span class="n">sql</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Then, test the encryption function.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- encrypt a string using blowfish (bf)</span>
+<span class="k">SELECT</span> <span class="n">encrypt</span><span class="p">(</span><span class="s1">&#39;this is a test phrase&#39;</span><span class="p">,</span> <span class="s1">&#39;mykey&#39;</span><span class="p">,</span> <span class="s1">&#39;bf&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">And make sure it’s reversible too!</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- round-trip a string using blowfish (bf)</span>
+<span class="k">SELECT</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">encrypt</span><span class="p">(</span><span class="s1">&#39;this is a test phrase&#39;</span><span class="p">,</span> <span class="s1">&#39;mykey&#39;</span><span class="p">,</span> <span class="s1">&#39;bf&#39;</span><span class="p">),</span> <span class="s1">&#39;mykey&#39;</span><span class="p">,</span> <span class="s1">&#39;bf&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="authentication">
+<h2>35.3. Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<p>PostgreSQL supports many different <a class="reference external" href="http://www.postgresql.org/docs/current/static/auth-methods.html">authentication methods</a>, to allow easy integration into existing enterprise architectures. For production purposes, the following methods are commonly used:</p>
+<ul class="simple">
+<li><strong>Password</strong> is the basic system where the passwords are stored by the database, with MD5 encryption.</li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Kerberos_(protocol)">Kerberos</a> is a standard enterprise authentication method, which is used by both the <a class="reference external" href="&lt;http://en.wikipedia.org/wiki/Generic_Security_Services_Application_Program_Interface&gt;">GSSAPI</a> and <a class="reference external" href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa380493(v=vs.85).aspx">SSPI</a> schemes in PostgreSQL. Using <a class="reference external" href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa380493(v=vs.85).aspx">SSPI</a>, PostgreSQL can authenticate against Windows servers.</li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol">LDAP</a> is another common enterprise authentication method. The <a class="reference external" href="http://www.openldap.org/">OpenLDAP</a> server bundled with most Linux distributions provides an open source implementation of <a class="reference external" href="http://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol">LDAP</a>.</li>
+<li><strong>Certificate</strong> authentication is an option if you expect all client connections to be via SSL and are able to manage the distribution of keys.</li>
+<li><a class="reference external" href="http://en.wikipedia.org/wiki/Pluggable_authentication_module">PAM</a> authentication is an option if you are on Linux or Solaris and use the <a class="reference external" href="http://en.wikipedia.org/wiki/Pluggable_authentication_module">PAM</a> scheme for transparent authentication provision.</li>
+</ul>
+<p>Authentication methods are controlled by the <code class="docutils literal notranslate"><span class="pre">pg_hba.conf</span></code> file. The “HBA” in the file name stands for “host based access”, because in addition to allowing you to specify the authentication method to use for each database, it allows you to limit host access using network addresses.</p>
+<p>Here is an example <code class="docutils literal notranslate"><span class="pre">pg_hba.conf</span></code> file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD</span>
+
+<span class="c1"># &quot;local&quot; is for Unix domain socket connections only</span>
+<span class="n">local</span>   <span class="nb">all</span>         <span class="nb">all</span>                               <span class="n">trust</span>
+<span class="c1"># IPv4 local connections:</span>
+<span class="n">host</span>    <span class="nb">all</span>         <span class="nb">all</span>         <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="o">/</span><span class="mi">32</span>          <span class="n">trust</span>
+<span class="c1"># IPv6 local connections:</span>
+<span class="n">host</span>    <span class="nb">all</span>         <span class="nb">all</span>         <span class="p">::</span><span class="mi">1</span><span class="o">/</span><span class="mi">128</span>               <span class="n">trust</span>
+<span class="c1"># remote connections for nyc database only</span>
+<span class="n">host</span>    <span class="n">nyc</span>         <span class="nb">all</span>         <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.0</span><span class="o">/</span><span class="mi">2</span>         <span class="n">ldap</span>
+</pre></div>
+</div>
+<p>The file consists of five columns</p>
+<ul class="simple">
+<li><strong>TYPE</strong> determines the kind of access, either “local” for connections from the same server or “host” for remote connections.</li>
+<li><strong>DATABASE</strong> specifies what database the configuration line refers to or “all” for all databases</li>
+<li><strong>USER</strong> specifies what users the line refers to or “all” for all users</li>
+<li><strong>CIDR-ADDRESS</strong> specifies the network limitations for remote connections, using network/netmask syntax</li>
+<li><strong>METHOD</strong> specifies the authentication protocol to use. “trust” skips authentication entirely and simply accepts any valid username without challenge.</li>
+</ul>
+<p>It’s common for local connections to be trusted, since access to the server itself is usually privileged. Remote connections are disabled by default when PostgreSQL is installed: if you want to connect from remote machines, you’ll have to add an entry.</p>
+<p>The line for <code class="docutils literal notranslate"><span class="pre">nyc</span></code> in the example above is an example of a remote access entry. The <code class="docutils literal notranslate"><span class="pre">nyc</span></code> example allows LDAP authenticated access only to machines on the local network (in this case the 192.168.1. network) and only to the nyc database. Depending on the security of your network, you will use more or less strict versions of these rules in your production set-up.</p>
+</div>
+<div class="section" id="links">
+<h2>35.4. Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/auth-methods.html">PostgreSQL Authentication</a></li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/encryption-options.html">PostgreSQL Encrpyption</a></li>
+<li><a class="reference external" href="http://www.postgresql.org/docs/current/static/libpq-ssl.html">PostgreSQL SSL Support</a></li>
+</ul>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="tuning.html" title="previous chapter">34. Tuning PostgreSQL for Spatial</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="schemas.html" title="next chapter">36. PostgreSQL Schemas</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="tuning.html" title="previous chapter">34. Tuning PostgreSQL for Spatial</a></p>
+          <p><b>Next:</b> <a href="schemas.html" title="next chapter">36. PostgreSQL Schemas</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="schemas.html" title="36. PostgreSQL Schemas"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="tuning.html" title="34. Tuning PostgreSQL for Spatial"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 23. Geometry Constructing Functions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="24. More Spatial Joins" href="joins_advanced.html" />
+      <link rel="prev" title="22. Geography" href="geography.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">23. Geometry Constructing Functions</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="joins_advanced.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="geography.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">23. Geometry Constructing Functions</a><ul>
+<li><a class="reference internal" href="#st-centroid-st-pointonsurface">23.1. ST_Centroid / ST_PointOnSurface</a></li>
+<li><a class="reference internal" href="#st-buffer">23.2. ST_Buffer</a></li>
+<li><a class="reference internal" href="#st-intersection">23.3. ST_Intersection</a></li>
+<li><a class="reference internal" href="#st-union">23.4. ST_Union</a></li>
+<li><a class="reference internal" href="#function-list">23.5. Function List</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="geometry-constructing-functions">
+<span id="geometry-returning"></span><h1>23. Geometry Constructing Functions<a class="headerlink" href="#geometry-constructing-functions" title="Permalink to this headline">¶</a></h1>
+<p>All the functions we have seen so far work with geometries “as they are” and returns</p>
+<ul class="simple">
+<li>analyses of the objects (<strong class="command">ST_Length(geometry)</strong>, <strong class="command">ST_Area(geometry)</strong>),</li>
+<li>serializations of the objects (<strong class="command">ST_AsText(geometry)</strong>, <strong class="command">ST_AsGML(geometry)</strong>),</li>
+<li>parts of the object (<strong class="command">ST_RingN(geometry,n)</strong>) or</li>
+<li>true/false tests (<strong class="command">ST_Contains(geometry,geometry)</strong>, <strong class="command">ST_Intersects(geometry,geometry)</strong>).</li>
+</ul>
+<p>“Geometry constructing functions” take geometries as inputs and output new shapes.</p>
+<div class="section" id="st-centroid-st-pointonsurface">
+<h2>23.1. ST_Centroid / ST_PointOnSurface<a class="headerlink" href="#st-centroid-st-pointonsurface" title="Permalink to this headline">¶</a></h2>
+<p>A common need when composing a spatial query is to replace a polygon feature with a point representation of the feature. This is useful for spatial joins (as discussed in <a class="reference internal" href="joins_advanced.html#polypolyjoins"><span class="std std-ref">Polygon/Polygon Joins</span></a>) because using <strong class="command">ST_Intersects(geometry,geometry)</strong> on two polygon layers often results in double-counting: a polygon on a boundary will intersect an object on both sides; replacing it with a point forces it to be on one side or the other, not both.</p>
+<ul class="simple">
+<li><strong class="command">ST_Centroid(geometry)</strong> returns a point that is approximately on the center of mass of the input argument. This simple calculation is very fast, but sometimes not desirable, because the returned point is not necessarily in the feature itself. If the input feature has a convexity (imagine the letter ‘C’) the returned centroid might not be in the interior of the feature.</li>
+<li><strong class="command">ST_PointOnSurface(geometry)</strong> returns a point that is guaranteed to be inside the input argument. It is substantially more computationally expensive than the centroid operation.</li>
+</ul>
+<img alt="_images/centroid.jpg" class="inline" src="_images/centroid.jpg" />
+</div>
+<div class="section" id="st-buffer">
+<h2>23.2. ST_Buffer<a class="headerlink" href="#st-buffer" title="Permalink to this headline">¶</a></h2>
+<p>The buffering operation is common in GIS workflows, and is also available in PostGIS. <strong class="command">ST_Buffer(geometry,distance)</strong> takes in a buffer distance and geometry type and outputs a polygon with a boundary the buffer distance away from the input geometry.</p>
+<img alt="_images/st_buffer.png" class="inline" src="_images/st_buffer.png" />
+<p>For example, if the US Park Service wanted to enforce a marine traffic zone around Liberty Island, they might build a 500 meter buffer polygon around the island. Liberty Island is a single census block in our <code class="docutils literal notranslate"><span class="pre">nyc_census_blocks</span></code> table, so we can easily extract and buffer it.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Make a new table with a Liberty Island 500m buffer zone</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">liberty_island_zone</span> <span class="k">AS</span>
+<span class="k">SELECT</span> <span class="n">ST_Buffer</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">500</span><span class="p">)::</span><span class="n">geometry</span><span class="p">(</span><span class="n">Polygon</span><span class="p">,</span><span class="mi">26918</span><span class="p">)</span> <span class="k">AS</span> <span class="n">geom</span>
+<span class="k">FROM</span> <span class="n">nyc_census_blocks</span>
+<span class="k">WHERE</span> <span class="n">blkid</span> <span class="o">=</span> <span class="s1">&#39;360610001001001&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/liberty_positive.jpg" class="inline" src="_images/liberty_positive.jpg" />
+<p>The <strong class="command">ST_Buffer</strong> function also accepts negative distances and builds inscribed polygons within polygonal inputs. For lines and points you will just get an empty return.</p>
+<img alt="_images/liberty_negative.jpg" class="inline" src="_images/liberty_negative.jpg" />
+</div>
+<div class="section" id="st-intersection">
+<h2>23.3. ST_Intersection<a class="headerlink" href="#st-intersection" title="Permalink to this headline">¶</a></h2>
+<p>Another classic GIS operation – the “overlay” – creates a new coverage by calculating the intersection of two superimposed polygons. The resultant has the property that any polygon in either of the parents can be built by merging polygons in the resultant.</p>
+<p>The <strong class="command">ST_Intersection(geometry A, geometry B)</strong> function returns the spatial area (or line, or point) that both arguments have in common. If the arguments are disjoint, the function returns an empty geometry.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- What is the area these two circles have in common?</span>
+<span class="c1">-- Using ST_Buffer to make the circles!</span>
+
+<span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">ST_Intersection</span><span class="p">(</span>
+  <span class="n">ST_Buffer</span><span class="p">(</span><span class="s1">&#39;POINT(0 0)&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+  <span class="n">ST_Buffer</span><span class="p">(</span><span class="s1">&#39;POINT(3 0)&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<img alt="_images/intersection.jpg" class="inline" src="_images/intersection.jpg" />
+</div>
+<div class="section" id="st-union">
+<h2>23.4. ST_Union<a class="headerlink" href="#st-union" title="Permalink to this headline">¶</a></h2>
+<p>In the previous example we intersected geometries, creating a new geometry that had lines from both the inputs. The <strong class="command">ST_Union</strong> does the reverse; it takes inputs and removes common lines. There are two forms of the <strong class="command">ST_Union</strong> function:</p>
+<ul>
+<li><p class="first"><strong class="command">ST_Union(geometry, geometry)</strong>: A two-argument version that takes in two geometries and returns the merged union.  For example, our two-circle example from the previous section looks like this when you replace the intersection with a union.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- What is the total area these two circles cover?</span>
+<span class="c1">-- Using ST_Buffer to make the circles!</span>
+
+<span class="k">SELECT</span> <span class="n">ST_AsText</span><span class="p">(</span><span class="n">ST_Union</span><span class="p">(</span>
+  <span class="n">ST_Buffer</span><span class="p">(</span><span class="s1">&#39;POINT(0 0)&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+  <span class="n">ST_Buffer</span><span class="p">(</span><span class="s1">&#39;POINT(3 0)&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<img alt="_images/union.jpg" class="inline" src="_images/union.jpg" />
+</li>
+<li><p class="first"><strong class="command">ST_Union([geometry])</strong>: An aggregate version that takes in a set of geometries and returns the merged geometry for the entire group. The aggregate ST_Union can be used with the <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> SQL statement to create carefully merged subsets of basic geometries. It is very powerful,</p>
+</li>
+</ul>
+<p>As an example of <strong class="command">ST_Union</strong> aggregation, consider our <code class="docutils literal notranslate"><span class="pre">nyc_census_blocks</span></code> table. Census geography is carefully constructed so that larger geographies can be built up from smaller ones. So, we can create a census tracts map by merging the blocks that form each tract (as we do later in <a class="reference internal" href="joins_advanced.html#creatingtractstable"><span class="std std-ref">Creating a Census Tracts Table</span></a>). Or, we can create a county map by merging blocks that fall within each county.</p>
+<p>To carry out the merge, note that the unique key <code class="docutils literal notranslate"><span class="pre">blkid</span></code> actually embeds information about the higher level geographies. Here are the parts of the key for Liberty Island we used earlier:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">360610001001001</span> <span class="o">=</span> <span class="mi">36</span> <span class="mi">061</span> <span class="mi">000100</span> <span class="mi">1</span> <span class="mi">001</span>
+
+<span class="mi">36</span>     <span class="o">=</span> <span class="n">State</span> <span class="n">of</span> <span class="n">New</span> <span class="n">York</span>
+<span class="mi">061</span>    <span class="o">=</span> <span class="n">New</span> <span class="n">York</span> <span class="n">County</span> <span class="p">(</span><span class="n">Manhattan</span><span class="p">)</span>
+<span class="mi">000100</span> <span class="o">=</span> <span class="n">Census</span> <span class="n">Tract</span>
+<span class="mi">1</span>      <span class="o">=</span> <span class="n">Census</span> <span class="n">Block</span> <span class="n">Group</span>
+<span class="mi">001</span>    <span class="o">=</span> <span class="n">Census</span> <span class="n">Block</span>
+</pre></div>
+</div>
+<p>So, we can create a county map by merging all geometries that share the same first 5 digits of their <code class="docutils literal notranslate"><span class="pre">blkid</span></code>. Be patient; this is computationally expensive and can take a minute or two.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Create a nyc_census_counties table by merging census blocks</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">nyc_census_counties</span> <span class="k">AS</span>
+<span class="k">SELECT</span>
+  <span class="n">ST_Union</span><span class="p">(</span><span class="n">geom</span><span class="p">)::</span><span class="n">Geometry</span><span class="p">(</span><span class="n">MultiPolygon</span><span class="p">,</span><span class="mi">26918</span><span class="p">)</span> <span class="k">AS</span> <span class="n">geom</span><span class="p">,</span>
+  <span class="n">SubStr</span><span class="p">(</span><span class="n">blkid</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="k">AS</span> <span class="n">countyid</span>
+<span class="k">FROM</span> <span class="n">nyc_census_blocks</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">countyid</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/union_counties.png" class="inline" src="_images/union_counties.png" />
+<p>An area test can confirm that our union operation did not lose any geometry. First, we calculate the area of each individual census block, and sum those areas grouping by census county id.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">SubStr</span><span class="p">(</span><span class="n">blkid</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="k">AS</span> <span class="n">countyid</span><span class="p">,</span> <span class="k">Sum</span><span class="p">(</span><span class="n">ST_Area</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="k">AS</span> <span class="n">area</span>
+<span class="k">FROM</span> <span class="n">nyc_census_blocks</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">countyid</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">countyid</span> <span class="o">|</span>       <span class="n">area</span>
+<span class="o">----------+------------------</span>
+ <span class="mi">36005</span>    <span class="o">|</span> <span class="mf">110196022.906506</span>
+ <span class="mi">36047</span>    <span class="o">|</span> <span class="mf">181927497.678368</span>
+ <span class="mi">36061</span>    <span class="o">|</span> <span class="mf">59091860.6261323</span>
+ <span class="mi">36081</span>    <span class="o">|</span> <span class="mf">283194473.613692</span>
+ <span class="mi">36085</span>    <span class="o">|</span> <span class="mf">150758328.111199</span>
+</pre></div>
+</div>
+<p>Then we calculate the area of each of our new county polygons from the county table:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">countyid</span><span class="p">,</span> <span class="n">ST_Area</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span> <span class="k">AS</span> <span class="n">area</span>
+<span class="k">FROM</span> <span class="n">nyc_census_counties</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">countyid</span> <span class="o">|</span>       <span class="n">area</span>
+<span class="o">----------+------------------</span>
+ <span class="mi">36005</span>    <span class="o">|</span> <span class="mf">110196022.906507</span>
+ <span class="mi">36047</span>    <span class="o">|</span> <span class="mf">181927497.678367</span>
+ <span class="mi">36061</span>    <span class="o">|</span> <span class="mf">59091860.6261324</span>
+ <span class="mi">36081</span>    <span class="o">|</span> <span class="mf">283194473.593646</span>
+ <span class="mi">36085</span>    <span class="o">|</span> <span class="mf">150758328.111199</span>
+</pre></div>
+</div>
+<p>The same answer! We have successfully built an NYC county table from our census blocks data.</p>
+</div>
+<div class="section" id="function-list">
+<h2>23.5. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_AsText.html">ST_AsText(text)</a>: Returns the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Buffer.html">ST_Buffer(geometry, distance)</a>: For geometry: Returns a geometry that represents all points whose distance from this Geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. For geography: Uses a planar transform wrapper.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Intersection.html">ST_Intersection(geometry A, geometry B)</a>: Returns a geometry that represents the shared portion of geomA and geomB. The geography implementation does a transform to geometry to do the intersection and then transform back to WGS84.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Union.html">ST_Union()</a>: Returns a geometry that represents the point set union of the Geometries.</p>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/static/functions-string.html">substring(string [from int] [for int])</a>: PostgreSQL string function to extract substring matching SQL regular expression.</p>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/static/functions-aggregate.html#FUNCTIONS-AGGREGATE-TABLE">sum(expression)</a>: PostgreSQL aggregate function that returns the sum of records in a set of records.</p>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="geography.html" title="previous chapter">22. Geography</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="joins_advanced.html" title="next chapter">24. More Spatial Joins</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="geography.html" title="previous chapter">22. Geography</a></p>
+          <p><b>Next:</b> <a href="joins_advanced.html" title="next chapter">24. More Spatial Joins</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="joins_advanced.html" title="24. More Spatial Joins"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="geography.html" title="22. Geography"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

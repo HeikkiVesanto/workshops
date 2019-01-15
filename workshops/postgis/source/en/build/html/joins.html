@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 15. Spatial Joins</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="16. Spatial Joins Exercises" href="joins_exercises.html" />
+      <link rel="prev" title="14. Spatial Relationships Exercise Answers" href="spatial_relationships_exercise_answers.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">15. Spatial Joins</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="joins_exercises.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="spatial_relationships_exercise_answers.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">15. Spatial Joins</a><ul>
+<li><a class="reference internal" href="#join-and-summarize">15.1. Join and Summarize</a></li>
+<li><a class="reference internal" href="#advanced-join">15.2. Advanced Join</a></li>
+<li><a class="reference internal" href="#function-list">15.3. Function List</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="spatial-joins">
+<span id="joins"></span><h1>15. Spatial Joins<a class="headerlink" href="#spatial-joins" title="Permalink to this headline">¶</a></h1>
+<p>Spatial joins are the bread-and-butter of spatial databases.  They allow you to combine information from different tables by using spatial relationships as the join key.  Much of what we think of as “standard GIS analysis” can be expressed as spatial joins.</p>
+<p>To review how joins work, here’s a step-by-step look at joining the neighborhoods and subway stations tables and then subsequently adding a simple where clause.  Joining two small tables effectively multiplies the number of rows into a much larger dataset with all possible combinations of the two tables.  Then we use a where clause (or two) to narrow our focus.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">--129 neighborhoods</span>
+<span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">boroname</span> <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span>
+
+<span class="c1">--491 subway stations</span>
+<span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">borough</span> <span class="k">FROM</span> <span class="n">nyc_subway_stations</span>
+
+<span class="c1">--join produces 63339 rows (129 * 491)</span>
+<span class="k">SELECT</span> <span class="n">n</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">n</span><span class="p">.</span><span class="n">boroname</span><span class="p">,</span>
+       <span class="n">s</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">borough</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span> <span class="n">n</span><span class="p">,</span> <span class="n">nyc_subway_stations</span> <span class="n">s</span>
+
+<span class="c1">--a simple where clause narrows this to 11058 rows</span>
+<span class="k">SELECT</span> <span class="n">n</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">n</span><span class="p">.</span><span class="n">boroname</span><span class="p">,</span>
+       <span class="n">s</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">borough</span>
+  <span class="k">FROM</span> <span class="n">nyc_neighborhoods</span> <span class="n">n</span><span class="p">,</span> <span class="n">nyc_subway_stations</span> <span class="n">s</span>
+ <span class="k">WHERE</span> <span class="n">n</span><span class="p">.</span><span class="n">boroname</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">borough</span>
+</pre></div>
+</div>
+<p>In the previous section, we explored spatial relationships using a two-step process: first we extracted a subway station point for ‘Broad St’; then, we used that point to ask further questions such as “what neighborhood is the ‘Broad St’ station in?”</p>
+<p>Using a spatial join, we can answer the question in one step, retrieving information about the subway station and the neighborhood that contains it:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+  <span class="n">subways</span><span class="p">.</span><span class="n">name</span> <span class="k">AS</span> <span class="n">subway_name</span><span class="p">,</span>
+  <span class="n">neighborhoods</span><span class="p">.</span><span class="n">name</span> <span class="k">AS</span> <span class="n">neighborhood_name</span><span class="p">,</span>
+  <span class="n">neighborhoods</span><span class="p">.</span><span class="n">boroname</span> <span class="k">AS</span> <span class="n">borough</span>
+<span class="k">FROM</span> <span class="n">nyc_neighborhoods</span> <span class="k">AS</span> <span class="n">neighborhoods</span>
+<span class="k">JOIN</span> <span class="n">nyc_subway_stations</span> <span class="k">AS</span> <span class="n">subways</span>
+<span class="k">ON</span> <span class="n">ST_Contains</span><span class="p">(</span><span class="n">neighborhoods</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">subways</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span>
+<span class="k">WHERE</span> <span class="n">subways</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Broad St&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">subway_name</span> <span class="o">|</span> <span class="n">neighborhood_name</span>  <span class="o">|</span>  <span class="n">borough</span>
+<span class="o">-------------+--------------------+-----------</span>
+ <span class="n">Broad</span> <span class="n">St</span>    <span class="o">|</span> <span class="n">Financial</span> <span class="n">District</span> <span class="o">|</span> <span class="n">Manhattan</span>
+</pre></div>
+</div>
+<p>We could have joined every subway station to its containing neighborhood, but in this case we wanted information about just one.  Any function that provides a true/false relationship between two tables can be used to drive a spatial join, but the most commonly used ones are: <strong class="command">ST_Intersects</strong>, <strong class="command">ST_Contains</strong>, and <strong class="command">ST_DWithin</strong>.</p>
+<div class="section" id="join-and-summarize">
+<h2>15.1. Join and Summarize<a class="headerlink" href="#join-and-summarize" title="Permalink to this headline">¶</a></h2>
+<p>The combination of a <code class="docutils literal notranslate"><span class="pre">JOIN</span></code> with a <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code> provides the kind of analysis that is usually done in a GIS system.</p>
+<p>For example: <strong>“What is the population and racial make-up of the neighborhoods of Manhattan?”</strong> Here we have a question that combines information from about population from the census with the boundaries of neighborhoods, with a restriction to just one borough of Manhattan.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+  <span class="n">neighborhoods</span><span class="p">.</span><span class="n">name</span> <span class="k">AS</span> <span class="n">neighborhood_name</span><span class="p">,</span>
+  <span class="k">Sum</span><span class="p">(</span><span class="n">census</span><span class="p">.</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">population</span><span class="p">,</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">census</span><span class="p">.</span><span class="n">popn_white</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">census</span><span class="p">.</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">white_pct</span><span class="p">,</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">census</span><span class="p">.</span><span class="n">popn_black</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">census</span><span class="p">.</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">black_pct</span>
+<span class="k">FROM</span> <span class="n">nyc_neighborhoods</span> <span class="k">AS</span> <span class="n">neighborhoods</span>
+<span class="k">JOIN</span> <span class="n">nyc_census_blocks</span> <span class="k">AS</span> <span class="n">census</span>
+<span class="k">ON</span> <span class="n">ST_Intersects</span><span class="p">(</span><span class="n">neighborhoods</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">census</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span>
+<span class="k">WHERE</span> <span class="n">neighborhoods</span><span class="p">.</span><span class="n">boroname</span> <span class="o">=</span> <span class="s1">&#39;Manhattan&#39;</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">neighborhoods</span><span class="p">.</span><span class="n">name</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">white_pct</span> <span class="k">DESC</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">neighborhood_name</span>  <span class="o">|</span> <span class="n">population</span> <span class="o">|</span> <span class="n">white_pct</span> <span class="o">|</span> <span class="n">black_pct</span>
+<span class="o">---------------------+------------+-----------+-----------</span>
+ <span class="n">Carnegie</span> <span class="n">Hill</span>       <span class="o">|</span>      <span class="mi">18763</span> <span class="o">|</span>      <span class="mf">90.1</span> <span class="o">|</span>       <span class="mf">1.4</span>
+ <span class="n">North</span> <span class="n">Sutton</span> <span class="n">Area</span>   <span class="o">|</span>      <span class="mi">22460</span> <span class="o">|</span>      <span class="mf">87.6</span> <span class="o">|</span>       <span class="mf">1.6</span>
+ <span class="n">West</span> <span class="n">Village</span>        <span class="o">|</span>      <span class="mi">26718</span> <span class="o">|</span>      <span class="mf">87.6</span> <span class="o">|</span>       <span class="mf">2.2</span>
+ <span class="n">Upper</span> <span class="n">East</span> <span class="n">Side</span>     <span class="o">|</span>     <span class="mi">203741</span> <span class="o">|</span>      <span class="mf">85.0</span> <span class="o">|</span>       <span class="mf">2.7</span>
+ <span class="n">Soho</span>                <span class="o">|</span>      <span class="mi">15436</span> <span class="o">|</span>      <span class="mf">84.6</span> <span class="o">|</span>       <span class="mf">2.2</span>
+ <span class="n">Greenwich</span> <span class="n">Village</span>   <span class="o">|</span>      <span class="mi">57224</span> <span class="o">|</span>      <span class="mf">82.0</span> <span class="o">|</span>       <span class="mf">2.4</span>
+ <span class="n">Central</span> <span class="n">Park</span>        <span class="o">|</span>      <span class="mi">46600</span> <span class="o">|</span>      <span class="mf">79.5</span> <span class="o">|</span>       <span class="mf">8.0</span>
+ <span class="n">Tribeca</span>             <span class="o">|</span>      <span class="mi">20908</span> <span class="o">|</span>      <span class="mf">79.1</span> <span class="o">|</span>       <span class="mf">3.5</span>
+ <span class="n">Gramercy</span>            <span class="o">|</span>     <span class="mi">104876</span> <span class="o">|</span>      <span class="mf">75.5</span> <span class="o">|</span>       <span class="mf">4.7</span>
+ <span class="n">Murray</span> <span class="n">Hill</span>         <span class="o">|</span>      <span class="mi">29655</span> <span class="o">|</span>      <span class="mf">75.0</span> <span class="o">|</span>       <span class="mf">2.5</span>
+ <span class="n">Chelsea</span>             <span class="o">|</span>      <span class="mi">61340</span> <span class="o">|</span>      <span class="mf">74.8</span> <span class="o">|</span>       <span class="mf">6.4</span>
+ <span class="n">Upper</span> <span class="n">West</span> <span class="n">Side</span>     <span class="o">|</span>     <span class="mi">214761</span> <span class="o">|</span>      <span class="mf">74.6</span> <span class="o">|</span>       <span class="mf">9.2</span>
+ <span class="n">Midtown</span>             <span class="o">|</span>      <span class="mi">76840</span> <span class="o">|</span>      <span class="mf">72.6</span> <span class="o">|</span>       <span class="mf">5.2</span>
+ <span class="n">Battery</span> <span class="n">Park</span>        <span class="o">|</span>      <span class="mi">17153</span> <span class="o">|</span>      <span class="mf">71.8</span> <span class="o">|</span>       <span class="mf">3.4</span>
+ <span class="n">Financial</span> <span class="n">District</span>  <span class="o">|</span>      <span class="mi">34807</span> <span class="o">|</span>      <span class="mf">69.9</span> <span class="o">|</span>       <span class="mf">3.8</span>
+ <span class="n">Clinton</span>             <span class="o">|</span>      <span class="mi">32201</span> <span class="o">|</span>      <span class="mf">65.3</span> <span class="o">|</span>       <span class="mf">7.9</span>
+ <span class="n">East</span> <span class="n">Village</span>        <span class="o">|</span>      <span class="mi">82266</span> <span class="o">|</span>      <span class="mf">63.3</span> <span class="o">|</span>       <span class="mf">8.8</span>
+ <span class="n">Garment</span> <span class="n">District</span>    <span class="o">|</span>      <span class="mi">10539</span> <span class="o">|</span>      <span class="mf">55.2</span> <span class="o">|</span>       <span class="mf">7.1</span>
+ <span class="n">Morningside</span> <span class="n">Heights</span> <span class="o">|</span>      <span class="mi">42844</span> <span class="o">|</span>      <span class="mf">52.7</span> <span class="o">|</span>      <span class="mf">19.4</span>
+ <span class="n">Little</span> <span class="n">Italy</span>        <span class="o">|</span>      <span class="mi">12568</span> <span class="o">|</span>      <span class="mf">49.0</span> <span class="o">|</span>       <span class="mf">1.8</span>
+ <span class="n">Yorkville</span>           <span class="o">|</span>      <span class="mi">58450</span> <span class="o">|</span>      <span class="mf">35.6</span> <span class="o">|</span>      <span class="mf">29.7</span>
+ <span class="n">Inwood</span>              <span class="o">|</span>      <span class="mi">50047</span> <span class="o">|</span>      <span class="mf">35.2</span> <span class="o">|</span>      <span class="mf">16.8</span>
+ <span class="n">Washington</span> <span class="n">Heights</span>  <span class="o">|</span>     <span class="mi">169013</span> <span class="o">|</span>      <span class="mf">34.9</span> <span class="o">|</span>      <span class="mf">16.8</span>
+ <span class="n">Lower</span> <span class="n">East</span> <span class="n">Side</span>     <span class="o">|</span>      <span class="mi">96156</span> <span class="o">|</span>      <span class="mf">33.5</span> <span class="o">|</span>       <span class="mf">9.1</span>
+ <span class="n">East</span> <span class="n">Harlem</span>         <span class="o">|</span>      <span class="mi">60576</span> <span class="o">|</span>      <span class="mf">26.4</span> <span class="o">|</span>      <span class="mf">40.4</span>
+ <span class="n">Hamilton</span> <span class="n">Heights</span>    <span class="o">|</span>      <span class="mi">67432</span> <span class="o">|</span>      <span class="mf">23.9</span> <span class="o">|</span>      <span class="mf">35.8</span>
+ <span class="n">Chinatown</span>           <span class="o">|</span>      <span class="mi">16209</span> <span class="o">|</span>      <span class="mf">15.2</span> <span class="o">|</span>       <span class="mf">3.8</span>
+ <span class="n">Harlem</span>              <span class="o">|</span>     <span class="mi">134955</span> <span class="o">|</span>      <span class="mf">15.1</span> <span class="o">|</span>      <span class="mf">67.1</span>
+</pre></div>
+</div>
+<p>What’s going on here? Notionally (the actual evaluation order is optimized under the covers by the database) this is what happens:</p>
+<ol class="arabic simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">JOIN</span></code> clause creates a virtual table that includes columns from both the neighborhoods and census tables.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> clause filters our virtual table to just rows in Manhattan.</li>
+<li>The remaining rows are grouped by the neighborhood name and fed through the aggregation function to <strong class="command">Sum()</strong> the population values.</li>
+<li>After a little arithmetic and formatting (e.g., <code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code>, <code class="docutils literal notranslate"><span class="pre">ORDER</span> <span class="pre">BY</span></code>) on the final numbers, our query spits out the percentages.</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">JOIN</span></code> clause combines two <code class="docutils literal notranslate"><span class="pre">FROM</span></code> items.  By default, we are using an <code class="docutils literal notranslate"><span class="pre">INNER</span> <span class="pre">JOIN</span></code>, but there are four other types of joins. For further information see the <a class="reference external" href="http://www.postgresql.org/docs/9.1/interactive/sql-select.html#SQL-FROM">join_type</a> definition in the PostgreSQL documentation.</p>
+</div>
+<p>We can also use distance tests as a join key, to create summarized “all items within a radius” queries. Let’s explore the racial geography of New York using distance queries.</p>
+<p>First, let’s get the baseline racial make-up of the city.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_white</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">white_pct</span><span class="p">,</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_black</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">black_pct</span><span class="p">,</span>
+  <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">popn_total</span>
+<span class="k">FROM</span> <span class="n">nyc_census_blocks</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">white_pct</span>     <span class="o">|</span>    <span class="n">black_pct</span>     <span class="o">|</span> <span class="n">popn_total</span>
+<span class="o">------------------+------------------+------------</span>
+ <span class="mf">44.0039500762811</span> <span class="o">|</span> <span class="mf">25.5465789002416</span> <span class="o">|</span>    <span class="mi">8175032</span>
+</pre></div>
+</div>
+<p>So, of the 8M people in New York, about 44% are recorded as “white” and 26% are recorded as “black”.</p>
+<p>Duke Ellington once sang that “You / must take the A-train / To / go to Sugar Hill way up in Harlem.” As we saw earlier, Harlem has far and away the highest African-American population in Manhattan (80.5%). Is the same true of Duke’s A-train?</p>
+<p>First, note that the contents of the <code class="docutils literal notranslate"><span class="pre">nyc_subway_stations</span></code> table <code class="docutils literal notranslate"><span class="pre">routes</span></code> field is what we are interested in to find the A-train. The values in there are a little complex.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">DISTINCT</span> <span class="n">routes</span> <span class="k">FROM</span> <span class="n">nyc_subway_stations</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">G</span>
+<span class="mi">4</span><span class="p">,</span><span class="mi">5</span>
+<span class="n">D</span><span class="p">,</span><span class="n">F</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">Q</span>
+<span class="mi">5</span>
+<span class="n">E</span><span class="p">,</span><span class="n">F</span>
+<span class="n">E</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">Z</span>
+<span class="n">R</span><span class="p">,</span><span class="n">W</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">DISTINCT</span></code> keyword eliminates duplicate rows from the result.  Without the <code class="docutils literal notranslate"><span class="pre">DISTINCT</span></code> keyword, the query above identifies 491 results instead of 73.</p>
+</div>
+<p>So to find the A-train, we will want any row in <code class="docutils literal notranslate"><span class="pre">routes</span></code> that has an ‘A’ in it. We can do this a number of ways, but today we will use the fact that <strong class="command">strpos(routes,'A')</strong> will return a non-zero number only if ‘A’ is in the <code class="docutils literal notranslate"><span class="pre">routes</span></code> field.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="k">DISTINCT</span> <span class="n">routes</span>
+<span class="k">FROM</span> <span class="n">nyc_subway_stations</span> <span class="k">AS</span> <span class="n">subways</span>
+<span class="k">WHERE</span> <span class="n">strpos</span><span class="p">(</span><span class="n">subways</span><span class="p">.</span><span class="n">routes</span><span class="p">,</span><span class="s1">&#39;A&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">C</span>
+<span class="n">A</span><span class="p">,</span><span class="n">C</span>
+<span class="n">A</span>
+<span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">G</span>
+<span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">L</span>
+<span class="n">A</span><span class="p">,</span><span class="n">S</span>
+<span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">F</span>
+<span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">D</span>
+<span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">E</span>
+</pre></div>
+</div>
+<p>Let’s summarize the racial make-up of within 200 meters of the A-train line.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_white</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">white_pct</span><span class="p">,</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_black</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">black_pct</span><span class="p">,</span>
+  <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">popn_total</span>
+<span class="k">FROM</span> <span class="n">nyc_census_blocks</span> <span class="k">AS</span> <span class="n">census</span>
+<span class="k">JOIN</span> <span class="n">nyc_subway_stations</span> <span class="k">AS</span> <span class="n">subways</span>
+<span class="k">ON</span> <span class="n">ST_DWithin</span><span class="p">(</span><span class="n">census</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">subways</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="k">WHERE</span> <span class="n">strpos</span><span class="p">(</span><span class="n">subways</span><span class="p">.</span><span class="n">routes</span><span class="p">,</span><span class="s1">&#39;A&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">white_pct</span>     <span class="o">|</span>    <span class="n">black_pct</span>     <span class="o">|</span> <span class="n">popn_total</span>
+<span class="o">------------------+------------------+------------</span>
+ <span class="mf">45.5901255900202</span> <span class="o">|</span> <span class="mf">22.0936235670937</span> <span class="o">|</span>     <span class="mi">189824</span>
+</pre></div>
+</div>
+<p>So the racial make-up along the A-train isn’t radically different from the make-up of New York City as a whole.</p>
+</div>
+<div class="section" id="advanced-join">
+<h2>15.2. Advanced Join<a class="headerlink" href="#advanced-join" title="Permalink to this headline">¶</a></h2>
+<p>In the last section we saw that the A-train didn’t serve a population that differed much from the racial make-up of the rest of the city. Are there any trains that have a non-average racial make-up?</p>
+<p>To answer that question, we’ll add another join to our query, so that we can simultaneously calculate the make-up of many subway lines at once. To do that, we’ll need to create a new table that enumerates all the lines we want to summarize.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">subway_lines</span> <span class="p">(</span> <span class="n">route</span> <span class="nb">char</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">subway_lines</span> <span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="k">VALUES</span>
+  <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">),(</span><span class="s1">&#39;B&#39;</span><span class="p">),(</span><span class="s1">&#39;C&#39;</span><span class="p">),(</span><span class="s1">&#39;D&#39;</span><span class="p">),(</span><span class="s1">&#39;E&#39;</span><span class="p">),(</span><span class="s1">&#39;F&#39;</span><span class="p">),(</span><span class="s1">&#39;G&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="s1">&#39;J&#39;</span><span class="p">),(</span><span class="s1">&#39;L&#39;</span><span class="p">),(</span><span class="s1">&#39;M&#39;</span><span class="p">),(</span><span class="s1">&#39;N&#39;</span><span class="p">),(</span><span class="s1">&#39;Q&#39;</span><span class="p">),(</span><span class="s1">&#39;R&#39;</span><span class="p">),(</span><span class="s1">&#39;S&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">),(</span><span class="s1">&#39;1&#39;</span><span class="p">),(</span><span class="s1">&#39;2&#39;</span><span class="p">),(</span><span class="s1">&#39;3&#39;</span><span class="p">),(</span><span class="s1">&#39;4&#39;</span><span class="p">),(</span><span class="s1">&#39;5&#39;</span><span class="p">),(</span><span class="s1">&#39;6&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="s1">&#39;7&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Now we can join the table of subway lines onto our original query.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+  <span class="n">lines</span><span class="p">.</span><span class="n">route</span><span class="p">,</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_white</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">white_pct</span><span class="p">,</span>
+  <span class="mi">100</span><span class="p">.</span><span class="mi">0</span> <span class="o">*</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_black</span><span class="p">)</span> <span class="o">/</span> <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">black_pct</span><span class="p">,</span>
+  <span class="k">Sum</span><span class="p">(</span><span class="n">popn_total</span><span class="p">)</span> <span class="k">AS</span> <span class="n">popn_total</span>
+<span class="k">FROM</span> <span class="n">nyc_census_blocks</span> <span class="k">AS</span> <span class="n">census</span>
+<span class="k">JOIN</span> <span class="n">nyc_subway_stations</span> <span class="k">AS</span> <span class="n">subways</span>
+<span class="k">ON</span> <span class="n">ST_DWithin</span><span class="p">(</span><span class="n">census</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">subways</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="k">JOIN</span> <span class="n">subway_lines</span> <span class="k">AS</span> <span class="n">lines</span>
+<span class="k">ON</span> <span class="n">strpos</span><span class="p">(</span><span class="n">subways</span><span class="p">.</span><span class="n">routes</span><span class="p">,</span> <span class="n">lines</span><span class="p">.</span><span class="n">route</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">lines</span><span class="p">.</span><span class="n">route</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">black_pct</span> <span class="k">DESC</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">route</span> <span class="o">|</span> <span class="n">white_pct</span> <span class="o">|</span> <span class="n">black_pct</span> <span class="o">|</span> <span class="n">popn_total</span>
+<span class="o">-------+-----------+-----------+------------</span>
+ <span class="n">S</span>     <span class="o">|</span>      <span class="mf">39.8</span> <span class="o">|</span>      <span class="mf">46.5</span> <span class="o">|</span>      <span class="mi">33301</span>
+ <span class="mi">3</span>     <span class="o">|</span>      <span class="mf">42.7</span> <span class="o">|</span>      <span class="mf">42.1</span> <span class="o">|</span>     <span class="mi">223047</span>
+ <span class="mi">5</span>     <span class="o">|</span>      <span class="mf">33.8</span> <span class="o">|</span>      <span class="mf">41.4</span> <span class="o">|</span>     <span class="mi">218919</span>
+ <span class="mi">2</span>     <span class="o">|</span>      <span class="mf">39.3</span> <span class="o">|</span>      <span class="mf">38.4</span> <span class="o">|</span>     <span class="mi">291661</span>
+ <span class="n">C</span>     <span class="o">|</span>      <span class="mf">46.9</span> <span class="o">|</span>      <span class="mf">30.6</span> <span class="o">|</span>     <span class="mi">224411</span>
+ <span class="mi">4</span>     <span class="o">|</span>      <span class="mf">37.6</span> <span class="o">|</span>      <span class="mf">27.4</span> <span class="o">|</span>     <span class="mi">174998</span>
+ <span class="n">B</span>     <span class="o">|</span>      <span class="mf">40.0</span> <span class="o">|</span>      <span class="mf">26.9</span> <span class="o">|</span>     <span class="mi">256583</span>
+ <span class="n">A</span>     <span class="o">|</span>      <span class="mf">45.6</span> <span class="o">|</span>      <span class="mf">22.1</span> <span class="o">|</span>     <span class="mi">189824</span>
+ <span class="n">J</span>     <span class="o">|</span>      <span class="mf">37.6</span> <span class="o">|</span>      <span class="mf">21.6</span> <span class="o">|</span>     <span class="mi">132861</span>
+ <span class="n">Q</span>     <span class="o">|</span>      <span class="mf">56.9</span> <span class="o">|</span>      <span class="mf">20.6</span> <span class="o">|</span>     <span class="mi">127112</span>
+ <span class="n">Z</span>     <span class="o">|</span>      <span class="mf">38.4</span> <span class="o">|</span>      <span class="mf">20.2</span> <span class="o">|</span>      <span class="mi">87131</span>
+ <span class="n">D</span>     <span class="o">|</span>      <span class="mf">39.5</span> <span class="o">|</span>      <span class="mf">19.4</span> <span class="o">|</span>     <span class="mi">234931</span>
+ <span class="n">L</span>     <span class="o">|</span>      <span class="mf">57.6</span> <span class="o">|</span>      <span class="mf">16.8</span> <span class="o">|</span>     <span class="mi">110118</span>
+ <span class="n">G</span>     <span class="o">|</span>      <span class="mf">49.6</span> <span class="o">|</span>      <span class="mf">16.1</span> <span class="o">|</span>     <span class="mi">135012</span>
+ <span class="mi">6</span>     <span class="o">|</span>      <span class="mf">52.3</span> <span class="o">|</span>      <span class="mf">15.7</span> <span class="o">|</span>     <span class="mi">260240</span>
+ <span class="mi">1</span>     <span class="o">|</span>      <span class="mf">59.1</span> <span class="o">|</span>      <span class="mf">11.3</span> <span class="o">|</span>     <span class="mi">327742</span>
+ <span class="n">F</span>     <span class="o">|</span>      <span class="mf">60.9</span> <span class="o">|</span>       <span class="mf">7.5</span> <span class="o">|</span>     <span class="mi">229439</span>
+ <span class="n">M</span>     <span class="o">|</span>      <span class="mf">56.5</span> <span class="o">|</span>       <span class="mf">6.4</span> <span class="o">|</span>     <span class="mi">174196</span>
+ <span class="n">E</span>     <span class="o">|</span>      <span class="mf">66.8</span> <span class="o">|</span>       <span class="mf">4.7</span> <span class="o">|</span>      <span class="mi">90958</span>
+ <span class="n">R</span>     <span class="o">|</span>      <span class="mf">58.5</span> <span class="o">|</span>       <span class="mf">4.0</span> <span class="o">|</span>     <span class="mi">196999</span>
+ <span class="n">N</span>     <span class="o">|</span>      <span class="mf">59.7</span> <span class="o">|</span>       <span class="mf">3.5</span> <span class="o">|</span>     <span class="mi">147792</span>
+ <span class="mi">7</span>     <span class="o">|</span>      <span class="mf">35.7</span> <span class="o">|</span>       <span class="mf">3.5</span> <span class="o">|</span>     <span class="mi">102401</span>
+</pre></div>
+</div>
+<p>As before, the joins create a virtual table of all the possible combinations available within the constraints of the <code class="docutils literal notranslate"><span class="pre">JOIN</span> <span class="pre">ON</span></code> restrictions, and those rows are then fed into a <code class="docutils literal notranslate"><span class="pre">GROUP</span></code> summary. The spatial magic is in the <code class="docutils literal notranslate"><span class="pre">ST_DWithin</span></code> function, that ensures only census blocks close to the appropriate subway stations are included in the calculation.</p>
+</div>
+<div class="section" id="function-list">
+<h2>15.3. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Contains.html">ST_Contains(geometry A, geometry B)</a>: Returns true if and only if no points of B lie in the exterior of A, and at least one point of the interior of B lies in the interior of A.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_DWithin.html">ST_DWithin(geometry A, geometry B, radius)</a>: Returns true if the geometries are within the specified distance of one another.</p>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/ST_Intersects.html">ST_Intersects(geometry A, geometry B)</a>: Returns TRUE if the Geometries/Geography “spatially intersect” - (share any portion of space) and FALSE if they don’t (they are Disjoint).</p>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/interactive/functions-math.html">round(v numeric, s integer)</a>: PostgreSQL math function that rounds to s decimal places</p>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/static/functions-string.html">strpos(string, substring)</a>: PostgreSQL string function that returns an integer location of a specified substring.</p>
+<p><a class="reference external" href="http://www.postgresql.org/docs/current/static/functions-aggregate.html#FUNCTIONS-AGGREGATE-TABLE">sum(expression)</a>: PostgreSQL aggregate function that returns the sum of records in a set of records.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="postgis-doco" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><a class="reference external" href="http://postgis.net/docs/manual-2.1/">http://postgis.net/docs/manual-2.1/</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="spatial_relationships_exercise_answers.html" title="previous chapter">14. Spatial Relationships Exercise Answers</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="joins_exercises.html" title="next chapter">16. Spatial Joins Exercises</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="spatial_relationships_exercise_answers.html" title="previous chapter">14. Spatial Relationships Exercise Answers</a></p>
+          <p><b>Next:</b> <a href="joins_exercises.html" title="next chapter">16. Spatial Joins Exercises</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="joins_exercises.html" title="16. Spatial Joins Exercises"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="spatial_relationships_exercise_answers.html" title="14. Spatial Relationships Exercise Answers"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 39. Appendix A: PostGIS Functions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="40. Appendix B: Glossary" href="glossary.html" />
+      <link rel="prev" title="38. Software Upgrades" href="upgrades.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">39. Appendix A: PostGIS Functions</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="glossary.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="upgrades.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">39. Appendix A: PostGIS Functions</a><ul>
+<li><a class="reference internal" href="#constructors">39.1. Constructors</a></li>
+<li><a class="reference internal" href="#outputs">39.2. Outputs</a></li>
+<li><a class="reference internal" href="#measurements">39.3. Measurements</a></li>
+<li><a class="reference internal" href="#relationships">39.4. Relationships</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="appendix-a-postgis-functions">
+<span id="postgis-functions"></span><h1>39. Appendix A: PostGIS Functions<a class="headerlink" href="#appendix-a-postgis-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="constructors">
+<h2>39.1. Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong class="command">ST_MakePoint(Longitude, Latitude)</strong></dt>
+<dd>Returns a new point. Note the order of the coordinates (longitude then latitude).</dd>
+<dt><strong class="command">ST_GeomFromText(WellKnownText, srid)</strong></dt>
+<dd>Returns a new geometry from a standard WKT string and srid.</dd>
+<dt><strong class="command">ST_SetSRID(geometry, srid)</strong></dt>
+<dd>Updates the srid on a geometry.  Returns the same geometry.  This does not alter the coordinates of the geometry, it just updates the srid. This function is useful for conditioning geometries created without an srid.</dd>
+<dt><strong class="command">ST_Expand(geometry, Radius)</strong></dt>
+<dd>Returns a new geometry that is an expanded bounding box of the input geometry.  This function is useful for creating envelopes for use in indexed searches.</dd>
+</dl>
+</div>
+<div class="section" id="outputs">
+<h2>39.2. Outputs<a class="headerlink" href="#outputs" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong class="command">ST_AsText(geometry)</strong></dt>
+<dd>Returns a geometry in a human-readable text format.</dd>
+<dt><strong class="command">ST_AsGML(geometry)</strong></dt>
+<dd>Returns a geometry in standard OGC <a class="reference internal" href="glossary.html#term-gml"><span class="xref std std-term">GML</span></a> format.</dd>
+<dt><strong class="command">ST_AsGeoJSON(geometry)</strong></dt>
+<dd>Returns a geometry to a standard <a class="reference external" href="http://geojson.org">GeoJSON</a> format.</dd>
+</dl>
+</div>
+<div class="section" id="measurements">
+<h2>39.3. Measurements<a class="headerlink" href="#measurements" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong class="command">ST_Area(geometry)</strong></dt>
+<dd>Returns the area of the geometry in the units of the spatial reference system.</dd>
+<dt><strong class="command">ST_Length(geometry)</strong></dt>
+<dd>Returns the length of the geometry in the units of the spatial reference system.</dd>
+<dt><strong class="command">ST_Perimeter(geometry)</strong></dt>
+<dd>Returns the perimeter of the geometry in the units of the spatial reference system.</dd>
+<dt><strong class="command">ST_NumPoints(linestring)</strong></dt>
+<dd>Returns the number of vertices in a linestring.</dd>
+<dt><strong class="command">ST_NumRings(polygon)</strong></dt>
+<dd>Returns the number of rings in a polygon.</dd>
+<dt><strong class="command">ST_NumGeometries(geometry)</strong></dt>
+<dd>Returns the number of geometries in a geometry collection.</dd>
+</dl>
+</div>
+<div class="section" id="relationships">
+<h2>39.4. Relationships<a class="headerlink" href="#relationships" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong class="command">ST_Distance(geometry, geometry)</strong></dt>
+<dd>Returns the distance between two geometries in the units of the spatial reference system.</dd>
+<dt><strong class="command">ST_DWithin(geometry, geometry, radius)</strong></dt>
+<dd>Returns true if the geometries are within the radius distance of one another, otherwise false.</dd>
+<dt><strong class="command">ST_Intersects(geometry, geometry)</strong></dt>
+<dd>Returns true if the geometries are not disjoint, otherwise false.</dd>
+<dt><strong class="command">ST_Contains(geometry, geometry)</strong></dt>
+<dd>Returns true if the first geometry fully contains the second geometry, otherwise false.</dd>
+<dt><strong class="command">ST_Crosses(geometry, geometry)</strong></dt>
+<dd>Returns true if a line or polygon boundary crosses another line or polygon boundary, otherwise false.</dd>
+</dl>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="upgrades.html" title="previous chapter">38. Software Upgrades</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="glossary.html" title="next chapter">40. Appendix B: Glossary</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="upgrades.html" title="previous chapter">38. Software Upgrades</a></p>
+          <p><b>Next:</b> <a href="glossary.html" title="next chapter">40. Appendix B: Glossary</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="glossary.html" title="40. Appendix B: Glossary"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="upgrades.html" title="38. Software Upgrades"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 3. Creating a Spatial Database</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="4. Loading spatial data" href="loading_data.html" />
+      <link rel="prev" title="2. Introduction" href="introduction.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">3. Creating a Spatial Database</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="loading_data.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="introduction.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">3. Creating a Spatial Database</a><ul>
+<li><a class="reference internal" href="#pgadmin">3.1. PgAdmin</a></li>
+<li><a class="reference internal" href="#creating-a-database">3.2. Creating a Database</a></li>
+<li><a class="reference internal" href="#function-list">3.3. Function List</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="creating-a-spatial-database">
+<span id="creating-db"></span><h1>3. Creating a Spatial Database<a class="headerlink" href="#creating-a-spatial-database" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="pgadmin">
+<h2>3.1. PgAdmin<a class="headerlink" href="#pgadmin" title="Permalink to this headline">¶</a></h2>
+<p>PostgreSQL has a number of administrative front-ends.  The primary one is <a class="reference external" href="http://www.postgresql.org/docs/current/static/app-psql.html">psql</a> a command-line tool for entering SQL queries.  Another popular PostgreSQL front-end is the free and open source graphical tool <a class="reference external" href="http://www.pgadmin.org/">pgAdmin</a>. All queries done in pgAdmin can also be done on the command line with <code class="docutils literal notranslate"><span class="pre">psql</span></code>.</p>
+<ol class="arabic">
+<li><p class="first">Find pgAdmin and start it up.</p>
+<img alt="_images/pgadmin_01.png" class="inline" src="_images/pgadmin_01.png" />
+</li>
+<li><p class="first">If this is the first time you have run pgAdmin, you should have a server entry for <strong>PostGIS (localhost:5432)</strong> already configured in pgAdmin. Double click the entry, and enter anything you like at the password prompt to connect to the database.</p>
+<p>The PostGIS database has been installed with unrestricted access for local users (users connecting from the same machine as the database is running). That means that it will accept <em>any</em> password you provide. If you need to connect from a remote computer, the password for the <code class="docutils literal notranslate"><span class="pre">postgres</span></code> user has been set to <code class="docutils literal notranslate"><span class="pre">postgres</span></code>.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="creating-a-database">
+<h2>3.2. Creating a Database<a class="headerlink" href="#creating-a-database" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Open the Databases tree item and have a look at the available databases.  The <code class="docutils literal notranslate"><span class="pre">postgres</span></code> database is the user database for the default postgres user and is not too interesting to us.</p>
+</li>
+<li><p class="first">Right-click on the <code class="docutils literal notranslate"><span class="pre">Databases</span></code> item and select <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Database</span></code>.</p>
+<img alt="_images/pgadmin_03.png" class="inline" src="_images/pgadmin_03.png" />
+</li>
+<li><p class="first">Fill in the <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Database</span></code> form as shown below and click <strong>OK</strong>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Name</strong></td>
+<td><code class="docutils literal notranslate"><span class="pre">nyc</span></code></td>
+</tr>
+<tr class="row-even"><td><strong>Owner</strong></td>
+<td><code class="docutils literal notranslate"><span class="pre">postgres</span></code></td>
+</tr>
+</tbody>
+</table>
+<img alt="_images/pgadmin_02.png" class="inline" src="_images/pgadmin_02.png" />
+</li>
+<li><p class="first">Select the new <code class="docutils literal notranslate"><span class="pre">nyc</span></code> database and open it up to display the tree of objects. You’ll see the <code class="docutils literal notranslate"><span class="pre">public</span></code> schema.</p>
+<img alt="_images/pgadmin_04.png" src="_images/pgadmin_04.png" />
+</li>
+<li><p class="first">Click on the SQL query button indicated below (or go to <em>Tools &gt; Query Tool</em>).</p>
+<img alt="_images/pgadmin_05.png" src="_images/pgadmin_05.png" />
+</li>
+<li><p class="first">Enter the following query into the query text field to load the PostGIS spatial extension:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="n">EXTENSION</span> <span class="n">postgis</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Click the <strong>Play</strong> button in the toolbar (or press <strong>F5</strong>) to “Execute the query.”</p>
+</li>
+<li><p class="first">Now confirm that PostGIS is installed by running a PostGIS function:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">postgis_full_version</span><span class="p">();</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>You have successfully created a PostGIS spatial database!!</p>
+</div>
+<div class="section" id="function-list">
+<h2>3.3. Function List<a class="headerlink" href="#function-list" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://postgis.net/docs/manual-2.1/PostGIS_Full_Version.html">PostGIS_Full_Version</a>: Reports full PostGIS version and build configuration info.</p>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="introduction.html" title="previous chapter">2. Introduction</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="loading_data.html" title="next chapter">4. Loading spatial data</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="introduction.html" title="previous chapter">2. Introduction</a></p>
+          <p><b>Next:</b> <a href="loading_data.html" title="next chapter">4. Loading spatial data</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="loading_data.html" title="4. Loading spatial data"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="introduction.html" title="2. Introduction"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

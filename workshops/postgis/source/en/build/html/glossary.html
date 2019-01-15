@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 40. Appendix B: Glossary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="41. Appendix C: License" href="license.html" />
+      <link rel="prev" title="39. Appendix A: PostGIS Functions" href="postgis-functions.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">40. Appendix B: Glossary</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="license.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="postgis-functions.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="appendix-b-glossary">
+<span id="glossary"></span><h1>40. Appendix B: Glossary<a class="headerlink" href="#appendix-b-glossary" title="Permalink to this headline">¶</a></h1>
+<dl class="glossary docutils">
+<dt id="term-crs">CRS</dt>
+<dd>A “coordinate reference system”. The combination of a geographic coordinate system and a projected coordinate system.</dd>
+<dt id="term-gdal">GDAL</dt>
+<dd><a class="reference external" href="http://gdal.org">Geospatial Data Abstraction Library</a>, pronounced “GOO-duhl”, an open source raster access library with support for a large number of formats, used widely in both open source and proprietary software.</dd>
+<dt id="term-geojson">GeoJSON</dt>
+<dd>“Javascript Object Notation”, a text format that is very fast to parse in Javascript virtual machines. In spatial, the extended specification for <a class="reference external" href="http://geojson.org">GeoJSON</a> is commonly used.</dd>
+<dt id="term-gis">GIS</dt>
+<dd><a class="reference external" href="http://en.wikipedia.org/wiki/Geographic_information_system">Geographic information system</a> or geographical information system captures, stores, analyzes, manages, and presents data that is linked to location.</dd>
+<dt id="term-gml">GML</dt>
+<dd><a class="reference external" href="http://www.opengeospatial.org/standards/gml">Geography Markup Language</a>.  GML is the <a class="reference internal" href="#term-ogc"><span class="xref std std-term">OGC</span></a> standard XML format for representing spatial feature information.</dd>
+<dt id="term-json">JSON</dt>
+<dd>“<a class="reference external" href="http://en.wikipedia.org/wiki/JSON">Javascript Object Notation</a>”, a text format that is very fast to parse in Javascript virtual machines. In spatial, the extended specification for <a class="reference external" href="http://geojson.org">GeoJSON</a> is commonly used.</dd>
+<dt id="term-jstl">JSTL</dt>
+<dd>“JavaServer Page Template Library”, a tag library for <a class="reference internal" href="#term-jsp"><span class="xref std std-term">JSP</span></a> that encapsulates many of the standard functions handled in JSP (database queries, iteration, conditionals) into a terse syntax.</dd>
+<dt id="term-jsp">JSP</dt>
+<dd>“JavaServer Pages” a scripting system for Java server applications that allows the interleaving of markup and Java procedural code.</dd>
+<dt id="term-kml">KML</dt>
+<dd>“Keyhole Markup Language”, the spatial XML format used by Google Earth. Google Earth was originally written by a company named “Keyhole”, hence the (now obscure) reference in the name.</dd>
+<dt id="term-ogc">OGC</dt>
+<dd>The <a class="reference external" href="http://opengeospatial.org/">Open Geospatial Consortium</a> (OGC) is a standards organization that develops specifications for geospatial services.</dd>
+<dt id="term-osgeo">OSGeo</dt>
+<dd>The <a class="reference external" href="http://osgeo.org">Open Source Geospatial Foundation</a> (OSGeo) is a non-profit foundation dedicated to the promotion and support of open source geospatial software.</dd>
+<dt id="term-sfsql">SFSQL</dt>
+<dd>The <a class="reference external" href="http://www.opengeospatial.org/standards/sfs">Simple Features for SQL</a> (SFSQL) specification from the <a class="reference internal" href="#term-ogc"><span class="xref std std-term">OGC</span></a> defines the types and functions that make up a standard spatial database.</dd>
+<dt id="term-sld">SLD</dt>
+<dd>The <a class="reference external" href="http://www.opengeospatial.org/standards/sld">Styled Layer Descriptor</a> (SLD) specification from the <a class="reference internal" href="#term-ogc"><span class="xref std std-term">OGC</span></a> defines an format for describing cartographic rendering of vector features.</dd>
+<dt id="term-srid">SRID</dt>
+<dd>“Spatial reference ID” a unique number assigned to a particular “coordinate reference system”. The PostGIS table <strong>spatial_ref_sys</strong> contains a large collection of well-known srid values and text representations of the coordinate reference systems.</dd>
+<dt id="term-sql">SQL</dt>
+<dd>“<a class="reference external" href="http://en.wikipedia.org/wiki/SQL">Structured query language</a>” is the standard means for querying relational databases.</dd>
+<dt id="term-sql-mm">SQL/MM</dt>
+<dd><a class="reference external" href="http://www.fer.hr/_download/repository/SQLMM_Spatial-_The_Standard_to_Manage_Spatial_Data_in_Relational_Database_Systems.pdf">SQL Multimedia</a>; includes several sections on extended types, including a substantial section on spatial types.</dd>
+<dt id="term-svg">SVG</dt>
+<dd>“<a class="reference external" href="http://en.wikipedia.org/wiki/Scalable_Vector_Graphics">Scalable vector graphics</a>” is a family of specifications of an XML-based file format for describing two-dimensional vector graphics, both static and dynamic (i.e. interactive or animated).</dd>
+<dt id="term-wfs">WFS</dt>
+<dd>The <a class="reference external" href="http://www.opengeospatial.org/standards/wfs">Web Feature Service</a> (WFS) specification from the <a class="reference internal" href="#term-ogc"><span class="xref std std-term">OGC</span></a> defines an interface for reading and writing geographic features across the web.</dd>
+<dt id="term-wms">WMS</dt>
+<dd>The <a class="reference external" href="http://www.opengeospatial.org/standards/wms">Web Map Service</a> (WMS) specification from the <a class="reference internal" href="#term-ogc"><span class="xref std std-term">OGC</span></a> defines an interface for requesting rendered map images across the web.</dd>
+<dt id="term-wkb">WKB</dt>
+<dd>“Well-known binary”. Refers to the binary representation of geometries described in the Simple Features for SQL specification (<a class="reference internal" href="#term-sfsql"><span class="xref std std-term">SFSQL</span></a>).</dd>
+<dt id="term-wkt">WKT</dt>
+<dd>“<a class="reference external" href="http://en.wikipedia.org/wiki/Well-known_text">Well-known text</a>”. Can refer either to the text representation of geometries, with strings starting “POINT”, “LINESTRING”, “POLYGON”, etc. Or can refer to the text representation of a <a class="reference internal" href="#term-crs"><span class="xref std std-term">CRS</span></a>, with strings starting “PROJCS”, “GEOGCS”, etc.  Well-known text representations are <a class="reference internal" href="#term-ogc"><span class="xref std std-term">OGC</span></a> standards, but do not have their own specification documents. The first descriptions of WKT (for geometries and for CRS) appeared in the <a class="reference internal" href="#term-sfsql"><span class="xref std std-term">SFSQL</span></a> 1.0 specification.</dd>
+</dl>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="postgis-functions.html" title="previous chapter">39. Appendix A: PostGIS Functions</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="license.html" title="next chapter">41. Appendix C: License</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="postgis-functions.html" title="previous chapter">39. Appendix A: PostGIS Functions</a></p>
+          <p><b>Next:</b> <a href="license.html" title="next chapter">41. Appendix C: License</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="license.html" title="41. Appendix C: License"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="postgis-functions.html" title="39. Appendix A: PostGIS Functions"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

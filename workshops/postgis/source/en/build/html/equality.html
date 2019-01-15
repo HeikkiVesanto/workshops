@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 26. Equality</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="27. Linear Referencing" href="linear_referencing.html" />
+      <link rel="prev" title="25. Validity" href="validity.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">26. Equality</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="linear_referencing.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="validity.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">26. Equality</a><ul>
+<li><a class="reference internal" href="#id2">26.1. Equality</a><ul>
+<li><a class="reference internal" href="#exactly-equal">26.1.1. Exactly Equal</a></li>
+<li><a class="reference internal" href="#spatially-equal">26.1.2. Spatially Equal</a></li>
+<li><a class="reference internal" href="#equal-bounds">26.1.3. Equal Bounds</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="equality">
+<span id="id1"></span><h1>26. Equality<a class="headerlink" href="#equality" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>26.1. Equality<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>Determining equality when dealing with geometries can be tricky.  PostGIS supports three different functions that can be used to determine different levels of equality, though for clarity we will use the definitions below.  To illustrate these functions, we will use the following polygons.</p>
+<img alt="_images/polygon-table.png" class="inline" src="_images/polygon-table.png" />
+<p>These polygons are loaded using the following commands.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">polygons</span> <span class="p">(</span><span class="n">id</span> <span class="nb">integer</span><span class="p">,</span> <span class="n">name</span> <span class="nb">varchar</span><span class="p">,</span> <span class="n">poly</span> <span class="n">geometry</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">polygons</span> <span class="k">VALUES</span>
+  <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Polygon 1&#39;</span><span class="p">,</span> <span class="s1">&#39;POLYGON((-1 1.732,1 1.732,2 0,1 -1.732,</span>
+<span class="s1">      -1 -1.732,-2 0,-1 1.732))&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Polygon 2&#39;</span><span class="p">,</span> <span class="s1">&#39;POLYGON((-1 1.732,-2 0,-1 -1.732,1 -1.732,</span>
+<span class="s1">      2 0,1 1.732,-1 1.732))&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;Polygon 3&#39;</span><span class="p">,</span> <span class="s1">&#39;POLYGON((1 -1.732,2 0,1 1.732,-1 1.732,</span>
+<span class="s1">      -2 0,-1 -1.732,1 -1.732))&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Polygon 4&#39;</span><span class="p">,</span> <span class="s1">&#39;POLYGON((-1 1.732,0 1.732, 1 1.732,1.5 0.866,</span>
+<span class="s1">      2 0,1.5 -0.866,1 -1.732,0 -1.732,-1 -1.732,-1.5 -0.866,</span>
+<span class="s1">      -2 0,-1.5 0.866,-1 1.732))&#39;</span><span class="p">),</span>
+  <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;Polygon 5&#39;</span><span class="p">,</span> <span class="s1">&#39;POLYGON((-2 -1.732,2 -1.732,2 1.732,</span>
+<span class="s1">      -2 1.732,-2 -1.732))&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<img alt="_images/start13.png" src="_images/start13.png" />
+<div class="section" id="exactly-equal">
+<h3>26.1.1. Exactly Equal<a class="headerlink" href="#exactly-equal" title="Permalink to this headline">¶</a></h3>
+<p>Exact equality is determined by comparing two geometries, vertex by vertex, in order, to ensure they are identical in position.  The following examples show how this method can be limited in its effectiveness.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="k">CASE</span> <span class="k">WHEN</span> <span class="n">ST_OrderingEquals</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">poly</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">poly</span><span class="p">)</span>
+    <span class="k">THEN</span> <span class="s1">&#39;Exactly Equal&#39;</span> <span class="k">ELSE</span> <span class="s1">&#39;Not Exactly Equal&#39;</span> <span class="k">end</span>
+  <span class="k">FROM</span> <span class="n">polygons</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> <span class="n">polygons</span> <span class="k">as</span> <span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/start14.png" src="_images/start14.png" />
+<p>In this example, the polygons are only equal to themselves, not to other seemingly equivalent polygons (as in the case of Polygons 1 through 3).  In the case of Polygons 1, 2, and 3, the vertices are in identical positions but are defined in differing orders.  Polygon 4 has colinear (and thus redundant) vertices on the hexagon edges causing inequality with Polygon 1.</p>
+</div>
+<div class="section" id="spatially-equal">
+<h3>26.1.2. Spatially Equal<a class="headerlink" href="#spatially-equal" title="Permalink to this headline">¶</a></h3>
+<p>As we saw above, exact equality does not take into account the spatial nature of the geometries.  There is an function, aptly named <strong class="command">ST_Equals</strong>, available to test the spatial equality or equivalence of geometries.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="k">CASE</span> <span class="k">WHEN</span> <span class="n">ST_Equals</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">poly</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">poly</span><span class="p">)</span>
+    <span class="k">THEN</span> <span class="s1">&#39;Spatially Equal&#39;</span> <span class="k">ELSE</span> <span class="s1">&#39;Not Equal&#39;</span> <span class="k">end</span>
+  <span class="k">FROM</span> <span class="n">polygons</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> <span class="n">polygons</span> <span class="k">as</span> <span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/start15.png" src="_images/start15.png" />
+<p>These results are more in line with our intuitive understanding of equality.  Polygons 1 through 4 are considered equal, since they enclose the same area.  Note that neither the direction of the polygon is drawn, the starting point for defining the polygon, nor the number of points used are important here.  What is important is that the polygons contain the same space.</p>
+</div>
+<div class="section" id="equal-bounds">
+<h3>26.1.3. Equal Bounds<a class="headerlink" href="#equal-bounds" title="Permalink to this headline">¶</a></h3>
+<p>Exact equality requires, in the worst case, comparison of each and every vertex in the geometry to determine equality.  This can be slow, and may not be appropriate for comparing huge numbers of geometries.  To allow for speedier comparison, the equal bounds operator, <strong class="command">=</strong>, is provided.  This operates only on the bounding box (rectangle), ensuring that the geometries occupy the same two dimensional extent, but not necessarily the same space.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="k">CASE</span> <span class="k">WHEN</span> <span class="n">a</span><span class="p">.</span><span class="n">poly</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">poly</span>
+    <span class="k">THEN</span> <span class="s1">&#39;Equal Bounds&#39;</span> <span class="k">ELSE</span> <span class="s1">&#39;Non-equal Bounds&#39;</span> <span class="k">end</span>
+  <span class="k">FROM</span> <span class="n">polygons</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> <span class="n">polygons</span> <span class="k">as</span> <span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/start17.png" src="_images/start17.png" />
+<p>As you can see, all of our spatially equal geometries also have equal bounds.  Unfortunately, Polygon 5 is also returned as equal under this test, because it shares the same bounding box as the other geometries.  Why is this useful, then?  Although this will be covered in detail later, the shot answer is that this enables the use of spatial indexing that can quickly reduce huge comparison sets into more manageable blocks when joining or filtering data.</p>
+</div>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="validity.html" title="previous chapter">25. Validity</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="linear_referencing.html" title="next chapter">27. Linear Referencing</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="validity.html" title="previous chapter">25. Validity</a></p>
+          <p><b>Next:</b> <a href="linear_referencing.html" title="next chapter">27. Linear Referencing</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="linear_referencing.html" title="27. Linear Referencing"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="validity.html" title="25. Validity"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

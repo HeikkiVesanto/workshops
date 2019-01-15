@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : Introduction to PostGIS : 31. Nearest-Neighbour Searching</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <!-- opengeo.css must go before bootstrap.css & style.css-->
+  <link rel="stylesheet" href="_static/bootstrap/css/bootstrap.min.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="search" title="Search" href="search.html" />
+      <link rel="top" title="Introduction to PostGIS" href="index.html" />
+      <link rel="next" title="32. Tracking Edit History using Triggers" href="history_tracking.html" />
+      <link rel="prev" title="30. 3-D" href="3d.html" />
+
+<style>
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-regular-webfont.eot');
+    src: url('_static/fonts/cantarell-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-regular-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-regular-webfont.svg#cantarellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-bold-webfont.eot');
+    src: url('_static/fonts/cantarell-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-bold-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-bold-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-bold-webfont.svg#cantarellbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'cantarell';
+    src: url('_static/fonts/cantarell-oblique-webfont.eot');
+    src: url('_static/fonts/cantarell-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/cantarell-oblique-webfont.woff') format('woff'),
+         url('_static/fonts/cantarell-oblique-webfont.ttf') format('truetype'),
+         url('_static/fonts/cantarell-oblique-webfont.svg#cantarelloblique') format('svg');
+    font-weight: normal;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-light-webfont.eot');
+    src: url('_static/fonts/proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-light-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-light-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-light-webfont.svg#proxima_nova_ltlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'proxima-nova';
+    src: url('_static/fonts/proximanova-sbold-webfont.eot');
+    src: url('_static/fonts/proximanova-sbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/proximanova-sbold-webfont.woff') format('woff'),
+         url('_static/fonts/proximanova-sbold-webfont.ttf') format('truetype'),
+         url('_static/fonts/proximanova-sbold-webfont.svg#proxima_nova_ltsemibold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Source Code Pro';
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot');
+    src: url('_static/fonts/sourcecodepro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.woff') format('woff'),
+         url('_static/fonts/sourcecodepro-regular-webfont.ttf') format('truetype'),
+         url('_static/fonts/sourcecodepro-regular-webfont.svg#source_code_proregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face { font-family: "Glyphicons Halflings"; font-weight: normal;
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot');
+    src: url('_static/bootstrap/fonts/glyphicons-halflings-regular.eot#iefix') format('embedded-opentype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('_static/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg'); }
+</style>
+
+<script type="text/javascript" src="_static/modernizr.2.7.1.min.js"></script>
+
+</head>
+<body class="page">
+  <a name="top"></a>
+
+    <header id="masthead" class="site-header" role="banner">
+      <a href="http://boundlessgeo.com/" rel="home" id="logo"><img src="_static/logo.png"></a>
+    </header>
+  <section class="navi">
+    <div class="secondarynav">
+      <div class=" breadcrumbs pull-left">
+<div>
+  <a href="index.html">Introduction to PostGIS</a>
+  
+     &raquo; <a href="">31. Nearest-Neighbour Searching</a>
+</div>
+      </div>
+      <!-- Next/Prev -->
+      <ul class="right-nav list-unstyled">
+
+          <li class="next">
+            <a href="history_tracking.html" title="next chapter"><i class="glyphicon glyphicon-chevron-right"></i></a>
+          </li>
+          <li class="previous">
+            <a href="3d.html" title="previous chapter"><i class="glyphicon glyphicon-chevron-left"></i></a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" id="page-content" data-toggle="dropdown">
+              Page Content <i class="glyphicon glyphicon-chevron-down" style="font-size: 12px;"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="page-content">
+              <ul>
+<li><a class="reference internal" href="#">31. Nearest-Neighbour Searching</a><ul>
+<li><a class="reference internal" href="#what-is-a-nearest-neighbour-search">31.1. What is a Nearest Neighbour Search?</a></li>
+<li><a class="reference internal" href="#index-based-knn">31.2. Index-based KNN</a></li>
+</ul>
+</li>
+</ul>
+
+            </ul>
+          </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="content">
+              
+  <div class="section" id="nearest-neighbour-searching">
+<span id="knn"></span><h1>31. Nearest-Neighbour Searching<a class="headerlink" href="#nearest-neighbour-searching" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This section refers to a feature that is only available with PostGIS 2.0 and higher.</p>
+</div>
+<div class="section" id="what-is-a-nearest-neighbour-search">
+<h2>31.1. What is a Nearest Neighbour Search?<a class="headerlink" href="#what-is-a-nearest-neighbour-search" title="Permalink to this headline">¶</a></h2>
+<p>A frequently posed spatial query is: “what is the nearest &lt;candidate feature&gt; to &lt;query feature&gt;?”</p>
+<p>Unlike a distance search, the “nearest neighbour” search doesn’t include any measurement restricting how far away candidate geometries might be, features of any distance away will be accepted, as long as they are the <em>nearest</em>. This poses a problem for traditional index-assisted queries, that require a search box, and therefore need some kind of measurement value to build the box.</p>
+<p>The naive way to carry out a nearest neighbour query is to order the candidate table by distance from the query geometry, and then take the record with the smallest distance:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Closest street to Broad Street station is Wall St</span>
+<span class="k">SELECT</span> <span class="n">streets</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">streets</span><span class="p">.</span><span class="n">name</span>
+<span class="k">FROM</span>
+  <span class="n">nyc_streets</span> <span class="n">streets</span><span class="p">,</span>
+  <span class="n">nyc_subway_stations</span> <span class="n">subways</span>
+<span class="k">WHERE</span> <span class="n">subways</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Broad St&#39;</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">ST_Distance</span><span class="p">(</span><span class="n">streets</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">subways</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span> <span class="k">ASC</span>
+<span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The trouble with this approach is that it forces the database to calculate the distance between the query geometry and <em>every</em> feature in the table of candidate features, then sort them all. For a large table of  candidate features, it is not a reasonable approach.</p>
+<p>One way to improve performance is to add an index constraint to the search. This requires a magic number: what’s the smallest box we could search around the query geometry, and still come up with at least one candidate geometry?</p>
+<p>If you turn on timing, you can see the performance difference between the box-assisted query below and the simple query above.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Closest street to Broad Street station is Wall St</span>
+<span class="k">SELECT</span> <span class="n">streets</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span> <span class="n">streets</span><span class="p">.</span><span class="n">name</span>
+<span class="k">FROM</span>
+  <span class="n">nyc_streets</span> <span class="n">streets</span><span class="p">,</span>
+  <span class="n">nyc_subway_stations</span> <span class="n">subways</span>
+<span class="k">WHERE</span> <span class="n">subways</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Broad St&#39;</span>
+<span class="k">AND</span> <span class="n">streets</span><span class="p">.</span><span class="n">geom</span> <span class="o">&amp;&amp;</span> <span class="n">ST_Expand</span><span class="p">(</span><span class="n">subways</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span> <span class="c1">-- Magic number: 200m</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">ST_Distance</span><span class="p">(</span><span class="n">streets</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">subways</span><span class="p">.</span><span class="n">geom</span><span class="p">)</span> <span class="k">ASC</span>
+<span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The problem with this approach is the magic number of 200 meters. What if there had not happened to be any roads within 200m? We would have failed to come up with a result: there is always a nearest neighbour, it just might not be within 200m.</p>
+</div>
+<div class="section" id="index-based-knn">
+<h2>31.2. Index-based KNN<a class="headerlink" href="#index-based-knn" title="Permalink to this headline">¶</a></h2>
+<p>“KNN” stands for “K nearest neighbours”, where “K” is the number of neighbours you are looking for.</p>
+<p>KNN is a pure index based nearest neighbour search. By walking up and down the index, the search can find the nearest candidate geometries without using any magical search radius numbers, so the technique is suitable and high performance even for very large tables with highly variable data densities.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The KNN feature is only available on PostGIS 2.0 with PostgreSQL 9.1 or greater.</p>
+</div>
+<p>The KNN system works by evaluating distances between bounding boxes inside the PostGIS R-Tree index.</p>
+<p>Because the index is built using the bounding boxes of geometries, the distances between any geometries that are not points will be inexact: they will be the distances between the bounding boxes of geometries.</p>
+<p>The syntax of the index-based KNN query places a special “index-based distance operator” in the ORDER BY clause of the query, in this case “&lt;-&gt;”. There are two index-based distance operators,</p>
+<ul class="simple">
+<li><strong>&lt;-&gt;</strong> means “distance between box centers”</li>
+<li><strong>&lt;#&gt;</strong> means “distance between box edges”</li>
+</ul>
+<p>One side of the index-based distance operator must be a literal geometry value. We can get away with a subquery that returns as single geometry, or we could include a <a class="reference internal" href="glossary.html#term-wkt"><span class="xref std std-term">WKT</span></a> geometry instead.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Closest 10 streets to Broad Street station are ?</span>
+<span class="k">SELECT</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">name</span>
+<span class="k">FROM</span>
+  <span class="n">nyc_streets</span> <span class="n">streets</span>
+<span class="k">ORDER</span> <span class="k">BY</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">geom</span> <span class="o">&lt;-&gt;</span>
+  <span class="p">(</span><span class="k">SELECT</span> <span class="n">geom</span> <span class="k">FROM</span> <span class="n">nyc_subway_stations</span> <span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Broad St&#39;</span><span class="p">)</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="c1">-- Same query using a geometry EWKT literal</span>
+
+<span class="k">SELECT</span> <span class="n">ST_AsEWKT</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">nyc_subway_stations</span>
+<span class="k">WHERE</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Broad St&#39;</span><span class="p">;</span>
+<span class="c1">-- SRID=26918;POINT(583571 4506714)</span>
+
+<span class="k">SELECT</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+  <span class="n">ST_Distance</span><span class="p">(</span>
+    <span class="n">streets</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span>
+    <span class="s1">&#39;SRID=26918;POINT(583571.905921312 4506714.34119218)&#39;</span><span class="p">::</span><span class="n">geometry</span>
+    <span class="p">)</span> <span class="k">AS</span> <span class="n">distance</span>
+<span class="k">FROM</span>
+  <span class="n">nyc_streets</span> <span class="n">streets</span>
+<span class="k">ORDER</span> <span class="k">BY</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">geom</span> <span class="o">&lt;-&gt;</span>
+  <span class="s1">&#39;SRID=26918;POINT(583571.905921312 4506714.34119218)&#39;</span><span class="p">::</span><span class="n">geometry</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The results of the second query show how odd the index-based query on non-point geometries can appear at first glance.   Wall Street is coming up third in our list, even though the absolute distance from the station to the street is 0.714 meters!</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">gid</span>  <span class="o">|</span>     <span class="n">name</span>     <span class="o">|</span>     <span class="n">distance</span>
+<span class="o">-------+--------------+-------------------</span>
+ <span class="mi">17360</span> <span class="o">|</span> <span class="n">Exchange</span> <span class="n">Pl</span>  <span class="o">|</span>    <span class="mf">101.6241843136</span>
+ <span class="mi">17350</span> <span class="o">|</span> <span class="n">New</span> <span class="n">St</span>       <span class="o">|</span>  <span class="mf">63.9499165490674</span>
+ <span class="mi">17385</span> <span class="o">|</span> <span class="n">Wall</span> <span class="n">St</span>      <span class="o">|</span> <span class="mf">0.714202224374917</span>
+ <span class="mi">17332</span> <span class="o">|</span> <span class="n">Exchange</span> <span class="n">Aly</span> <span class="o">|</span>  <span class="mf">159.618545539243</span>
+ <span class="mi">17402</span> <span class="o">|</span> <span class="n">Pine</span> <span class="n">St</span>      <span class="o">|</span>  <span class="mf">75.8461038368021</span>
+ <span class="mi">17347</span> <span class="o">|</span> <span class="n">Cedar</span> <span class="n">St</span>     <span class="o">|</span>  <span class="mf">133.009278387597</span>
+ <span class="mi">17335</span> <span class="o">|</span> <span class="n">Beaver</span> <span class="n">St</span>    <span class="o">|</span>  <span class="mf">221.988864601724</span>
+ <span class="mi">17314</span> <span class="o">|</span> <span class="n">Trinity</span> <span class="n">Pl</span>   <span class="o">|</span>  <span class="mf">205.942231743204</span>
+ <span class="mi">17515</span> <span class="o">|</span> <span class="n">Hanover</span> <span class="n">St</span>   <span class="o">|</span>  <span class="mf">198.414568622805</span>
+ <span class="mi">17345</span> <span class="o">|</span> <span class="n">Thames</span> <span class="n">St</span>    <span class="o">|</span>  <span class="mf">167.802276238319</span>
+</pre></div>
+</div>
+<p>Remember that all the calculations are being done on bounding boxes. The bounding box of the station point is just the point itself, so there is no approximation there. <strong>But the bounding boxes of the streets aren’t the same as the street lines.</strong> Here’s what the boxes of the top ten closest streets look like:</p>
+<img alt="_images/knn1.jpg" src="_images/knn1.jpg" />
+<p>We can see that the station falls right on the Wall Street line, and within the Wall Street box, but this index ordering is controlled by the <strong>&lt;-&gt;</strong> operator, which calculates distance between box centers. The centers of the boxes look like this:</p>
+<img alt="_images/knn2.jpg" src="_images/knn2.jpg" />
+<p>Now it is clear why Wall Street isn’t showing up as the first item in our search. The center of the Wall Street box is indeed further from the station than the centers of the Exchange Place and New Street boxes.</p>
+<p>What about the <strong>&lt;#&gt;</strong> operator? If we calculate the distance between box edges, the station would fall <strong>inside</strong> the Wall Street box, giving it a distance of zero and the first entry in the list, right?</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Closest 10 streets to Broad Street station are ?</span>
+<span class="k">SELECT</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">name</span>
+<span class="k">FROM</span>
+  <span class="n">nyc_streets</span> <span class="n">streets</span>
+<span class="k">ORDER</span> <span class="k">BY</span>
+  <span class="n">streets</span><span class="p">.</span><span class="n">geom</span> <span class="o">&lt;#&gt;</span>
+  <span class="s1">&#39;SRID=26918;POINT(583571.905921312 4506714.34119218)&#39;</span><span class="p">::</span><span class="n">geometry</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Unfortunately, no.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">gid</span>  <span class="o">|</span>                               <span class="n">name</span>
+<span class="o">-------+------------------------------------------------------------------</span>
+ <span class="mi">19088</span> <span class="o">|</span> <span class="n">FDR</span> <span class="n">Dr</span>
+ <span class="mi">17315</span> <span class="o">|</span> <span class="n">Broadway</span>
+ <span class="mi">19087</span> <span class="o">|</span> <span class="n">FDR</span> <span class="n">Dr</span>
+ <span class="mi">17402</span> <span class="o">|</span> <span class="n">Pine</span> <span class="n">St</span>
+ <span class="mi">17385</span> <span class="o">|</span> <span class="n">Wall</span> <span class="n">St</span>
+ <span class="mi">17357</span> <span class="o">|</span> <span class="n">South</span> <span class="n">St</span>
+ <span class="mi">17308</span> <span class="o">|</span> <span class="n">Pearl</span> <span class="n">St</span>
+ <span class="mi">17235</span> <span class="o">|</span> <span class="n">West</span> <span class="n">Side</span> <span class="n">Highway</span><span class="p">;</span> <span class="n">West</span> <span class="n">St</span><span class="p">;</span> <span class="n">West</span> <span class="n">Side</span> <span class="n">Highway</span><span class="p">;</span> <span class="n">West</span> <span class="n">Side</span> <span class="n">Highway</span>
+ <span class="mi">17230</span> <span class="o">|</span>
+ <span class="mi">17390</span> <span class="o">|</span> <span class="n">Broad</span> <span class="n">St</span>
+</pre></div>
+</div>
+<p>There are a number of large street features with big boxes that <strong>also</strong> overlap the station and yield a box distance of zero.</p>
+<img alt="_images/knn3.jpg" src="_images/knn3.jpg" />
+<p>The right way to get a high-performance–yet accurate–nearest neighbour calculation is to recognize that you’ll have to pull the top 100 (or a smaller number if you feel certain your data is more homogeneous in distribution) possible results in a sub-query, calculate the true distance for all of them, and return the closest record from that set.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- &quot;Closest&quot; 100 streets to Broad Street station are?</span>
+<span class="k">WITH</span> <span class="n">closest_candidates</span> <span class="k">AS</span> <span class="p">(</span>
+  <span class="k">SELECT</span>
+    <span class="n">streets</span><span class="p">.</span><span class="n">gid</span><span class="p">,</span>
+    <span class="n">streets</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+    <span class="n">streets</span><span class="p">.</span><span class="n">geom</span>
+  <span class="k">FROM</span>
+    <span class="n">nyc_streets</span> <span class="n">streets</span>
+  <span class="k">ORDER</span> <span class="k">BY</span>
+    <span class="n">streets</span><span class="p">.</span><span class="n">geom</span> <span class="o">&lt;-&gt;</span>
+    <span class="s1">&#39;SRID=26918;POINT(583571.905921312 4506714.34119218)&#39;</span><span class="p">::</span><span class="n">geometry</span>
+  <span class="k">LIMIT</span> <span class="mi">100</span>
+<span class="p">)</span>
+<span class="k">SELECT</span> <span class="n">gid</span><span class="p">,</span> <span class="n">name</span>
+<span class="k">FROM</span> <span class="n">closest_candidates</span>
+<span class="k">ORDER</span> <span class="k">BY</span>
+  <span class="n">ST_Distance</span><span class="p">(</span>
+    <span class="n">geom</span><span class="p">,</span>
+    <span class="s1">&#39;SRID=26918;POINT(583571.905921312 4506714.34119218)&#39;</span><span class="p">::</span><span class="n">geometry</span>
+    <span class="p">)</span>
+<span class="k">LIMIT</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note that when querying a point table, because the boxes are identical to the points you can use the index-sorted result directly and dispense with the sub-query.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- The 10 nearest stations to Broad St station</span>
+<span class="k">SELECT</span> <span class="n">gid</span><span class="p">,</span> <span class="n">name</span>
+<span class="k">FROM</span> <span class="n">nyc_subway_stations</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">geom</span> <span class="o">&lt;-&gt;</span> <span class="s1">&#39;SRID=26918;POINT(583571.905921312 4506714.34119218)&#39;</span><span class="p">::</span><span class="n">geometry</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+              <!-- Next/Prev -->
+              <div class="selfclear pagination-nav">
+                  <div class="left"><strong>Previous</strong>: <a href="3d.html" title="previous chapter">30. 3-D</a></div>
+                  <div class="right"><strong>Next</strong>: <a href="history_tracking.html" title="next chapter">32. Tracking Edit History using Triggers</a></div>
+              </div>
+        </div>
+        </div>
+        <div class="col-md-3" id="sidebar">
+            
+        <div class="sidebar_section">
+          <h4 class="sidebar_header">Continue Reading</h4>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="3d.html" title="previous chapter">30. 3-D</a></p>
+          <p><b>Next:</b> <a href="history_tracking.html" title="next chapter">32. Tracking Edit History using Triggers</a></p>
+          </ul>
+        </div>
+  <div class="about sidebar_section">
+    <h4 class="sidebar_header">About Boundless</h4>
+    <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+    
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="_static/cc.png" /></a></p>
+
+  </div>
+          <!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="history_tracking.html" title="32. Tracking Edit History using Triggers"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="3d.html" title="30. 3-D"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+        </div>
+      </div>
+    </div>
+    <div class="toplink text-center">
+      <a href="#top" class="green-icon"><i class="glyphicon glyphicon-arrow-up green-icon"></i> Top</a>
+    </div>
+  </section>
+  <!-- End Page Content -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <a href="http://boundlessgeo.com/">&copy; Copyright 2015, Paul Ramsey, Boundless | Mark Leslie, LISAsoft</a>
+          |
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Non Commercial-Commons Attribution-Share Alike 3.0 United States License</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a name="bottom"></a>
+
+  <script type="text/javascript" src="_static/jquery.1.10.2.min.js"></script>
+  <script type="text/javascript" src="_static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
