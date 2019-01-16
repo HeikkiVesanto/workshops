@@ -11,7 +11,7 @@ Supported by a wide variety of libraries and applications, PostGIS provides many
 
 #. Change Directroy into the same folder that contains ogr2ogr. Type: ``cd C:\OSGeo4W64\bin`` and hit return.
 
-#. Test it is working. Type: *ogr2ogr* and hit return. You should recieve the following error: **FAILURE: no target datasource provided**
+#. Test it is working. Type: ``ogr2ogr`` and hit return. You should recieve the following error: **FAILURE: no target datasource provided**
 
    .. image:: ./screenshots/ogr2ogr.jpg
      :class: inline
