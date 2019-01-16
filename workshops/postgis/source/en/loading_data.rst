@@ -18,15 +18,25 @@ Supported by a wide variety of libraries and applications, PostGIS provides many
 
 #. The data can be downloaded from a GitHub repo: https://github.com/HeikkiVesanto/postgis_course_data
 
-#. Download the data and unzip the file. Then run the following commands, making sure the modify them to include a full path to where **nyc_postgis_data.gpkg** is located on your computer. Make sure there are no spaces in the file path.
+.. note::
 
-   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_census_blocks``
-   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_census_sociodata``
-   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_neighborhoods``
-   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_streets``
-   * ``ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_subway_stations``
+  The data supplied in  the link is not exactly the same as the orgiginal tutorial data. It has been recreated to be very similar. But some differences will be evident. You may for example use ILIKE insead of LIKE (case insensitive) in some of the queries, and the numbers will not always be exactly the same.
+
+6. Download the data and unzip the file. Then run the following commands, making sure the modify them to include a full path to where **nyc_postgis_data.gpkg** is located on your computer. Make sure there are no spaces in the file path.
+
+.. code-block:: none 
+
+   ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_census_blocks
+   
+   ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_census_sociodata
+   
+   ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_neighborhoods
+   
+   ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_streets
+   
+   ogr2ogr -f "PostgreSQL" PG:"host=localhost user=postgres dbname=nyc password=postgres port=5432" -progress C:\download_files\postgis_course_data-master\nyc_postgis_data.gpkg nyc_subway_stations
  
-#. When all the files are loaded, click the "Refresh" button in pgAdmin to update the tree view. You should see your four tables show up in the **Databases > nyc > Schemas > public > Tables** section of the tree.
+7. When all the files are loaded, click the "Refresh" button in pgAdmin to update the tree view. You should see your four tables show up in the **Databases > nyc > Schemas > public > Tables** section of the tree.
 
    .. image:: ./screenshots/refresh.png
 
